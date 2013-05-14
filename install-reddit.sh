@@ -45,7 +45,7 @@ set -e
 REDDIT_USER=reddit
 
 # the group to run reddit code as
-REDDIT_GROUP=nogroup
+REDDIT_GROUP=reddit
 
 # the root directory in which to install the reddit code
 REDDIT_HOME=/home/$REDDIT_USER
@@ -60,7 +60,7 @@ REDDIT_OWNER=reddit
 # the domain that you will connect to your reddit install with.
 # MUST contain a . in it somewhere as browsers won't do cookies for dotless
 # domains. an IP address will suffice if nothing else is available.
-REDDIT_DOMAIN=${REDDIT_DOMAIN:-reddit.local}
+REDDIT_DOMAIN=${REDDIT_DOMAIN:-epsite.org}
 
 ###############################################################################
 # Sanity Checks
@@ -174,7 +174,7 @@ for port in 11211 5432 5672 9160; do
 done
 
 ###############################################################################
-# Install the reddit source repositories
+# Install the reddit source repositories (new-day-international fork)
 ###############################################################################
 if [ ! -d $REDDIT_HOME ]; then
     mkdir -p $REDDIT_HOME
@@ -184,11 +184,11 @@ fi
 cd $REDDIT_HOME
 
 if [ ! -d $REDDIT_HOME/reddit ]; then
-    sudo -u $REDDIT_OWNER git clone https://github.com/reddit/reddit.git
+    sudo -u $REDDIT_OWNER git clone https://github.com/new-day-international/reddit.git
 fi
 
 if [ ! -d $REDDIT_HOME/reddit-i18n ]; then
-    sudo -u $REDDIT_OWNER git clone https://github.com/reddit/reddit-i18n.git
+    sudo -u $REDDIT_OWNER git clone https://github.com/new-day-international/reddit-i18n.git
 fi
 
 ###############################################################################
