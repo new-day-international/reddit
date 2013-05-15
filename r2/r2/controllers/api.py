@@ -1685,6 +1685,7 @@ class ApiController(RedditController, OAuth2ResourceController):
                    wiki_edit_age = VInt("wiki_edit_age", coerce=False, num_default=0, min=0),
                    ip = ValidIP(),
                    css_on_cname = VBoolean("css_on_cname"),
+                   nearest_neighbors = VLength("nearest_neighbors", max_length = 1000),
                    )
     @api_doc(api_section.subreddits)
     def POST_site_admin(self, form, jquery, name, ip, sr, **kw):
@@ -1725,7 +1726,8 @@ class ApiController(RedditController, OAuth2ResourceController):
                            'link_type', 'submit_link_label', 'comment_score_hide_mins',
                            'submit_text_label', 'lang', 'css_on_cname',
                            'header_title', 'over_18', 'wikimode', 'wiki_edit_karma',
-                           'wiki_edit_age', 'allow_top', 'public_description'))
+                           'wiki_edit_age', 'allow_top', 'public_description',
+                           'nearest_neighbors'))
 
         public_description = kw.pop('public_description')
         description = kw.pop('description')

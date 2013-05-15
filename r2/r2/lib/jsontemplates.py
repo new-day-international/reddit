@@ -737,6 +737,7 @@ class SubredditSettingsTemplate(ThingJsonTemplate):
                         wikimode = 'site.wikimode',
                         wiki_edit_karma = 'site.wiki_edit_karma',
                         wiki_edit_age = 'site.wiki_edit_age',
+                        nearest_neighbors = 'site.nearest_neighbors',
                         domain_sidebar = 'site.show_cname_sidebar',
                         header_hover_text = 'site.header_title')
 
