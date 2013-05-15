@@ -210,6 +210,19 @@
     </div>
     </div>
   </%utils:line_field>
+  <%utils:line_field title="${_('nearest neighbors')}">
+    <div class="usertext-edit">
+      <div class="delete-field">
+        <label for="nearest_neighbors">${_('Nearest neighbor reddits (separated by commas):')}</label>
+            %if thing.site:
+                <input id="nearest_neighbors" type="text" name="nearest_neighbors" placeholder="" 
+                       value = "${thing.site.nearest_neighbors}" />
+            %else:
+                <input id="nearest_neighbors" type="text" name="nearest_neighbors" value="" placeholder="" />
+            %endif
+      </div>
+    </div>
+  </%utils:line_field>
   <%utils:line_field title="${_('other options')}">
     <div class="delete-field">
       <ul>
@@ -269,19 +282,6 @@
                 <input id="comment_score_hide_mins" type="text" name="comment_score_hide_mins" value="0" placeholder="0" />
             %endif
             ${error_field("BAD_NUMBER", "comment_score_hide_mins")}
-      </div>
-    </div>
-  </%utils:line_field>
-  <%utils:line_field title="${_('nearest neighbors')}">
-    <div class="usertext-edit">
-      <div class="delete-field">
-        <label for="nearest_neighbors">${_('Nearest neighbor reddits (separated by commas):')}</label>
-            %if thing.site:
-                <input id="nearest_neighbors" type="text" name="nearest_neighbors" placeholder="0" 
-                       value = "${thing.site.nearest_neighbors}" />
-            %else:
-                <input id="nearest_neighbors" type="text" name="nearest_neighbors" value="0" placeholder="0" />
-            %endif
       </div>
     </div>
   </%utils:line_field>
