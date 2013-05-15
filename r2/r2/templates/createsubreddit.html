@@ -272,6 +272,19 @@
       </div>
     </div>
   </%utils:line_field>
+  <%utils:line_field title="${_('nearest neighbors')}">
+    <div class="usertext-edit">
+      <div class="delete-field">
+        <label for="nearest_neighbors">${_('Nearest neighbor reddits (separated by commas):')}</label>
+            %if thing.site:
+                <input id="nearest_neighbors" type="text" name="nearest_neighbors" placeholder="0" 
+                       value = "${thing.site.nearest_neighbors}" />
+            %else:
+                <input id="nearest_neighbors" type="text" name="nearest_neighbors" value="0" placeholder="0" />
+            %endif
+      </div>
+    </div>
+  </%utils:line_field>
 
 % if thing.site and thing.site.domain != thing.site._defaults['domain']:
   <%utils:line_field title="${_('domain')}" css_class="usertext">
