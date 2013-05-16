@@ -518,6 +518,7 @@ class Reddit(Templated):
         
         # Add the nearest neighbors tabs if present...
         if c.site.nearest_neighbors:
+            nearest_neighbors = c.site.nearest_neighbors
             neighbor_names = nearest_neighbors.split(',')
             neighbor_srs = Subreddit._by_name(neighbor_names, stale=can_stale).values()
             for sr in neighbor_srs:
