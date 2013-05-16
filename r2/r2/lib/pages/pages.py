@@ -515,6 +515,13 @@ class Reddit(Templated):
             if c.site._should_wiki and (c.site.wikimode != 'disabled' or mod):
                 if not g.disable_wiki:
                     main_buttons.append(NavButton('wiki', 'wiki'))
+        
+        # Add the nearest neighbors tabs if present...
+        if c.site.nearest_neighbors:
+            neighbor_names = nearest_neighbors.split(',')
+            neighbor_srs = Subreddit._by_name(neighbor_names, stale=can_stale).values()
+            for sr in neighbor_srs
+                main_buttons.append(SubredditButton(sr))
 
         more_buttons = []
 
