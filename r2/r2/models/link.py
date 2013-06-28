@@ -746,6 +746,12 @@ class Comment(Thing, Printable):
 
         link._incr('num_comments', 1)
 
+        # TODO.CMF - Test this works.
+        
+        # Update the link's active date
+        link.active = c._date
+        link._commit('_active')
+
         to = None
         name = 'inbox'
         if parent:
