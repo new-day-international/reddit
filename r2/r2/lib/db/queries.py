@@ -63,6 +63,7 @@ precompute_limit = 1000
 
 db_sorts = dict(hot = (desc, '_hot'),
                 new = (desc, '_date'),
+                active = (desc, '_active'),
                 top = (desc, '_score'),
                 controversial = (desc, '_controversy'))
 

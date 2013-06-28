@@ -46,6 +46,7 @@ class MenuHandler(StringHandler):
 # translation strings for every menu on the site
 menu =   MenuHandler(hot          = _('hot'),
                      new          = _('new'),
+                     active       = _('active'),
                      old          = _('old'),
                      ups          = _('ups'),
                      downs        = _('downs'),

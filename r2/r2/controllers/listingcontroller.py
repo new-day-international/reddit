@@ -430,6 +430,49 @@ class NewController(ListingController):
 
         return ListingController.GET_listing(self, **env)
 
+class ActiveController(ListingController):
+    where = 'active'
+    title_text = _('recently active comments')
+    extra_page_classes = ListingController.extra_page_classes + ['active-page']
+
+    def keep_fn(self):
+        def keep(item):
+            """Avoid showing links that are too young, to give time
+            for things like the spam filter and thumbnail fetcher to
+            act on them before releasing them into the wild"""
+            wouldkeep = item.keep_item(item)
+            if item.promoted is not None:
+                return False
+            elif c.user_is_loggedin and (c.user_is_admin or
+                                         item.subreddit.is_moderator(c.user)):
+                # let admins and moderators see them regardless
+                return wouldkeep
+            elif wouldkeep and c.user_is_loggedin and c.user._id == item.author_id:
+                # also let the author of the link see them
+                return True
+            else:
+                # otherwise, fall back to the regular logic (don't
+                # show hidden links, etc)
+                return wouldkeep
+
+        return keep
+
+    def query(self):
+        print "%r" % c.site.__class__
+        return c.site.get_links('new', 'all')
+
+    def POST_listing(self, **env):
+        # Redirect to GET mode in case of any legacy requests
+        return self.redirect(request.fullpath)
+
+    @require_oauth2_scope("read")
+    @listing_api_doc(uri='/active')
+    def GET_listing(self, **env):
+        if request.params.get('sort') == 'rising':
+            return self.redirect(add_sr('/rising'))
+
+        return ListingController.GET_listing(self, **env)
+
 class RisingController(NewController):
     where = 'rising'
     title_text = _('rising submissions')

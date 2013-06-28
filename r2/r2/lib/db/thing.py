@@ -561,7 +561,7 @@ class ThingMeta(type):
 
 class Thing(DataThing):
     __metaclass__ = ThingMeta
-    _base_props = ('_ups', '_downs', '_date', '_deleted', '_spam')
+    _base_props = ('_ups', '_downs', '_date', '_deleted', '_spam','_active')
     _int_props = ('_ups', '_downs')
     _make_fn = staticmethod(tdb.make_thing)
     _set_props = staticmethod(tdb.set_thing_props)
@@ -588,6 +588,7 @@ class Thing(DataThing):
             self._date = date
             self._deleted = deleted
             self._spam = spam
+            self._active = date
 
         #new way
         for k, v in attrs.iteritems():
