@@ -34,7 +34,7 @@ def random_word(min, max):
                          for x
                          in range(random.randint(min, max)) ])
 
-def populate(num_srs = 10, num_users = 10, num_links = 100, num_comments = 20, num_votes = 50):
+def populate(num_srs = 2, num_users = 10, num_links = 10, num_comments = 10, num_votes = 10):
     try:
         a = Account._by_name(g.system_user)
     except NotFound:
