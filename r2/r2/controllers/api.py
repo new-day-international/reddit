@@ -46,7 +46,7 @@ from r2.lib.pages.things import wrap_links, default_thing_wrapper
 from r2.models.last_modified import LastModified
 
 from r2.lib.menus import CommentSortMenu
-from r2.lib.captcha import get_iden
+from r2.lib.reddit_captcha import get_iden
 from r2.lib.strings import strings
 from r2.lib.filters import _force_unicode, websafe_json, websafe, spaceCompress
 from r2.lib.db import queries

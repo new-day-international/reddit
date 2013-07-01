@@ -749,7 +749,7 @@ class Comment(Thing, Printable):
         # TODO.CMF - Test this works.
         
         # Update the link's active date
-        link.active = c._date
+        link._active = c._date
         link._commit('_active')
 
         to = None

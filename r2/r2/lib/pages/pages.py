@@ -43,7 +43,7 @@ from pylons.controllers.util import abort
 
 from r2.lib import media, inventory
 from r2.lib import promote, tracking
-from r2.lib.captcha import get_iden
+from r2.lib.reddit_captcha import get_iden
 from r2.lib.filters import (
     spaceCompress,
     _force_unicode,

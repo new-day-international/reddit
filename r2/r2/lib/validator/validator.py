@@ -26,7 +26,7 @@ from pylons import c, g, request, response
 from pylons.i18n import _
 from pylons.controllers.util import abort
 from r2.config.extensions import api_type
-from r2.lib import utils, captcha, promote, totp
+from r2.lib import utils, reddit_captcha, promote, totp
 from r2.lib.filters import unkeep_space, websafe, _force_unicode
 from r2.lib.filters import markdown_souptest
 from r2.lib.db import tdb_cassandra
@@ -729,7 +729,7 @@ class VCaptcha(Validator):
 
     def run(self, iden, solution):
         if c.user.needs_captcha():
-            valid_captcha = captcha.valid_solution(iden, solution)
+            valid_captcha = reddit_captcha.valid_solution(iden, solution)
             if not valid_captcha:
                 self.set_error(errors.BAD_CAPTCHA)
             g.stats.action_event_count("captcha", valid_captcha)

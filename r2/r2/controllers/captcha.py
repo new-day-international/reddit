@@ -22,7 +22,7 @@
 
 from reddit_base import RedditController
 import StringIO
-import r2.lib.captcha as captcha
+import r2.lib.reddit_captcha as captcha
 from pylons import c, response
 
 class CaptchaController(RedditController):
