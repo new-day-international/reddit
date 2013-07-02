@@ -140,6 +140,7 @@ def index_commands(table, type):
     if type == 'thing':
         commands.append(index_str(table, 'id', 'thing_id'))
         commands.append(index_str(table, 'date', 'date'))
+        commands.append(index_str(table, 'active', 'active'))
         commands.append(index_str(table, 'deleted_spam', 'deleted, spam'))
         commands.append(index_str(table, 'hot', 'hot(ups, downs, date), date'))
         commands.append(index_str(table, 'score', 'score(ups, downs), date'))
