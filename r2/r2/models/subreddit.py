@@ -771,7 +771,7 @@ class Subreddit(Thing, Printable):
 
     @property
     def path(self):
-        return "/r/%s/" % self.name
+        return "/space/%s/" % self.name
 
 
     def keep_item(self, wrapped):
