@@ -458,8 +458,7 @@ class ActiveController(ListingController):
         return keep
 
     def query(self):
-        print "%r" % c.site.__class__
-        return c.site.get_links('new', 'all')
+        return c.site.get_links('active', 'all')
 
     def POST_listing(self, **env):
         # Redirect to GET mode in case of any legacy requests

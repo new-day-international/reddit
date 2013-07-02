@@ -153,6 +153,7 @@ class CachedResults(object):
          # will work, but for queries with a time-component or some
          # other eligibility factor, it cannot be inserted this way.
         if self.query._sort in ([desc('_date')],
+                                [desc('_active')],
                                 [desc('_hot'), desc('_date')],
                                 [desc('_score'), desc('_date')],
                                 [desc('_controversy'), desc('_date')]):
@@ -834,6 +835,7 @@ def new_link(link):
 def new_comment(comment, inbox_rels):
     author = Account._byID(comment.author_id)
     job = [get_comments(author, 'new', 'all'),
+           get_comments(author, 'active', 'all'),
            get_comments(author, 'top', 'all'),
            get_comments(author, 'controversial', 'all')]
 
@@ -1176,7 +1178,7 @@ def _common_del_ban(things):
         comments = [x for x in sr_things if isinstance(x, Comment)]
 
         if links:
-            results = [get_links(sr, 'hot', 'all'), get_links(sr, 'new', 'all')]
+            results = [get_links(sr, 'hot', 'all'), get_links(sr, 'new', 'all'), get_links(sr, 'active', 'all')]
             for sort in time_filtered_sorts:
                 for time in db_times.keys():
                     results.append(get_links(sr, sort, time))
@@ -1222,7 +1224,7 @@ def unban(things, insert=True):
                     new_links.append(l_copy)
                 else:
                     new_links.append(l)
-            add_queries([get_links(sr, 'new', 'all')], insert_items=new_links)
+            add_queries([get_links(sr, 'new', 'all'), get_links(sr, 'active', 'all')], insert_items=new_links)
             query_cache_deletes.append([get_spam_links(sr), links])
 
         if insert and comments:
@@ -1300,7 +1302,7 @@ def add_all_srs():
        very slow."""
     q = Subreddit._query(sort = asc('_date'))
     for sr in fetch_things2(q):
-        for q in all_queries(get_links, sr, ('hot', 'new'), ['all']):
+        for q in all_queries(get_links, sr, ('hot', 'new', 'active'), ['all']):
             q.update()
         for q in all_queries(get_links, sr, time_filtered_sorts, db_times.keys()):
             q.update()
