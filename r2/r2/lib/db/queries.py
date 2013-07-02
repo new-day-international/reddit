@@ -814,7 +814,8 @@ def new_link(link):
     sr = Subreddit._byID(link.sr_id)
     author = Account._byID(link.author_id)
 
-    results = [get_links(sr, 'new', 'all')]
+    results = [get_links(sr, 'new', 'all'),
+               get_links(sr, 'active', 'all')]
     # we don't have to do hot/top/controversy because new_vote will do
     # that
 
@@ -834,12 +835,12 @@ def new_link(link):
 
 def new_comment(comment, inbox_rels):
     author = Account._byID(comment.author_id)
+    sr = Subreddit._byID(comment.sr_id)
+
     job = [get_comments(author, 'new', 'all'),
            get_comments(author, 'active', 'all'),
            get_comments(author, 'top', 'all'),
            get_comments(author, 'controversial', 'all')]
-
-    sr = Subreddit._byID(comment.sr_id)
 
     with CachedQueryMutator() as m:
         if comment._deleted:
@@ -864,6 +865,10 @@ def new_comment(comment, inbox_rels):
 
         job_dict = { job_key: comment }
         add_queries(job, **job_dict)
+
+        # Update the active listing
+        link = Link._byID(comment.link_id)
+        add_queries([get_links(sr, 'active', 'all')], insert_items=link)
 
         # note that get_all_comments() is updated by the amqp process
         # r2.lib.db.queries.run_new_comments (to minimise lock contention)

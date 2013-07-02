@@ -920,7 +920,7 @@ class Query(object):
             if not isinstance(s, operators.sort):
                 s = operators.asc(s)
             op_sorts.append(s)
-            if s.col.endswith('_date'):
+            if s.col.endswith('_date') or s.col.endswith('_active'):
                 have_date = True
         if op_sorts and not have_date:
             op_sorts.append(operators.desc('_date'))
