@@ -196,7 +196,7 @@ class DomainMiddleware(object):
             if not subdomains and g.domain_prefix:
                 subdomains.append(g.domain_prefix)
             subdomains.append(g.domain)
-            redir = "%s/r/%s/%s" % ('.'.join(subdomains),
+            redir = "%s/space/%s/%s" % ('.'.join(subdomains),
                                     sr_redirect, environ['FULLPATH'])
             redir = "http://" + redir.replace('//', '/')
 
@@ -219,7 +219,7 @@ class SubredditMiddleware(object):
             environ['subreddit'] = sr.groups()[0]
             environ['PATH_INFO'] = self.sr_pattern.sub('', path) or '/'
         elif path.startswith(('/subreddits', '/reddits')):
-            environ['subreddit'] = 'r'
+            environ['subreddit'] = 'space'
         return self.app(environ, start_response)
 
 class DomainListingMiddleware(object):

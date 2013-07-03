@@ -1049,7 +1049,7 @@ class AllMinus(AllSR):
 
     @property
     def path(self):
-        return '/r/all-' + '-'.join(sr.name for sr in self.srs)
+        return '/space/all-' + '-'.join(sr.name for sr in self.srs)
 
     def get_links(self, sort, time):
         from r2.models import Link
@@ -1195,7 +1195,7 @@ class MultiReddit(_DefaultSR):
 
     @property
     def path(self):
-        return '/r/' + self.real_path
+        return '/space/' + self.real_path
 
     def get_links(self, sort, time):
         return self.get_links_sr_ids(self.kept_sr_ids, sort, time)

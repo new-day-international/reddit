@@ -248,7 +248,7 @@ def send_gift(buyer, recipient, months, days, signed, giftmessage, comment_id):
         )
 
     message += '\n\n' + strings.gold_benefits_msg
-    message += '\n\n' + strings.lounge_msg % {'link': '/r/'+g.lounge_reddit}
+    message += '\n\n' + strings.lounge_msg % {'link': '/space/'+g.lounge_reddit}
 
     subject = sender + " just sent you reddit gold!"
 
@@ -549,7 +549,7 @@ class IpnController(RedditController):
             subject = _("thanks for buying reddit gold!")
 
             if g.lounge_reddit:
-                lounge_url = "/r/" + g.lounge_reddit
+                lounge_url = "/space/" + g.lounge_reddit
                 message = strings.lounge_msg % dict(link=lounge_url)
             else:
                 message = ":)"
@@ -962,7 +962,7 @@ def complete_gold_purchase(secret, transaction_id, payer_email, payer_id,
             if goldtype == 'onetime':
                 subject = "thanks for buying reddit gold!"
                 if g.lounge_reddit:
-                    lounge_url = "/r/" + g.lounge_reddit
+                    lounge_url = "/space/" + g.lounge_reddit
                     message = strings.lounge_msg % dict(link=lounge_url)
                 else:
                     message = ":)"

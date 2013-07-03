@@ -28,7 +28,7 @@ $(function() {
         function submit_url(url, sr, title) {
             var submit = "http://www.reddit.com";
             if (sr) {
-                submit += "/r/" + sr;
+                submit += "/space/" + sr;
             }
             submit += "/submit?url=" + encodeURIComponent(url);
             if (title) {
@@ -157,7 +157,7 @@ $(function() {
 
         var infoTarget = "/button_info.json";
         if (querydict.sr && /^\w+$/.test(querydict.sr)) {
-            infoTarget = "/r/" + querydict.sr + infoTarget;
+            infoTarget = "/space/" + querydict.sr + infoTarget;
         }
 
         var secure = 'https:' == document.location.protocol;

@@ -309,13 +309,13 @@ class Link(Thing, Printable):
             else:
                 res = "/%s" % p
         elif not c.cname and not force_domain:
-            res = "/r/%s/%s" % (sr.name, p)
+            res = "/space/%s/%s" % (sr.name, p)
         elif sr != c.site or force_domain:
             if(c.cname and sr == c.site):
                 res = "http://%s/%s" % (get_domain(cname=True,
                                                     subreddit=False), p)
             else:
-                res = "http://%s/r/%s/%s" % (get_domain(cname=False,
+                res = "http://%s/space/%s/%s" % (get_domain(cname=False,
                                                     subreddit=False), sr.name, p)
         else:
             res = "/%s" % p

@@ -949,9 +949,9 @@ class Query(object):
     def _dir(self, thing, reverse):
         ors = []
 
-        # this fun hack lets us simplify the query on /r/all 
+        # this fun hack lets us simplify the query on /space/all
         # for postgres-9 compatibility. please remove it when
-        # /r/all is precomputed.
+        # /space/all is precomputed.
         sorts = range(len(self._sort))
         if self._filter_primary_sort_only:
             sorts = [0]

@@ -321,7 +321,7 @@ def set_subreddit():
             if g.domain_prefix:
                 domain = ".".join((g.domain_prefix, domain))
             redirect_to('http://%s%s' % (domain, sr.path), _code=301)
-    elif sr_name == 'r':
+    elif sr_name == 'space':
         #reddits
         c.site = Sub
     elif '+' in sr_name:
@@ -1002,9 +1002,9 @@ class RedditController(MinimalController):
                     message = ban_info['message']
                 else:
                     sitelink = url_escape(add_sr("/"))
-                    subject = ("/r/%s has been incorrectly banned" %
+                    subject = ("/space/%s has been incorrectly banned" %
                                    c.site.name)
-                    link = ("/r/redditrequest/submit?url=%s&title=%s" %
+                    link = ("/space/redditrequest/submit?url=%s&title=%s" %
                                 (sitelink, subject))
                     message = strings.banned_subreddit_message % dict(
                                                                     link=link)

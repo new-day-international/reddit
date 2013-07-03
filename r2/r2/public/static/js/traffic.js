@@ -21,7 +21,7 @@ r.traffic = {
 
         window.location = window.location.protocol + '//' +
                           r.config.cur_domain +
-                          '/r/' + srname +
+                          '/space/' + srname +
                           '/about/traffic'
 
         return false
