@@ -232,7 +232,7 @@ class SubredditJsonTemplate(ThingJsonTemplate):
                                                 )
 
     def thing_attr(self, thing, attr):
-        # Don't reveal revenue information via /r/lounge's subscribers
+        # Don't reveal revenue information via /space/lounge's subscribers
         if (attr == "_ups" and g.lounge_reddit
             and thing.name == g.lounge_reddit):
             return 0

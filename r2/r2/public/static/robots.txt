@@ -24,9 +24,9 @@ Disallow: /*.i
 Disallow: /*.embed
 Disallow: /*.wired
 Disallow: /*/comments/*?*sort=
-Disallow: /r/*/comments/*/*/c*
+Disallow: /space/*/comments/*/*/c*
 Disallow: /comments/*/*/c*
-Disallow: /r/*/submit
+Disallow: /space/*/submit
 Disallow: /message/compose*
 Disallow: /api
 Disallow: /post
@@ -38,5 +38,5 @@ Disallow: /domain/*t=
 Disallow: /login
 Disallow: /reddits/search
 Disallow: /search
-Disallow: /r/*/search
+Disallow: /space/*/search
 Allow: /

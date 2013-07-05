@@ -82,7 +82,7 @@ string_dict = dict(
 
     legal = _("I understand and agree that registration on or use of this site constitutes agreement to its %(user_agreement)s and %(privacy_policy)s."),
 
-    friends = _('to view reddit with only submissions from your friends, use [reddit.com/r/friends](%s)'),
+    friends = _('to view reddit with only submissions from your friends, use [reddit.com/space/friends](%s)'),
 
     sr_created = _('your subreddit has been created'),
 
@@ -186,9 +186,9 @@ Note: there are a couple of places outside of your subreddit where someone can c
     subscribed_multi = _("multireddit of your subscriptions"),
     mod_multi = _("multireddit of subreddits you moderate"),
 
-    r_all_description = _("/r/all displays content from all of reddit, including subreddits you aren't subscribed to."),
-    r_all_minus_description = _("Displaying content from /r/all of reddit, except the following subreddits:"),
-    all_minus_gold_only = _('Filtering /r/all is a feature only available to [reddit gold](/gold/about) subscribers. Displaying unfiltered results from /r/all.'),
+    r_all_description = _("/space/all displays content from all of reddit, including subreddits you aren't subscribed to."),
+    r_all_minus_description = _("Displaying content from /space/all of reddit, except the following subreddits:"),
+    all_minus_gold_only = _('Filtering /space/all is a feature only available to [reddit gold](/gold/about) subscribers. Displaying unfiltered results from /space/all.'),
 
     missing_credit_name = _("missing name"),
     bad_credit_number = _("invalid credit card number"),

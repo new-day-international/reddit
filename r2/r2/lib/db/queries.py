@@ -476,7 +476,7 @@ def get_sr_comments(sr):
     return _get_sr_comments(sr._id)
 
 def _get_sr_comments(sr_id):
-    """the subreddit /r/foo/comments page"""
+    """the subreddit /space/foo/comments page"""
     q = Comment._query(Comment.c.sr_id == sr_id,
                        sort = desc('_date'))
     return make_results(q)

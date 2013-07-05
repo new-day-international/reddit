@@ -335,7 +335,7 @@ class SubredditButton(NavButton):
     from r2.models.subreddit import Frontpage, Mod, All, Random, RandomSubscription
     # Translation is deferred (N_); must be done per-request,
     # not at import/class definition time.
-    # TRANSLATORS: This refers to /r/mod
+    # TRANSLATORS: This refers to /space/mod
     name_overrides = {Mod: N_("mod"),
     # TRANSLATORS: This refers to the user's front page
                       Frontpage: N_("front"),

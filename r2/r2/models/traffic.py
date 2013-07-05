@@ -382,7 +382,7 @@ class SitewidePageviews(Base):
 
 
 class PageviewsBySubreddit(Base):
-    """Pageviews within a subreddit (i.e. /r/something/...)."""
+    """Pageviews within a subreddit (i.e. /space/something/...)."""
 
     __tablename__ = "traffic_subreddits"
 

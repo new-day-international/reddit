@@ -217,7 +217,7 @@ def make_subreddit_traffic_report(subreddits=None):
             name = "[%s]" % srname
             url = None
         else:
-            name = "/r/%s" % srname
+            name = "/space/%s" % srname
             url = name + "/about/traffic"
 
         report.append(((name, url), data))
@@ -312,7 +312,7 @@ class AdvertTrafficSummary(RedditTraffic):
         if name == g.default_sr:
             return _("frontpage")
         else:
-            return "/r/" + name
+            return "/space/" + name
 
     @staticmethod
     def get_ad_name(code, things=None):
@@ -406,7 +406,7 @@ class AdvertTraffic(RedditTraffic):
 
 class SubredditTraffic(RedditTraffic):
     def __init__(self):
-        RedditTraffic.__init__(self, "/r/" + c.site.name)
+        RedditTraffic.__init__(self, "/space/" + c.site.name)
 
         if c.user_is_sponsor:
             fullname = c.site._fullname

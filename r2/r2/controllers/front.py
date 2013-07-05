@@ -85,7 +85,7 @@ class FrontController(RedditController, OAuth2ResourceController):
                       (dest, article._id36,
                        quote_plus(title_to_url(article.title).encode('utf-8')))
             if not c.default_sr:
-                new_url = "/r/%s%s" % (c.site.name, new_url)
+                new_url = "/space/%s%s" % (c.site.name, new_url)
             if comment:
                 new_url = new_url + "/%s" % comment._id36
             if c.extension:
@@ -697,7 +697,7 @@ class FrontController(RedditController, OAuth2ResourceController):
             return self._edit_normal_reddit(location, created)
 
     @require_oauth2_scope("read")
-    @api_doc(api_section.subreddits, uri='/r/{subreddit}/about', extensions=['json'])
+    @api_doc(api_section.subreddits, uri='/space/{subreddit}/about', extensions=['json'])
     def GET_about(self):
         """Return information about the subreddit.
 
@@ -1080,7 +1080,7 @@ class FrontController(RedditController, OAuth2ResourceController):
             abort(404)
 
         if g.lounge_reddit and not lounge_md:
-            lounge_url = "/r/" + g.lounge_reddit
+            lounge_url = "/space/" + g.lounge_reddit
             lounge_md = strings.lounge_msg % {'link': lounge_url}
 
         return BoringPage(_("thanks"), show_sidebar=False,
