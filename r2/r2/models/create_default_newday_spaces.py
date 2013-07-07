@@ -43,11 +43,12 @@ def populate(num_srs = 2, num_users = 10, num_links = 10, num_comments = 10, num
     srs = []
 
     default_spaces = ['Help', 'NewUser', 'Connector', 'Announcements']
-    for name in default_reddits:
-        name = "reddit_test%d" % i
+    for space_name in default_spaces:
         try:
-            sr = Subreddit._new(name = name, title = "everything about #%d"%i,
-                                ip = '0.0.0.0', author_id = a._id)
+            sr = Subreddit._new(name = space_name,
+                                title = "Everything about #%s"%space_name,
+                                ip = '0.0.0.0',
+                                author_id = a._id)
             sr._downs = 10
             sr.lang = "en"
             sr._commit()
