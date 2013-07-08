@@ -498,11 +498,9 @@ class Reddit(Templated):
             main_buttons = [NamedButton('new', dest='', aliases=['/hot']),
                             NamedButton('comments')]
         else:
-            main_buttons = [NamedButton('hot', dest='', aliases=['/hot']),
-                            NamedButton('active'),
+            main_buttons = [NamedButton('active'),
                             NamedButton('new'),
-                            NamedButton('rising'),
-                            NamedButton('controversial'),
+                            NamedButton('hot', dest='', aliases=['/hot']),
                             NamedButton('top'),
                             ]
 
