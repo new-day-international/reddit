@@ -33,10 +33,10 @@
   % if c.user_is_sponsor:
   <div class="md">
   <ul>
-    <li><a href="/traffic/adverts/dart_${c.site.name}">${_("all DART traffic for this subreddit.")}</a></li>
+    <li><a href="/traffic/adverts/dart_${c.site.name}">${_("all DART traffic for this space.")}</a></li>
     % if thing.codenames:
     <li>
-      ${_("recent 300x100 campaigns in this subreddit:")}
+      ${_("recent 300x100 campaigns in this space:")}
       <ul>
       % for codename, campaign in thing.codenames:
       <li><a href="/traffic/adverts/${codename}">${campaign}</a></li>
@@ -44,7 +44,7 @@
       </ul>
     </li>
     % else:
-    <li>${_("no recent 300x100 campaigns in this subreddit")}</li>
+    <li>${_("no recent 300x100 campaigns in this space")}</li>
     % endif
   </ul>
   </div>

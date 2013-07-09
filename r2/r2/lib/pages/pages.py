@@ -344,7 +344,7 @@ class Reddit(Templated):
                     and not (c.user_is_loggedin
                              and c.site.can_submit(c.user))):
                 if c.site.type == "archived":
-                    subtitle = _('this subreddit is archived '
+                    subtitle = _('this space is archived '
                                  'and no longer accepting submissions.')
                     ps.append(SideBox(title=_('Submissions disabled'),
                                       css_class="submit",
@@ -352,7 +352,7 @@ class Reddit(Templated):
                                       subtitles=[subtitle],
                                       show_icon=False))
                 else:
-                    subtitle = _('submission in this subreddit '
+                    subtitle = _('submission in this space '
                                  'is restricted to approved submitters.')
                     ps.append(SideBox(title=_('Submissions restricted'),
                                       css_class="submit",
@@ -416,7 +416,7 @@ class Reddit(Templated):
         if self.create_reddit_box and c.user_is_loggedin:
             delta = datetime.datetime.now(g.tz) - c.user._date
             if delta.days >= g.min_membership_create_community:
-                ps.append(SideBox(_('Create your own subreddit'),
+                ps.append(SideBox(_('Create your own space'),
                            '/subreddits/create', 'create',
                            subtitles = rand_strings.get("create_reddit", 2),
                            show_cover = True, nocname=True))
@@ -1449,7 +1449,7 @@ class SubredditsPage(Reddit):
         subscribe_box = SubscriptionBox(srs,
                                         multi_text=strings.subscribed_multi)
         num_reddits = len(subscribe_box.srs)
-        ps.append(SideContentBox(_("your front page subreddits (%s)") %
+        ps.append(SideContentBox(_("your front page spaces (%s)") %
                                  num_reddits, [subscribe_box]))
         return ps
 
@@ -3000,7 +3000,7 @@ class ModList(UserList):
     invite_action = 'accept_moderator_invite'
     form_title = _('add moderator')
     invite_form_title = _('invite moderator')
-    remove_self_title = _('you are a moderator of this subreddit. %(action)s')
+    remove_self_title = _('you are a moderator of this space. %(action)s')
 
     def __init__(self, editable=True):
         super(ModList, self).__init__(editable=editable)

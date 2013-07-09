@@ -68,7 +68,7 @@ string_dict = dict(
 
     already_submitted = _("that link has already been submitted, but you can try to [submit it again](%s)."),
 
-    multiple_submitted = _("that link has been submitted to multiple subreddits. you can try to [submit it again](%s)."),
+    multiple_submitted = _("that link has been submitted to multiple spaces. you can try to [submit it again](%s)."),
 
     user_deleted = _("your account has been deleted, but we won't judge you for it."),
 
@@ -84,21 +84,21 @@ string_dict = dict(
 
     friends = _('to view reddit with only submissions from your friends, use [reddit.com/space/friends](%s)'),
 
-    sr_created = _('your subreddit has been created'),
+    sr_created = _('your space has been created'),
 
     more_info_link = _("visit [%(link)s](%(link)s) for more information"),
 
     sr_messages = dict(
-        empty =  _('you have not subscribed to any subreddits.'),
-        subscriber =  _('below are the subreddits you have subscribed to'),
-        contributor =  _('below are the subreddits that you are an approved submitter on.'),
-        moderator = _('below are the subreddits that you have moderator access to.')
+        empty =  _('you have not subscribed to any spaces.'),
+        subscriber =  _('below are the spaces you have subscribed to'),
+        contributor =  _('below are the spaces that you are an approved submitter on.'),
+        moderator = _('below are the spaces that you have moderator access to.')
         ),
 
-    sr_subscribe =  _('click the `subscribe` or `unsubscribe` buttons to choose which subreddits appear on your front page.'),
+    sr_subscribe =  _('click the `subscribe` or `unsubscribe` buttons to choose which spaces appear on your front page.'),
 
-    searching_a_reddit = _('you\'re searching within the [%(reddit_name)s](%(reddit_link)s) subreddit. '+
-                           'you can also search within [all subreddits](%(all_reddits_link)s)'),
+    searching_a_reddit = _('you\'re searching within the [%(reddit_name)s](%(reddit_link)s) space. '+
+                           'you can also search within [all spaces](%(all_reddits_link)s)'),
 
     css_validator_messages = dict(
         broken_url = _('"%(brokenurl)s" is not a valid URL'),
@@ -113,10 +113,10 @@ string_dict = dict(
     ),
     permalink_title = _("%(author)s comments on %(title)s"),
     link_info_title = _("%(title)s : %(site)s"),
-    banned_subreddit_title = _("this subreddit has been banned"),
-    banned_subreddit_message = _("most likely this was done automatically by our spam filtering program. the program is still learning, and may even have some bugs, so if you feel the ban was a mistake, please submit a link to our [request a subreddit listing](%(link)s) and be sure to include the **exact name of the subreddit**."),
-    private_subreddit_title = _("this subreddit is private"),
-    private_subreddit_message = _("the moderators of this subreddit have set it to private. you must be a moderator or approved submitter to view its contents."),
+    banned_subreddit_title = _("this space has been banned"),
+    banned_subreddit_message = _("most likely this was done automatically by our spam filtering program. the program is still learning, and may even have some bugs, so if you feel the ban was a mistake, please submit a link to our [request a space listing](%(link)s) and be sure to include the **exact name of the space**."),
+    private_subreddit_title = _("this space is private"),
+    private_subreddit_message = _("the moderators of this space have set it to private. you must be a moderator or approved submitter to view its contents."),
     comments_panel_text = _("""The following is a sample of what Reddit users had to say about this page. The full discussion is available [here](%(fd_link)s); you can also get there by clicking the link's title (in the middle of the toolbar, to the right of the comments button)."""),
 
     submit_link = _("""You are submitting a link. The key to a successful submission is interesting content and a descriptive title."""),
@@ -168,26 +168,26 @@ apps below.
     traffic_help_email = _("Questions? Email self serve support: %(email)s"),
 
     traffic_subreddit_explanation = _("""
-Below are the traffic statistics for your subreddit. Each graph represents one of the following over the interval specified.
+Below are the traffic statistics for your space. Each graph represents one of the following over the interval specified.
 
-* **pageviews** are all hits to %(subreddit)s, including both listing pages and comment pages.
+* **pageviews** are all hits to %(space)s, including both listing pages and comment pages.
 * **uniques** are the total number of unique visitors (determined by a combination of their IP address and User Agent string) that generate the above pageviews. This is independent of whether or not they are logged in.
 * **subscriptions** is the number of new subscriptions that have been generated in a given day. This number is less accurate than the first two metrics, as, though we can track new subscriptions, we have no way to track unsubscriptions.
 
-Note: there are a couple of places outside of your subreddit where someone can click "subscribe", so it is possible (though unlikely) that the subscription count can exceed the unique count on a given day.
+Note: there are a couple of places outside of your space where someone can click "subscribe", so it is possible (though unlikely) that the subscription count can exceed the unique count on a given day.
 """),
 
     go = _("go"),
-    view_subreddit_traffic = _("view subreddit traffic"),
+    view_subreddit_traffic = _("view space traffic"),
 
     an_error_occurred = _("an error occurred (status: %(status)s)"),
     an_error_occurred_friendly = _("an error occurred. please try again later! (status: %(status)s)"),
     rate_limit = _("please wait a few seconds and try again."),
     subscribed_multi = _("multireddit of your subscriptions"),
-    mod_multi = _("multireddit of subreddits you moderate"),
+    mod_multi = _("multireddit of spaces you moderate"),
 
-    r_all_description = _("/space/all displays content from all of reddit, including subreddits you aren't subscribed to."),
-    r_all_minus_description = _("Displaying content from /space/all of reddit, except the following subreddits:"),
+    r_all_description = _("/space/all displays content from all of reddit, including spaces you aren't subscribed to."),
+    r_all_minus_description = _("Displaying content from /space/all of reddit, except the following spaces:"),
     all_minus_gold_only = _('Filtering /space/all is a feature only available to [reddit gold](/gold/about) subscribers. Displaying unfiltered results from /space/all.'),
 
     missing_credit_name = _("missing name"),
@@ -291,7 +291,7 @@ plurals = PluralManager([P_("comment",     "comments"),
                          P_("link",        "links"),
                          P_("comment",     "comments"),
                          P_("message",     "messages"),
-                         P_("subreddit",   "subreddits"),
+                         P_("space",       "spaces"),
                          P_("creddit",     "creddits"),
 
                          # people
