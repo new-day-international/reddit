@@ -514,14 +514,19 @@ class Reddit(Templated):
             if c.site._should_wiki and (c.site.wikimode != 'disabled' or mod):
                 if not g.disable_wiki:
                     main_buttons.append(NavButton('wiki', 'wiki'))
-        
+
+        # Create the main toolbar...
+        toolbar = [NavMenu(main_buttons, type='tabmenu')]
+
         # Add the nearest neighbors tabs if present...
         if c.site.nearest_neighbors:
             nearest_neighbors = c.site.nearest_neighbors
             neighbor_names = nearest_neighbors.split(',')
             neighbor_srs = Subreddit._by_name(neighbor_names).values()
+            neighbor_buttons = []
             for sr in neighbor_srs:
-                main_buttons.append(SubredditButton(sr))
+                neighbor_buttons.append(SubredditButton(sr))
+            toolbar.append(NavMenu(neighbor_buttons, title='neighbors', type='tabdrop'))
 
         more_buttons = []
 
@@ -534,7 +539,6 @@ class Reddit(Templated):
             main_buttons.append(more_buttons[0])
             more_buttons = []
 
-        toolbar = [NavMenu(main_buttons, type='tabmenu')]
         if more_buttons:
             toolbar.append(NavMenu(more_buttons, title=menu.more, type='tabdrop'))
 
