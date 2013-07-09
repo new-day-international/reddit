@@ -64,7 +64,7 @@
     <div>
       <ul>
         <li class="name-entry">
-          <label for="user_${op}">${_('username')}:</label>
+          <label for="user_${op}">${_('full name (how you normally write it)')}:</label>
           <input value="${user}" name="user" id="user_${op}" 
                  type="text" maxlength="20" tabindex="${tabindex}" autofocus />
           %if register:
@@ -79,8 +79,8 @@
       %if register:
         <li>
           <label for="email_${op}">
-            ${_('account recovery email')}: &nbsp;<i>(${_('optional')})
-          </i></label>
+            ${_('email')}:
+          </label>
           <input value="" name="email" id="email_${op}" 
                  type="email" maxlength="50" tabindex="${tabindex}"/>
           <label for="email_${op}" class="note">${_('we only send email at your request')}</label>
