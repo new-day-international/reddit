@@ -34,7 +34,7 @@ def random_word(min, max):
                          for x
                          in range(random.randint(min, max)) ])
 
-def populate(num_srs = 2, num_users = 10, num_links = 10, num_comments = 10, num_votes = 10):
+def populate(num_users = 10, num_links = 10, num_comments = 10, num_votes = 10):
     try:
         a = Account._by_name(g.system_user)
     except NotFound:
@@ -43,12 +43,10 @@ def populate(num_srs = 2, num_users = 10, num_links = 10, num_comments = 10, num
     srs = []
 
     default_spaces = ['Help', 'NewUser', 'Connector', 'Announcements']
-    for space_name in default_spaces:
+    for name in default_spaces:
         try:
-            sr = Subreddit._new(name = space_name,
-                                title = "Everything about #%s"%space_name,
-                                ip = '0.0.0.0',
-                                author_id = a._id)
+            sr = Subreddit._new(name = name, title = name,
+                                ip = '0.0.0.0', author_id = a._id)
             sr._downs = 10
             sr.lang = "en"
             sr._commit()
