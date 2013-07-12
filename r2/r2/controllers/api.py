@@ -171,6 +171,16 @@ class ApiController(RedditController, OAuth2ResourceController):
         if not (responder.has_errors("user", errors.BAD_USERNAME)):
             return bool(user)
 
+    @json_validate(user=VFullname(("user",)))
+    @api_doc(api_section.users, extensions=["json"])
+    def GET_fullname_to_realnameID(self, responder, user):
+        """
+        Convert the give full name to a realnameID.
+        """
+        if not responder.has_errors("user", errors.BAD_USERNAME):
+            realnameID = Account._fullname_to_realnameID(user)
+            return {"realnameID": realnameID}
+
     @validatedForm(VCaptcha(),
                    name=VRequired('name', errors.NO_NAME),
                    email=ValidEmails('email', num = 1),
@@ -180,8 +190,8 @@ class ApiController(RedditController, OAuth2ResourceController):
     def POST_feedback(self, form, jquery, name, email, reason, message):
         if not (form.has_errors('name',     errors.NO_NAME) or
                 form.has_errors('email',    errors.BAD_EMAILS) or
-                form.has_errors('text', errors.NO_TEXT) or
-                form.has_errors('captcha', errors.BAD_CAPTCHA)):
+                form.has_errors('text',     errors.NO_TEXT) or
+                form.has_errors('captcha',  errors.BAD_CAPTCHA)):
 
             if reason == 'ad_inq':
                 emailer.ad_inq_email(email, message, name, reply_to = '')
@@ -491,7 +501,7 @@ class ApiController(RedditController, OAuth2ResourceController):
 
     @validatedForm(VCaptcha(),
                    VRatelimit(rate_ip = True, prefix = "rate_register_"),
-                   name = VUname(['user']),
+                   name = VFullname(['user']),
                    email=ValidEmails(
                        "email",
                        num=1,

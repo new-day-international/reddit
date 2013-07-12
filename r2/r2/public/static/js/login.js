@@ -207,11 +207,13 @@ r.ui.LoginForm.prototype = $.extend(new r.ui.Form(), {
 
 r.ui.RegisterForm = function() {
     r.ui.Form.apply(this, arguments)
-    this.checkUsernameDebounced = _.debounce($.proxy(this, 'checkUsername'), 500)
+    this.getRealnameIDDebounced = _.debounce($.proxy(this, 'getRealnameID'), 500)
     this.$user = this.$el.find('[name="user"]')
+    this.$realnameID = this.$el.find('span#realnameID')
     this.$user.on('keyup', $.proxy(this, 'usernameChanged'))
     this.$submit = this.$el.find('.submit button')
 }
+
 r.ui.RegisterForm.prototype = $.extend(new r.ui.Form(), {
     usernameChanged: function() {
         var name = this.$user.val()
@@ -223,20 +225,29 @@ r.ui.RegisterForm.prototype = $.extend(new r.ui.Form(), {
 
         this.$el.find('.error.field-user').hide()
         this.$submit.attr('disabled', false)
-        this.checkUsernameDebounced(name)
+        this.getRealnameIDDebounced(name)
         this.$el.toggleClass('name-checking', !!name)
     },
 
-    checkUsername: function(name) {
+    getRealnameID: function(name) {
         if (name) {
             $.ajax({
-                url: '/api/username_available.json',
+                url: '/api/fullname_to_realnameID.json',
                 data: {user: name},
-                success: $.proxy(this, 'displayUsernameStatus'),
+                success: $.proxy(this, 'insertRealnameID'),
                 complete: $.proxy(function() { this.$el.removeClass('name-checking') }, this)
             })
         } else {
             this.$el.removeClass('name-available name-taken')
+        }
+    },
+
+    insertRealnameID: function(result) {
+        if (result.json && result.json.errors) {
+            this.showErrors(result.json.errors)
+            this.$submit.attr('disabled', true)
+        } else {
+            this.$realnameID.text(result.realnameID)
         }
     },
 

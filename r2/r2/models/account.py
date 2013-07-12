@@ -291,6 +291,23 @@ class Account(Thing):
         else:
             raise NotFound, 'Account %s' % name
 
+    @classmethod
+    def _fullname_to_realnameID(cls, fullname):
+        # Strip out the spaces and periods.
+        fullname = fullname.replace (' ', '_')
+        fullname = fullname.replace ('.', '')
+        fullname += "_"
+        suffixNumber = 007
+
+        # Loop adding numbers until we get a new unique name
+        while True:
+            realnameCandidate = fullname + "%03d" % suffixNumber
+            try:
+                a = Account._by_name(realnameCandidate, True)
+            except NotFound:
+                return realnameCandidate
+            suffixNumber += 1
+
     # Admins only, since it's not memoized
     @classmethod
     def _by_name_multiple(cls, name):
@@ -790,10 +807,11 @@ def change_password(user, newpassword):
 #TODO reset the cache
 def register(name, password, registration_ip):
     try:
-        a = Account._by_name(name)
+        realnameID = Account._fullname_to_realnameID(name)
+        a = Account._by_name(realnameID)
         raise AccountExists
     except NotFound:
-        a = Account(name = name,
+        a = Account(name = realnameID,
                     password = bcrypt_password(password))
         # new accounts keep the profanity filter settings until opting out
         a.pref_no_profanity = True
@@ -801,8 +819,8 @@ def register(name, password, registration_ip):
         a._commit()
 
         #clear the caches
-        Account._by_name(name, _update = True)
-        Account._by_name(name, allow_deleted = True, _update = True)
+        Account._by_name(realnameID, _update = True)
+        Account._by_name(realnameID, allow_deleted = True, _update = True)
         return a
 
 class Friend(Relation(Account, Account)): pass

@@ -32,127 +32,19 @@
 ## default content 
 %if c.user_is_loggedin:
   <p class="error">${_("you are logged in. go use the site!")}</p>
+
 %else:
-  ${login_panel(login_form, 
-                user_reg = thing.user_reg, user_login = thing.user_login, 
-                dest=thing.dest,
-                registration_info=thing.registration_info)}
-  %if not thing.is_popup and not g.disable_captcha:
-  <script type="text/javascript">
-    $.request("new_captcha");
-  </script>
-  %endif
-%endif
-
-<%def name="login_form(register=False, user='', dest='')">
-  <%
-    op = "reg" if register else "login"
-    base = g.https_endpoint if not c.cname else ''
-    tabindex = 3 if register else 2
-  %>
-  <form id="login_${op}" method="post" 
-        action="${add_sr(base + '/post/' + op, nocname=not c.authorized_cname)}"
-        class="user-form ${'register-form' if register else 'login-form'}">
-    %if c.cname:
-       <input type="hidden" name="${UrlParser.cname_get}" 
-              value="${random.random()}" />
-    %endif
-    <input type="hidden" name="op" value="${op}" />
-    %if dest:
-      <input type="hidden" name="dest" value="${dest}" />
-    %endif
-    <div>
-      <ul>
-        <li class="name-entry">
-          <label for="user_${op}">${_('full name (how you normally write it)')}:</label>
-          <input value="${user}" name="user" id="user_${op}" 
-                 type="text" maxlength="20" tabindex="${tabindex}" autofocus />
-          %if register:
-            <span class="throbber"></span>
-            <span class="notice-taken">${_('try another')}</span>
-            <span class="notice-available">${_('available!')}</span>
-            ${error_field("BAD_USERNAME", "user", kind="span")}
-            ${error_field("USERNAME_TAKEN", "user", kind="span")}
-            ${error_field("USERNAME_TAKEN_DEL", "user", kind="span")}
-          %endif
-        </li>
-      %if register:
-        <li>
-          <label for="email_${op}">
-            ${_('email')}:
-          </label>
-          <input value="" name="email" id="email_${op}" 
-                 type="email" maxlength="50" tabindex="${tabindex}"/>
-          <label for="email_${op}" class="note">${_('we only send email at your request')}</label>
-          %if register:
-            ${error_field("BAD_EMAILS", "email", kind="span")}
-          %endif
-        </li>
-      %endif
-        <li>
-          <label for="passwd_${op}">${_('password')}:</label>
-          <input id="passwd_${op}" name="passwd" type="password" 
-                 tabindex="${tabindex}"/>
-          %if register:
-            ${error_field("BAD_PASSWORD", "passwd", kind="span")}
-          %else:
-            ${error_field("WRONG_PASSWORD", "passwd", kind="span")}
-          %endif
-        </li>
-      %if register:
-        <li>
-          <label for="passwd2_${op}">${_('verify password')}:</label>
-          <input name="passwd2" id="passwd2_${op}" 
-                 type="password" tabindex="${tabindex}"/>
-          ${error_field("BAD_PASSWORD_MATCH", "passwd2", kind="span")}
-        </li>
-        <li>
-          %if not g.disable_captcha:
-          <% iden = hasattr(thing, "captcha") and thing.captcha.iden or '' %>
-          ${captchagen(iden, tabulate=True, label=False, size=30, tabindex=tabindex)}
-          %endif
-          ${error_field("RATELIMIT", "ratelimit")}
-          ${error_field("RATELIMIT", "vdelay")}
-        </li>
-      %endif
-      <li>
-        <input type="checkbox" name="rem" id="rem_${op}" tabindex="${tabindex}" />
-        <label for="rem_${op}" class="remember">
-          ${_('remember me')}
-        </label>
-      </li>
-      %if not register:
-      <li>
-        <a class="recover-password" href="/password">
-          ${_("recover password")}
-        </a>
-      </li>
-      %endif
-    </ul>
-      <p class="submit">
-        <button type="submit" class="button" tabindex="${tabindex}">
-          ${register and _("create account") or _("login")}
-        </button>
-        <span class="throbber"></span>
-        <span class="status"></span>
-      </p>
-    </div>
-  </form>
-</%def>
-
-
-<%def name="login_panel(lf, user_reg = '', user_login = '', dest='', registration_info=None)">
   <div class="login-form-section divide register">
     <h3>${_("create a new account")}</h3>
     <p class="tagline">
-      ${_("all it takes is a username and password")}
+      ${_("all it takes is your name, email, and a password")}
     </p>
-    %if registration_info:
+    %if thing.registration_info:
       <div class="registration-info">
-        ${registration_info}
+        ${thing.registration_info}
       </div>
     %endif
-    ${lf(register=True, user=user_reg, dest=dest)}
+    ${register_form(user = thing.user_reg, dest = thing.dest)}
     <p>
       <span class="orangered">
         ${_("is it really that easy? only one way to find out...")}
@@ -164,7 +56,142 @@
     <p class="tagline">
       ${_("already have an account and just want to login?")}
     </p>
-    ${lf(user = user_login, dest = dest)}
+    ${login_form(user = thing.user_login, dest = thing.dest)}
   </div>
   <div class="clear"></div>
+
+  %if not thing.is_popup and not g.disable_captcha:
+  <script type="text/javascript">
+    $.request("new_captcha");
+  </script>
+  %endif
+%endif
+
+<%def name="register_form(user='', dest='')">
+  <%
+    base = g.https_endpoint if not c.cname else ''
+  %>
+  <form id="login_reg" method="post"
+        action="${add_sr(base + '/post/reg', nocname=not c.authorized_cname)}"
+        class="user-form register-form">
+    %if c.cname:
+       <input type="hidden" name="${UrlParser.cname_get}" 
+              value="${random.random()}" />
+    %endif
+    <input type="hidden" name="op" value="reg" />
+    %if dest:
+      <input type="hidden" name="dest" value="${dest}" />
+    %endif
+    <div>
+      <ul>
+        <li class="name-entry">
+          <label for="user_reg">${_('your full name (how you normally write it)')}:</label>
+          <input value="${user}" name="user" id="user_reg"
+                 type="text" maxlength="40" tabindex="3" autofocus />
+            <div class="realname_area">
+              <label for="realnameID">${_('your real name ID')}:</label>
+              <span id="realnameID" class="realname">&nbsp;</span>
+              <span class="throbber"></span>
+            </div>
+            <span class="notice-taken">${_('try another')}</span>
+            <span class="notice-available">${_('available!')}</span>
+            ${error_field("BAD_USERNAME", "user", kind="span")}
+            ${error_field("USERNAME_TAKEN", "user", kind="span")}
+            ${error_field("USERNAME_TAKEN_DEL", "user", kind="span")}
+        </li>
+        <li>
+          <label for="email_reg">
+            ${_('email')}:
+          </label>
+          <input value="" name="email" id="email_reg"
+                 type="email" maxlength="50" tabindex="3"/>
+          <label for="email_reg" class="note">${_('we only send email at your request')}</label>
+            ${error_field("BAD_EMAILS", "email", kind="span")}
+        </li>
+        <li>
+          <label for="passwd_reg">${_('password')}:</label>
+          <input id="passwd_reg" name="passwd" type="password"
+                 tabindex="3"/>
+            ${error_field("BAD_PASSWORD", "passwd", kind="span")}
+        </li>
+        <li>
+          <label for="passwd2_reg">${_('verify password')}:</label>
+          <input name="passwd2" id="passwd2_reg"
+                 type="password" tabindex="3"/>
+          ${error_field("BAD_PASSWORD_MATCH", "passwd2", kind="span")}
+        </li>
+        <li>
+          %if not g.disable_captcha:
+          <% iden = hasattr(thing, "captcha") and thing.captcha.iden or '' %>
+          ${captchagen(iden, tabulate=True, label=False, size=30, tabindex=3)}
+          %endif
+          ${error_field("RATELIMIT", "ratelimit")}
+          ${error_field("RATELIMIT", "vdelay")}
+        </li>
+        <li>
+          <input type="checkbox" name="rem" id="rem_reg" tabindex="3" />
+          <label for="rem_reg" class="remember">
+            ${_('remember me')}
+          </label>
+        </li>
+      </ul>
+      <p class="submit">
+        <button type="submit" class="button" tabindex="3">
+          ${_("create account")}
+        </button>
+        <span class="throbber"></span>
+        <span class="status"></span>
+      </p>
+    </div>
+  </form>
+</%def>
+
+
+<%def name="login_form(user='', dest='')">
+  <%
+    base = g.https_endpoint if not c.cname else ''
+  %>
+  <form id="login_login" method="post"
+        action="${add_sr(base + '/post/login', nocname=not c.authorized_cname)}"
+        class="user-form login-form">
+    %if c.cname:
+       <input type="hidden" name="${UrlParser.cname_get}" value="${random.random()}" />
+    %endif
+    <input type="hidden" name="op" value="login" />
+    %if dest:
+      <input type="hidden" name="dest" value="${dest}" />
+    %endif
+    <div>
+      <ul>
+        <li class="name-entry">
+          <label for="user_login">${_('real name ID or email')}:</label>
+          <input value="${user}" name="user" id="user_login"
+                 type="text" maxlength="40" tabindex="2" autofocus />
+        </li>
+        <li>
+          <label for="passwd_login">${_('password')}:</label>
+          <input id="passwd_login" name="passwd" type="password" tabindex="2"/>
+          ${error_field("WRONG_PASSWORD", "passwd", kind="span")}
+        </li>
+        <li>
+          <input type="checkbox" name="rem" id="rem_login" tabindex="2" />
+          <label for="rem_login" class="remember">
+            ${_('remember me')}
+          </label>
+        </li>
+        <li>
+          <a class="recover-password" href="/password">
+            ${_("recover password")}
+          </a>
+        </li>
+      </ul>
+      <p class="submit">
+        <button type="submit" class="button" tabindex="2">
+          ${_("login")}
+        </button>
+        <span class="throbber"></span>
+        <span class="status"></span>
+      </p>
+    </div>
+  </form>
 </%def>

@@ -1090,6 +1090,34 @@ class VUname(VRequired):
             self.param[0]: "a valid, unused, username",
         }
 
+# Full names can include spaces and dashes and dots for abbreviations.
+fullname_rx = re.compile(r"\A[\w\-\s\.]{3,40}\Z", re.UNICODE)
+
+def check_fullname(x):
+    if x is None:
+        return None
+    try:
+        return str(x) if fullname_rx.match(x) else None
+    except TypeError:
+        return None
+    except UnicodeEncodeError:
+        return None
+
+class VFullname(VRequired):
+    def __init__(self, item, *a, **kw):
+        VRequired.__init__(self, item, errors.BAD_USERNAME, *a, **kw)
+    def run(self, full_name):
+        full_name = check_fullname(full_name)
+        if not full_name:
+            return self.error(errors.BAD_USERNAME)
+        else:
+            return full_name
+
+    def param_docs(self):
+        return {
+            self.param[0]: "a valid, unused, username",
+        }
+
 class VLoggedOut(Validator):
     def run(self):
         if c.user_is_loggedin:
