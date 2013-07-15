@@ -816,6 +816,7 @@ def register(name, password, registration_ip):
         # new accounts keep the profanity filter settings until opting out
         a.pref_no_profanity = True
         a.registration_ip = registration_ip
+        a.registration_fullname = name
         a._commit()
 
         #clear the caches
