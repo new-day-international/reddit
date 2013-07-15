@@ -294,8 +294,8 @@ class Account(Thing):
     @classmethod
     def _fullname_to_realnameID(cls, fullname):
         # Strip out the spaces and periods.
-        fullname = fullname.replace (' ', '_')
-        fullname = fullname.replace ('.', '')
+        fullname = fullname.replace(' ', '_')
+        fullname = fullname.replace('.', '')
         fullname += "_"
         suffixNumber = 007
 
@@ -806,8 +806,8 @@ def change_password(user, newpassword):
 
 #TODO reset the cache
 def register(name, password, registration_ip):
+    realnameID = Account._fullname_to_realnameID(name)
     try:
-        realnameID = Account._fullname_to_realnameID(name)
         a = Account._by_name(realnameID)
         raise AccountExists
     except NotFound:
