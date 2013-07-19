@@ -107,7 +107,7 @@ class Account(Thing):
                      email_verified = False,
                      ignorereports = False,
                      pref_show_promote = None,
-                     gold = False,
+                     gold = True,
                      gold_charter = False,
                      gold_creddits = 0,
                      gold_creddit_escrow = 0,
