@@ -9,7 +9,6 @@ from r2.models import Account, Frontpage, Subreddit
 from r2.controllers.listingcontroller import ActiveController
 from r2.lib.template_helpers import JSPreload
 
-
 # 4.      Daily Summary Email:
 #
 #       a.      For all subscribed SPACES  sorted By SPACE and then by most recently
@@ -20,7 +19,7 @@ from r2.lib.template_helpers import JSPreload
 #       c.      All new SPACES world readable (ie not "restricted") in last 24 hours.
 #
 
-
+# TODO: Make a better html template with css embedded and no js
 # TODO: find only accounts we haven't sent a email in the last 24 hours
 # TODO: record when we sent an email
 
@@ -40,6 +39,7 @@ def send_account_summary_email(account_thing_id):
     c.user = account
     c.content_langs = 'en-US'
     c.js_preload = JSPreload()
+    c.render_style = "email"
     request.get = {}
     request.fullpath = '/'
     request.environ['pylons.routes_dict'] = {'action': 'mailing_list'}
@@ -47,7 +47,10 @@ def send_account_summary_email(account_thing_id):
     controller.render_params['enable_login_cover'] = False
 
     page = controller.build_listing(10, None, False, 5)
-    email(account.email, "Today's news", page)
+
+    with open('out.html', 'w') as ff:
+        ff.write(page)
+    #email(account.email, "Today's news", page)
     # print account
 
 import smtplib
