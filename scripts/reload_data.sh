@@ -37,7 +37,7 @@ fi
 set -x
 
 ###############################################################################
-# Make sure all the services are up
+# Make sure all the services are up (don't need cassandra)
 ###############################################################################
 
 # check each port for connectivity
@@ -45,8 +45,7 @@ echo "Checking for services, see source for port meanings..."
 # 11211 - memcache
 # 5432 - postgres
 # 5672 - rabbitmq
-# 9160 - cassandra
-for port in 11211 5432 5672 9160; do
+for port in 11211 5432 5672; do
 	nc -z localhost $port 1>/dev/null 2>&1; result=$?;
 	if [ $result -ne 0 ]; then
         echo "Service at port $port is not up. Terminating script."
@@ -79,7 +78,7 @@ chown cassandra:cassandra /var/log/cassandra/system.log
 rm -R /var/lib/cassandra/*
 
 # Start cassandra
-service cassandra stop
+service cassandra start
 
 # Create a new keyspace.
 echo "create keyspace reddit;" | cassandra-cli -h localhost -B
@@ -145,6 +144,24 @@ rabbitmqctl set_permissions -p / reddit ".*" ".*" ".*"
 
 echo "flush_all" | nc -q 2 localhost 11211 
 sleep 2
+
+###############################################################################
+# Make sure all the services are up again before loading data
+###############################################################################
+
+# check each port for connectivity
+echo "Checking for services, see source for port meanings..."
+# 11211 - memcache
+# 5432 - postgres
+# 5672 - rabbitmq
+# 9160 - cassandra
+for port in 11211 5432 5672 9160; do
+	nc -z localhost $port 1>/dev/null 2>&1; result=$?;
+	if [ $result -ne 0 ]; then
+        echo "Service at port $port is not up. Terminating script."
+		exit 1
+    fi
+done
 
 ###############################################################################
 # Restart Reddit
