@@ -79,6 +79,7 @@ rm -f -R /var/lib/cassandra/*
 
 # Start cassandra
 service cassandra start
+sleep 10
 
 # Create a new keyspace.
 echo "create keyspace reddit;" | cassandra-cli -h localhost -B
