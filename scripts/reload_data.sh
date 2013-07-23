@@ -55,12 +55,22 @@ for port in 11211 5432 5672 9160; do
 done
 
 ###############################################################################
+# Stop Reddit
+###############################################################################
+
+initctl emit reddit-stop
+
+###############################################################################
 # Refresh Cassandra
 ###############################################################################
 
 # Drop the keyspace if there is one.
 if echo | cassandra-cli -h localhost -k reddit &> /dev/null; then
-    echo "drop keyspace reddit;" | cassandra-cli -h localhost -B
+	
+	cat <<CASS | cassandra-cli -B -h localhost || true
+drop keyspace reddit;
+CASS
+
 fi
 
 # Create a new empty one.
@@ -126,14 +136,15 @@ rabbitmqctl set_permissions -p / reddit ".*" ".*" ".*"
 ###############################################################################
 
 echo "flush_all" | nc -q 2 localhost 11211 
-sleep 10
+sleep 2
 
 ###############################################################################
 # Restart Reddit
 ###############################################################################
 
+initctl emit reddit-stop
 initctl emit reddit-start
-sleep 30
+sleep 5
 
 ###############################################################################
 # Populate the database with the default New Day spaces.
