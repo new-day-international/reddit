@@ -64,6 +64,7 @@ initctl emit reddit-stop
 # Refresh Cassandra
 ###############################################################################
 
+# Stop Cassandra
 service cassandra stop
 
 # Clear the log files
@@ -76,6 +77,9 @@ chown cassandra:cassandra /var/log/cassandra/system.log
 
 # Delete the data directories
 rm -R /var/lib/cassandra/*
+
+# Start cassandra
+service cassandra stop
 
 # Create a new keyspace.
 echo "create keyspace reddit;" | cassandra-cli -h localhost -B
