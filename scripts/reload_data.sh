@@ -64,16 +64,20 @@ initctl emit reddit-stop
 # Refresh Cassandra
 ###############################################################################
 
-# Drop the keyspace if there is one.
-if echo | cassandra-cli -h localhost -k reddit &> /dev/null; then
-	
-	cat <<CASS | cassandra-cli -B -h localhost || true
-drop keyspace reddit;
-CASS
+service cassandra stop
 
-fi
+# Clear the log files
+rm /var/log/cassandra/output.log
+rm /var/log/cassandra/system.log
+touch /var/log/cassandra/output.log
+touch /var/log/cassandra/system.log
+chown cassandra:cassandra /var/log/cassandra/output.log
+chown cassandra:cassandra /var/log/cassandra/system.log
 
-# Create a new empty one.
+# Delete the data directories
+rm -R /var/lib/cassandra/*
+
+# Create a new keyspace.
 echo "create keyspace reddit;" | cassandra-cli -h localhost -B
 
 # Create the permacache.
