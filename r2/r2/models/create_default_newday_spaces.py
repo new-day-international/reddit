@@ -42,7 +42,7 @@ def populate(num_users = 10, num_links = 10, num_comments = 10, num_votes = 10):
 
     srs = []
 
-    default_spaces = ['Help', 'NewUser', 'Connector', 'Announcements']
+    default_spaces = ['Announcements', 'NewSpaces', 'Connector', 'NewUser', 'Help',]
     for name in default_spaces:
         try:
             sr = Subreddit._new(name = name, title = name,
