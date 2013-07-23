@@ -67,15 +67,15 @@ initctl emit reddit-stop
 service cassandra stop
 
 # Clear the log files
-rm /var/log/cassandra/output.log
-rm /var/log/cassandra/system.log
+rm -f /var/log/cassandra/output.log
+rm -f /var/log/cassandra/system.log
 touch /var/log/cassandra/output.log
 touch /var/log/cassandra/system.log
 chown cassandra:cassandra /var/log/cassandra/output.log
 chown cassandra:cassandra /var/log/cassandra/system.log
 
 # Delete the data directories
-rm -R /var/lib/cassandra/*
+rm -f -R /var/lib/cassandra/*
 
 # Start cassandra
 service cassandra start
