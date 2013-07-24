@@ -521,6 +521,7 @@ class Reddit(Templated):
         # Add the nearest neighbors tabs if present...
         if c.site.nearest_neighbors:
             nearest_neighbors = c.site.nearest_neighbors
+            nearest_neighbors = nearest_neighbors.replace(" ","")
             neighbor_names = nearest_neighbors.split(',')
             neighbor_srs = Subreddit._by_name(neighbor_names).values()
             neighbor_buttons = []
