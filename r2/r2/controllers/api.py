@@ -543,6 +543,16 @@ class ApiController(RedditController, OAuth2ResourceController):
 
             amqp.add_item('new_account', user._fullname)
 
+            # subscribe the user to the initial spaces
+            for name in g.initial_space_subscriptions:
+                try:
+                    sr = Subreddit._by_name(name)
+                except NotFound:
+                    sr = None
+
+                if sr and sr.add_subscriber(a):
+                    sr._incr('_ups', 1)
+
             c.user = user
             self._login(responder, user, rem)
 

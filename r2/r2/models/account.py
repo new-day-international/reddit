@@ -819,9 +819,10 @@ def register(name, password, registration_ip):
         a.registration_fullname = name
         a._commit()
 
-        #clear the caches
+        # clear the caches
         Account._by_name(realnameID, _update = True)
         Account._by_name(realnameID, allow_deleted = True, _update = True)
+
         return a
 
 class Friend(Relation(Account, Account)): pass
