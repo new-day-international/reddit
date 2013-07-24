@@ -1739,12 +1739,15 @@ class SubredditTopBar(CachedTemplate):
     def special_reddits(self):
         css_classes = {Random: "random",
                        RandomSubscription: "gold"}
-        reddits = [Frontpage, All, Random]
-        if getattr(c.site, "over_18", False):
-            reddits.append(RandomNSFW)
+        # Remove random until we get huge.
+        # reddits = [Frontpage, All, Random]
+
+        reddits = [Frontpage, All]
+        #if getattr(c.site, "over_18", False):
+        #    reddits.append(RandomNSFW)
         if c.user_is_loggedin:
-            if c.user.gold:
-                reddits.append(RandomSubscription)
+            #if c.user.gold:
+            #    reddits.append(RandomSubscription)
             if c.user.friends:
                 reddits.append(Friends)
             if c.show_mod_mail:

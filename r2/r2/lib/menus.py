@@ -338,7 +338,7 @@ class SubredditButton(NavButton):
     # TRANSLATORS: This refers to /space/mod
     name_overrides = {Mod: N_("mod"),
     # TRANSLATORS: This refers to the user's front page
-                      Frontpage: N_("front"),
+                      Frontpage: N_("myspaces"),
                       All: N_("all"),
                       Random: N_("random"),
     # TRANSLATORS: Gold feature, "myrandom", a random subreddit from your subscriptions
