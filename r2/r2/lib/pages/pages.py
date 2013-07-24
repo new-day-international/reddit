@@ -417,7 +417,7 @@ class Reddit(Templated):
             delta = datetime.datetime.now(g.tz) - c.user._date
             if delta.days >= g.min_membership_create_community:
                 ps.append(SideBox(_('Create your own space'),
-                           '/subreddits/create', 'create',
+                           '/spaces/create', 'create',
                            subtitles = rand_strings.get("create_reddit", 2),
                            show_cover = True, nocname=True))
 

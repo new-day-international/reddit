@@ -74,7 +74,7 @@ def make_map():
     mc('/about/:location', controller='front', action='editreddit',
        location='about')
 
-    mc('/subreddits/create', controller='front', action='newreddit')
+    mc('/spaces/create', controller='front', action='newreddit')
     mc('/subreddits/search', controller='front', action='search_reddits')
     mc('/subreddits/login', controller='forms', action='login')
     mc('/subreddits/:where', controller='reddits', action='listing',
@@ -190,7 +190,7 @@ def make_map():
     mc('/health', controller='health', action='health')
     mc('/health/ads', controller='health', action='promohealth')
 
-    mc('/', controller='hot', action='listing')
+    mc('/', controller='active', action='listing')
 
     mc('/:controller', action='listing',
        requirements=dict(controller="hot|new|active|rising|randomrising|comments"))
