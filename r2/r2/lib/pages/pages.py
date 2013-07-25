@@ -529,19 +529,12 @@ class Reddit(Templated):
                 neighbor_buttons.append(SubredditButton(sr))
             toolbar.append(NavMenu(neighbor_buttons, title='neighbors', type='tabdrop'))
 
-        more_buttons = []
-
+        # Add the promote menu item for admin users or sponsors.
         if c.user_is_loggedin:
             if c.user.pref_show_promote or c.user_is_sponsor:
-                more_buttons.append(NavButton(menu.promote, 'promoted', False))
-
-        #if there's only one button in the dropdown, get rid of the dropdown
-        if len(more_buttons) == 1:
-            main_buttons.append(more_buttons[0])
-            more_buttons = []
-
-        if more_buttons:
-            toolbar.append(NavMenu(more_buttons, title=menu.more, type='tabdrop'))
+                promote_buttons = []
+                promote_buttons.append(NavButton(menu.promote, 'promoted', False))
+                toolbar.append(NavMenu(promote_buttons, type='tabmenu'))
 
         if not isinstance(c.site, DefaultSR) and not c.cname:
             toolbar.insert(0, PageNameNav('subreddit'))
