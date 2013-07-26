@@ -537,7 +537,7 @@ class Reddit(Templated):
                 toolbar.append(NavMenu(promote_buttons, type='tabmenu'))
 
         if isinstance(c.site, DefaultSR):
-            toolbar.insert(0, PageNameNav('nomenu', title=_("myspaces")))
+            toolbar.insert(0, PageNameNav('nomenu', title=_("all my lightnet spaces")))
         else:
             if not c.cname:
                 toolbar.insert(0, PageNameNav('subreddit'))
@@ -601,7 +601,7 @@ class RedditFooter(CachedTemplate):
         self.nav = [
 
             NavMenu([
-                    OffsiteButton(_("about lightnet"), dest = "/wiki/", nocname=True),
+                    OffsiteButton(_("about lightnet"), dest = "/wiki/about", nocname=True),
                     OffsiteButton(_("faq"), dest = "/wiki/faq", nocname=True),
                     OffsiteButton(_("rules"), dest = "/wiki/rules", nocname=True),
                     OffsiteButton(_("code"), dest = "/wiki/code", nocname=True),
