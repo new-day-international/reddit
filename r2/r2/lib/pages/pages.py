@@ -536,8 +536,11 @@ class Reddit(Templated):
                 promote_buttons.append(NavButton(menu.promote, 'promoted', False))
                 toolbar.append(NavMenu(promote_buttons, type='tabmenu'))
 
-        if not isinstance(c.site, DefaultSR) and not c.cname:
-            toolbar.insert(0, PageNameNav('subreddit'))
+        if isinstance(c.site, DefaultSR):
+            toolbar.insert(0, PageNameNav('nomenu', title=_("myspaces")))
+        else:
+            if not c.cname:
+                toolbar.insert(0, PageNameNav('subreddit'))
 
         return toolbar
 
