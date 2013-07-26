@@ -537,7 +537,7 @@ class Reddit(Templated):
                 toolbar.append(NavMenu(promote_buttons, type='tabmenu'))
 
         if isinstance(c.site, DefaultSR):
-            toolbar.insert(0, PageNameNav('nomenu', title=_("all my lightnet spaces")))
+            toolbar.insert(0, PageNameNav('nomenu', title=_("my subscribed spaces")))
         else:
             if not c.cname:
                 toolbar.insert(0, PageNameNav('subreddit'))
