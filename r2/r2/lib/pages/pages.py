@@ -434,7 +434,7 @@ class Reddit(Templated):
                     label = _('message the admins')
                 else:
                     label = _('message the moderators')
-                helplink = ("/message/compose?to=%%2Fr%%2F%s" % c.site.name,
+                helplink = ("/message/compose?to=%%2Fspace%%2F%s" % c.site.name,
                             label)
                 ps.append(SideContentBox(_('moderators'), moderators,
                                          helplink = helplink, 

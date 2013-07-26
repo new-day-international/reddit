@@ -1273,7 +1273,7 @@ class VMessageRecipient(VExistingUname):
             return self.error()
         is_subreddit = False
         if name.startswith('/space/'):
-            name = name[3:]
+            name = name[7:]
             is_subreddit = True
         elif name.startswith('#'):
             name = name[1:]
