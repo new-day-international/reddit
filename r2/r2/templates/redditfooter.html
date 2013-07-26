@@ -28,19 +28,17 @@
 <%namespace file="utils.html" import="text_with_links"/>
 
 <div class="footer-parent">
-  <div by-zero class="footer rounded">
-      %for toolbar in thing.nav:
+  %for toolbar in thing.nav:
       <div class="col">
         ${toolbar}
       </div>
-      %endfor
-  </div>
+  %endfor
   %if not g.domain.endswith("reddit.com"):
     <!-- http://code.reddit.com/LICENSE see Exhibit B -->
     <a href="http://www.reddit.com/code/" style="text-align:center;display:block">
       <img src="${s3_https_if_secure("http://sp.reddit.com/powered_by_reddit.png")}"
            alt="Powered by reddit."
-           style="width:140px; height:47px; margin-bottom: 5px"/>
+           style="width:105px; height:36px; margin-top: 18px; margin-bottom: 5px"/>
     </a>
   %endif
   <p class="bottommenu">
@@ -52,7 +50,8 @@
       privacy_policy = dict(link_text=_("Privacy Policy (updated)"),
                             path="/help/privacypolicy",
                             _class="updated"))}.
-    &copy; ${_("%(year)d lightnet. All rights reserved. At least until we can figure out which Creative Commons or licensing scheme to use. ;-)") % \
+  </p>
+  <p class="bottommenu">&copy; ${_("%(year)d lightnet. All rights reserved. (At least until we can figure out which Creative Commons or licensing scheme to use. ;-)") % \
     dict(year=datetime.datetime.now().timetuple()[0])}
   </p>
   <p class="bottommenu">REDDIT and the ALIEN Logo are registered trademarks of reddit inc.</p>
