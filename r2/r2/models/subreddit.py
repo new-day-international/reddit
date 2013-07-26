@@ -549,7 +549,7 @@ class Subreddit(Thing, Printable):
                                     (item.moderator or
                                      rels.get((item, user, 'contributor'))))
 
-            # Don't reveal revenue information via /r/lounge's subscribers
+            # Don't reveal revenue information via /space/lounge's subscribers
             if (g.lounge_reddit and item.name == g.lounge_reddit
                 and not c.user_is_admin):
                 item._ups = 0

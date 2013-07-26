@@ -546,7 +546,7 @@ def search_url(query, subreddit, restrict_sr="off", sort=None, recent=None):
         url_query["sort"] = sort
     if recent:
         url_query["t"] = recent
-    path = "/r/%s/search?" % subreddit if subreddit else "/search?"
+    path = "/space/%s/search?" % subreddit if subreddit else "/search?"
     path += urllib.urlencode(url_query)
     return path
 
