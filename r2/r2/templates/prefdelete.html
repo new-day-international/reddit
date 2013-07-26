@@ -26,7 +26,7 @@
 <%namespace file="utils.html" import="error_field"/>
 <%namespace name="utils" file="utils.html"/>
 
-<h1>${_("delete your reddit account")}</h1>
+<h1>${_("delete your lightnet account")}</h1>
 
 <form action="/post/delete" method="post"
   onsubmit="${"return post_form(this, 'delete_user', function(x) {return '%s'})" % _("deleting...")}" id="pref-delete">
@@ -35,8 +35,8 @@
   <%utils:round_field title="${_('sorry to see you go!')}">
     <div class="rounded white-field">
       ${unsafe(safemarkdown(_(
-        " * if you're having a problem on reddit, please consider [contacting us](/feedback) about it before deleting your account.\n"
-        " * deleting your account will not delete the content of posts and comments you've made on reddit. to do so, please delete them individually."
+        " * if you're having a problem on lightnet, please consider [contacting us](/feedback) about it before deleting your account.\n"
+        " * deleting your account will not delete the content of posts and comments you've made on lightnet. to do so, please delete them individually."
       )))}
     </div>
   </%utils:round_field>

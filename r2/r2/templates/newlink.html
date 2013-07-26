@@ -98,7 +98,7 @@ ${thing.formtabs_menu}
 %endif
 
 <div class="spacer">
-  <%utils:round_field title="${_('choose a subreddit')}" id="reddit-field">
+  <%utils:round_field title="${_('choose a space')}" id="reddit-field">
     ${reddit_selector(thing.default_sr.name if thing.default_sr else None, thing.sr_searches, thing.subreddits, required=True)}
   </%utils:round_field>
 </div>
@@ -120,7 +120,7 @@ ${thing.captcha}
 </div>
 
 <div class="roundfield info-notice" title="${_('why a brick? read to the bottom of the rules page to find out!')}">
-  ${text_with_links(_("please be mindful of reddit's %(few_rules)s and practice %(good_reddiquette)s."),
+  ${text_with_links(_("please be mindful of lightnet's %(few_rules)s and practice %(good_reddiquette)s."),
       few_rules=dict(
         link_text=_("few rules"),
         path="/rules",

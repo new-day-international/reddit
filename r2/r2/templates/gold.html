@@ -81,7 +81,7 @@
 
 <div class="gold-form">
   <h1 class="goldgift">
-    ${_("reddit gold")} (<a href="/gold/about">help</a>)
+    ${_("lightnet gold")} (<a href="/gold/about">help</a>)
   </h1>
 
   <form class="content">
@@ -90,9 +90,9 @@
       "", thing.goldtype == "autorenew")}<br/>
     ${radio_type("goldtype", "onetime", _("Buy for yourself, as a one-time purchase"),
       "", thing.goldtype == "onetime")}<br/>
-    ${radio_type("goldtype", "gift", _("Give reddit gold to someone else"),
+    ${radio_type("goldtype", "gift", _("Give lightnet gold to someone else"),
       "", thing.goldtype == "gift")}<br/>
-    ${radio_type("goldtype", "creddits", _('Buy reddit gold "creddits"'),
+    ${radio_type("goldtype", "creddits", _('Buy lightnet gold "creddits"'),
       unsafe("<a href='/wiki/creddits'>details</a>"),
       thing.goldtype == "creddits")}<br/>
     </%utils:round_field>
@@ -171,7 +171,7 @@
   </%self:goldsec>
 
   <%self:goldsec goldtype="creddits">
-    <%utils:round_field title="${_('How many creddits would you like to buy? (each will allow you to give one month of reddit gold)')}">
+    <%utils:round_field title="${_('How many creddits would you like to buy? (each will allow you to give one month of lightnet gold)')}">
       ${gold_dropdown("creddits")}
       <button type="submit" class="btn gold-button">${_("buy")}</button>
       <span class="status"></span>

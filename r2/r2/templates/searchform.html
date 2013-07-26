@@ -31,7 +31,7 @@
 
   <dl>
       <dt>subreddit:<i>subreddit</i></dt>
-      <dd>${_('find submissions in "subreddit"')}</dd>
+      <dd>${_('find submissions in "space"')}</dd>
       <dt>author:<i>username</i></dt>
       <dd>${_('find submissions by "username"')}</dd>
       <dt>site:<i>example.com</i></dt>
@@ -50,7 +50,7 @@
   <p><a href="http://www.reddit.com/wiki/search">${_('see the search faq for details.')}</a></p>
   </div>
 
-  <p><a href="http://www.reddit.com/wiki/search" id="search_showmore">${_('advanced search: by author, subreddit...')}</a></p>
+  <p><a href="http://www.reddit.com/wiki/search" id="search_showmore">${_('advanced search: by author, space...')}</a></p>
 </%def>
 
 <form action="${add_sr('/search')}" id="search" role="search">
@@ -58,7 +58,7 @@
          %if thing.prev_search:
            value="${thing.prev_search}" style="color:black"
          %endif
-         name="q" placeholder="${_('search reddit')}" />
+         name="q" placeholder="${_('search lightnet')}" />
   %if thing.subreddit_search:
     
   %elif thing.simple:
@@ -78,7 +78,7 @@
       ${_('limit my search to %(path)s') % dict(path=thing.site.path.rstrip('/'))}</label>
     %endif
     ${search_faq()}
-    <input type="submit" value="${_('search reddit')}" />
+    <input type="submit" value="${_('search lightnet')}" />
   %endif
 
   %for k, v in thing.search_params.iteritems():

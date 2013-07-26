@@ -38,12 +38,12 @@
 %if thing.status == "creddits":
   ${_("enter your confirmation code below to claim your gift creddits")}
 %elif thing.status == "mundane":
-  ${_("enter your confirmation code below to activate reddit gold")}
+  ${_("enter your confirmation code below to activate lightnet gold")}
 %else:
   %if thing.status == "recent":
-    ${_("You claimed a reddit gold subscription in the last few minutes.")}
+    ${_("You claimed a lightnet gold subscription in the last few minutes.")}
   %else:
-    ${_("You're already a reddit gold subscriber.")}
+    ${_("You're already a lightnet gold subscriber.")}
   %endif
   &#32;
   ${_("But if you just gave us even more money, enter the new confirmation code below and we'll add the extra credit to your account.")}

@@ -42,7 +42,7 @@
     &nbsp;
   </div>
   <h1>
-    ${unsafe(_("%(app)s requests to connect with your reddit account.")
+    ${unsafe(_("%(app)s requests to connect with your lightnet account.")
              % dict(app=app_link(thing.client)))}
   </h1>
   <div class="access">
@@ -50,7 +50,7 @@
     ${scope_details(thing.scope, expiration=thing.expiration)}
     <p class="notice">
       ${unsafe(
-            _("%(app)s will not be able to access your reddit password.")
+            _("%(app)s will not be able to access your lightnet password.")
             % dict(app=app_name))}
     </p>
     <form method="post" action="/api/v1/authorize" class="pretty-form">

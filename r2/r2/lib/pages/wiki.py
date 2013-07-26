@@ -144,13 +144,13 @@ class WikiPageView(WikiBasePage):
 class WikiNotFound(WikiBasePage):
     def __init__(self, page, **context):
         content = WikiPageNotFound(page)
-        context['alert'] = _("page %s does not exist in this subreddit") % page
+        context['alert'] = _("page '%s' does not exist in this space") % page
         context['actionless'] = True
         WikiBasePage.__init__(self, content, page=page, **context)
 
 class WikiCreate(WikiBasePage):
     def __init__(self, page, **context):
-        context['alert'] = _("page %s does not exist in this subreddit") % page
+        context['alert'] = _("page '%s' does not exist in this space") % page
         context['actionless'] = True
         content = WikiEditPage(page=page)
         WikiBasePage.__init__(self, content, page, **context)

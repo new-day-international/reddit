@@ -52,7 +52,7 @@ function admincheck(elem) {
 
 <div class="spacer">
   <%utils:round_field title="${_('to')}", 
-                      description="${_('(username, or /space/name for that subreddit\'s mods)')}">
+                      description="${_('(username, or /space/name for that space\'s mods)')}">
     <input type="text" name="to" value="${thing.to or ''}"
            onchange="admincheck(this)"/>
     ${error_field("NO_USER", "to")}
@@ -107,7 +107,7 @@ function admincheck(elem) {
          please write to
          &#32;
          <a href="http://www.reddit.com/wiki/faq#wiki_how_can_i_tell_who_moderates_a_given_reddit.3F">
-          the moderators of the subreddit
+          the moderators of the space
          </a>
          &#32;
          instead.
@@ -116,12 +116,12 @@ function admincheck(elem) {
        <li>If
          &#32;
          <span class="admin-to">${thing.to}</span>
-         &#32;<i>is</i>&#32; is a moderator of a specific subreddit you're
+         &#32;<i>is</i>&#32; is a moderator of a specific space you're
          inquiring about, and that's actually the reason you're writing, please
          message 
          &#32;
          <a href="http://www.reddit.com/wiki/faq#wiki_how_can_i_tell_who_moderates_a_given_reddit.3F">
-          all of the moderators of the subreddit
+          all of the moderators of the space
          </a>
          &#32; (using the "message the mods" feature located at the top of the
          mod box) with a direct link to the comment page of the submission or other

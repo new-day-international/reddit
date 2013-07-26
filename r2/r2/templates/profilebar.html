@@ -74,7 +74,7 @@
       >
      <thead>
         <tr>
-          <th id="sr-karma-header">subreddit</th>
+          <th id="sr-karma-header">space</th>
           <th>link</th>
           <th>comment</th>
         </tr>
@@ -104,7 +104,7 @@
     <div class="karma-breakdown">
       <a href="javascript:void(0)"
          onclick="$('.more-karmas').show();$(this).hide();return false">
-         show karma breakdown by subreddit
+         show karma breakdown by space
       </a>
     </div>
     % endif
@@ -122,7 +122,7 @@
             ${thing.gold_remaining}
           </span>
           &#32;
-          ${_("of reddit gold remaining")}
+          ${_("of lightnet gold remaining")}
         </div>
         %if getattr(thing, "gold_subscr_id", None):
           <%  

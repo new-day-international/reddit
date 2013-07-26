@@ -66,7 +66,7 @@
   </%utils:line_field>
 
   <%utils:line_field title="${_('description')}" css_class="usertext"
-                     description="${_('publicly describe your subreddit for all to see. 500 characters max.')}">
+                     description="${_('publicly describe your space for all to see. 500 characters max.')}">
     %if thing.site and thing.site.public_description:
      ${UserText(None, text=thing.site.public_description or "", editable=True, creating=True, name="public_description", have_form=False)}
     %else:
@@ -80,7 +80,7 @@
   </%utils:line_field>
 
   <%utils:line_field title="${_('sidebar')}" css_class="usertext"
-                     description="${_('shown in the sidebar of your subreddit. 5120 characters max.')}">
+                     description="${_('shown in the sidebar of your space. 5120 characters max.')}">
     %if thing.site and thing.site.description:
      ${UserText(None, text=thing.site.description or "", editable=True, creating=True, name="description", have_form=False)}
     %else:
@@ -182,7 +182,7 @@
                            _("Only mods, approved wiki contributors, or those on a page's edit list may edit"),
                            (thing.site and thing.site.wikimode == 'modonly'))}
         ${utils.radio_type('wikimode', "anyone", _("anyone"),
-                           _("Anyone who can submit to the subreddit may edit"),
+                           _("Anyone who can submit to the space may edit"),
                            (thing.site and thing.site.wikimode == 'anyone'))}
       </table>
       ${error_field("INVALID_OPTION", "wikimode")}
@@ -245,7 +245,7 @@
                  %endif
           >
           <label for="allow_top">
-            ${_("allow this subreddit to be shown in the default set")}
+            ${_("allow this space to be shown in the default set")}
           </label>
         </li>
         <li>
