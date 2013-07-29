@@ -389,7 +389,7 @@ class Reddit(Templated):
                     box = SubscriptionBox(srs, multi_text=strings.mod_multi)
                 else:
                     box = SubscriptionBox(srs)
-                ps.append(SideContentBox(_('these subreddits'), [box]))
+                ps.append(SideContentBox(_('these spaces'), [box]))
 
         if isinstance(c.site, AllSR):
             ps.append(AllInfoBar(c.site, c.user))
@@ -1376,7 +1376,7 @@ class SubredditsPage(Reddit):
         self.searchbar = SearchBar(prev_search = prev_search,
                                    elapsed_time = elapsed_time,
                                    num_results = num_results,
-                                   header = _('search subreddits by name'),
+                                   header = _('search spaces by name'),
                                    search_params = {},
                                    simple=True,
                                    subreddit_search=True
@@ -1394,12 +1394,12 @@ class SubredditsPage(Reddit):
         if c.user_is_loggedin:
             #add the aliases to "my reddits" stays highlighted
             buttons.append(NamedButton("mine",
-                                       aliases=['/subreddits/mine/subscriber',
-                                                '/subreddits/mine/contributor',
-                                                '/subreddits/mine/moderator']))
+                                       aliases=['/spaces/mine/subscriber',
+                                                '/spaces/mine/contributor',
+                                                '/spaces/mine/moderator']))
 
-        return [PageNameNav('subreddits'),
-                NavMenu(buttons, base_path = '/subreddits', type="tabmenu")]
+        return [PageNameNav('spaces'),
+                NavMenu(buttons, base_path = '/spaces', type="tabmenu")]
 
     def content(self):
         return self.content_stack((self.interestbar, self.searchbar,
@@ -1422,7 +1422,6 @@ class MySubredditsPage(SubredditsPage):
     
     def content(self):
         return self.content_stack((self.nav_menu, self.infobar, self._content))
-
 
 def votes_visible(user):
     """Determines whether to show/hide a user's votes.  They are visible:
@@ -1675,9 +1674,9 @@ class SubredditTopBar(CachedTemplate):
         drop_down_buttons.append(NavButton(menu.edit_subscriptions,
                                            sr_path = False,
                                            css_class = 'bottom-option',
-                                           dest = '/subreddits/'))
+                                           dest = '/spaces/'))
         return SubredditMenu(drop_down_buttons,
-                             title = _('my subreddits'),
+                             title = _('my spaces'),
                              type = 'srdrop')
 
     def subscribed_reddits(self):
@@ -1766,7 +1765,7 @@ class SubscriptionBox(Templated):
                             Subreddit.gold_limit - Subreddit.sr_limit)
                 visible = min(len(srs), Subreddit.gold_limit)
                 bonus = {"bonus": extra}
-                self.goldmsg = _("%(bonus)s bonus subreddits") % bonus
+                self.goldmsg = _("%(bonus)s bonus spaces") % bonus
                 self.prelink = ["/wiki/faq#wiki_how_many_reddits_can_i_subscribe_to.3F",
                                 _("%s visible") % visible]
 
@@ -2073,7 +2072,7 @@ class SearchForm(Templated):
 
 
 class SearchBar(Templated):
-    """More detailed search box for /search and /subreddits pages.
+    """More detailed search box for /search and /spaces pages.
     Displays the previous search as well as info of the elapsed_time
     and num_results if any."""
     def __init__(self, header=None, num_results=0, prev_search='',
@@ -2177,7 +2176,7 @@ class FrameToolbar(Wrapped):
 class NewLink(Templated):
     """Render the link submission form"""
     def __init__(self, captcha = None, url = '', title= '', text = '', selftext = '',
-                 subreddits = (), then = 'comments', resubmit=False, never_show_self=False):
+                 spaces = (), then = 'comments', resubmit=False, never_show_self=False):
 
         self.show_link = self.show_self = False
 
@@ -2220,7 +2219,7 @@ class NewLink(Templated):
             self.default_sr = c.site
 
         Templated.__init__(self, captcha = captcha, url = url,
-                         title = title, text = text, subreddits = subreddits,
+                         title = title, text = text, spaces = spaces,
                          then = then)
 
 class ShareLink(CachedTemplate):
@@ -3204,9 +3203,9 @@ class PromoteLinkForm(Templated):
         self.link = None
         if link:
             self.sr_searches = simplejson.dumps(popular_searches())
-            self.subreddits = (Subreddit.submit_sr_names(c.user) or
+            self.spaces = (Subreddit.submit_sr_names(c.user) or
                                Subreddit.submit_sr_names(None))
-            self.default_sr = (self.subreddits[0] if self.subreddits
+            self.default_sr = (self.spaces[0] if self.spaces
                                else g.default_sr)
             self.link = promote.wrap_promoted(link)
             campaigns = PromoCampaign._by_link(link._id)
@@ -3305,9 +3304,9 @@ class Roadblocks(Templated):
         self.startdate = startdate.strftime("%m/%d/%Y")
         self.enddate   = enddate  .strftime("%m/%d/%Y")
         self.sr_searches = simplejson.dumps(popular_searches())
-        self.subreddits = (Subreddit.submit_sr_names(c.user) or
+        self.spaces = (Subreddit.submit_sr_names(c.user) or
                            Subreddit.submit_sr_names(None))
-        self.default_sr = self.subreddits[0] if self.subreddits \
+        self.default_sr = self.spaces[0] if self.spaces \
                           else g.default_sr
 
 class TabbedPane(Templated):

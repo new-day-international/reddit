@@ -63,8 +63,8 @@ section_info = {
     'search': {
         'title': _('search'),
     },
-    'subreddits': {
-        'title': _('subreddits'),
+    'spaces': {
+        'title': _('spaces'),
     },
     'users': {
         'title': _('users'),

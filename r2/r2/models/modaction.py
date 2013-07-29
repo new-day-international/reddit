@@ -291,7 +291,7 @@ class ModAction(tdb_cassandra.UuidThing, Printable):
 
         sr_ids = set([t.sr_id for t in targets.itervalues() if hasattr(t, 'sr_id')] +
                      [w.sr_id for w in wrapped])
-        subreddits = Subreddit._byID(sr_ids, data=True)
+        spaces = Subreddit._byID(sr_ids, data=True)
 
         # Assemble target links
         target_links = {}
@@ -309,7 +309,7 @@ class ModAction(tdb_cassandra.UuidThing, Printable):
                         'title': short_title, 
                         'by': _('by'),
                         'author': author.name}
-                path = target.make_permalink(subreddits[target.sr_id])
+                path = target.make_permalink(spaces[target.sr_id])
                 target_links[fullname] = (text, path, title)
             elif isinstance(target, Comment):
                 author = authors[target.author_id]
@@ -325,7 +325,7 @@ class ModAction(tdb_cassandra.UuidThing, Printable):
                         'author': author.name,
                         'on': _('on'),
                         'title': short_title}
-                path = target.make_permalink(link, subreddits[link.sr_id])
+                path = target.make_permalink(link, spaces[link.sr_id])
                 target_links[fullname] = (text, path, title)
             elif isinstance(target, Account):
                 target_accounts[fullname] = WrappedUser(target)
@@ -350,8 +350,8 @@ class ModAction(tdb_cassandra.UuidThing, Printable):
                     item.target_text, item.target_path, item.target_title = target_links[item.target_fullname]
 
             item.bgcolor = ModAction.get_rgb(item.sr_id)
-            item.sr_name = subreddits[item.sr_id].name
-            item.sr_path = subreddits[item.sr_id].path
+            item.sr_name = spaces[item.sr_id].name
+            item.sr_path = spaces[item.sr_id].path
 
         Printable.add_props(user, wrapped)
 

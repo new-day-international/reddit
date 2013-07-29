@@ -28,8 +28,8 @@
 <div class="raisedbox traffic-form">
 <p>${_("Enter one space per line. Traffic numbers shown are for the last full month.")}</p>
 
-<form method="GET" action="/traffic/subreddits/report">
-  ${unsafe(SC_OFF)}<textarea name="subreddits" cols="30" rows="20">${thing.textarea}</textarea>${unsafe(SC_ON)}
+<form method="GET" action="/traffic/spaces/report">
+  ${unsafe(SC_OFF)}<textarea name="spaces" cols="30" rows="20">${thing.textarea}</textarea>${unsafe(SC_ON)}
   <input type="submit" value="${_('make report')}">
 </form>
 </div>

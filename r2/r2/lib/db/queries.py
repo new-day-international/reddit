@@ -1024,7 +1024,7 @@ def changed(things, boost_only=False):
 
 def _by_srid(things, srs=True):
     """Takes a list of things and returns them in a dict separated by
-       sr_id, in addition to the looked-up subreddits"""
+       sr_id, in addition to the looked-up spaces"""
     ret = {}
 
     for thing in tup(things):
@@ -1529,7 +1529,7 @@ def process_votes(qname, limit=0):
         timer.intermediate("preamble")
 
         # I don't know how, but somebody is sneaking in votes
-        # for subreddits
+        # for spaces
         if isinstance(votee, (Link, Comment)):
             print (voter, votee, dir, ip, organic, cheater)
             handle_vote(voter, votee, dir, ip, organic,

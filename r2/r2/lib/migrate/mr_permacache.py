@@ -179,7 +179,7 @@ def insert_to_query(q, items):
 def store_keys(key, maxes):
     # we're building queries from queries.py, but we could avoid this
     # by making the queries ourselves if we wanted to avoid the
-    # individual lookups for accounts and subreddits
+    # individual lookups for accounts and spaces
     userrel_fns = dict(liked = queries.get_liked,
                        disliked = queries.get_disliked,
                        saved = queries.get_saved,

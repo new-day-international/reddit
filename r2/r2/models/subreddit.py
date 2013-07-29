@@ -151,7 +151,7 @@ class Subreddit(Thing, Printable):
         Searches for a single subreddit. Returns a single Subreddit object or 
         raises NotFound if the subreddit doesn't exist.
         2. Subreddit._by_name(['aww','iama']) # list of sr names
-        Searches for a list of subreddits. Returns a dict mapping srnames to 
+        Searches for a list of spaces. Returns a dict mapping srnames to
         Subreddit objects. Items that were not found are ommitted from the dict.
         If no items are found, an empty dict is returned.
         '''
@@ -474,21 +474,21 @@ class Subreddit(Thing, Printable):
 
     @classmethod
     def load_subreddits(cls, links, return_dict = True, stale=False):
-        """returns the subreddits for a list of links. it also preloads the
+        """returns the spaces for a list of links. it also preloads the
         permissions for the current user."""
         srids = set(l.sr_id for l in links
                     if getattr(l, "sr_id", None) is not None)
-        subreddits = {}
+        spaces = {}
         if srids:
-            subreddits = cls._byID(srids, data=True, stale=stale)
+            spaces = cls._byID(srids, data=True, stale=stale)
 
-        if subreddits and c.user_is_loggedin:
+        if spaces and c.user_is_loggedin:
             # dict( {Subreddit,Account,name} -> Relationship )
-            SRMember._fast_query(subreddits.values(), (c.user,),
+            SRMember._fast_query(spaces.values(), (c.user,),
                                  ('subscriber','contributor','moderator'),
                                  data=True, eager_load=True, thing_data=True)
 
-        return subreddits if return_dict else subreddits.values()
+        return spaces if return_dict else spaces.values()
 
     def keep_for_rising(self, sr_id):
         """Return whether or not to keep a thing in rising for this SR."""
@@ -601,7 +601,7 @@ class Subreddit(Thing, Printable):
     def default_subreddits(cls, ids = True, over18 = False, limit = g.num_default_reddits,
                            stale=True):
         """
-        Generates a list of the subreddits any user with the current
+        Generates a list of the spaces any user with the current
         set of language preferences and no subscriptions would see.
 
         An optional kw argument 'limit' is defaulted to g.num_default_reddits
@@ -639,7 +639,7 @@ class Subreddit(Thing, Printable):
     def random_reddits(cls, user_name, sr_ids, limit):
         """Select a random subset from sr_ids.
 
-        Used for limiting the number of subscribed subreddits shown on a user's
+        Used for limiting the number of subscribed spaces shown on a user's
         front page. Subreddits that are automatically subscribed aren't counted
         against the limit. Selection is cached for a while so the front page
         doesn't jump around.
@@ -689,7 +689,7 @@ class Subreddit(Thing, Printable):
     def user_subreddits(cls, user, ids=True, over18=False, limit=DEFAULT_LIMIT,
                         stale=False):
         """
-        subreddits that appear in a user's listings. If the user has
+        spaces that appear in a user's listings. If the user has
         subscribed, returns the stored set of subscriptions.
         
         limit - if it's Subreddit.DEFAULT_LIMIT, limits to 50 subs
@@ -703,7 +703,7 @@ class Subreddit(Thing, Printable):
         # if no explicit limit was passed
         if limit is Subreddit.DEFAULT_LIMIT:
             if user and user.gold:
-                # Goldies get extra subreddits
+                # Goldies get extra spaces
                 limit = Subreddit.gold_limit
             else:
                 limit = Subreddit.sr_limit
@@ -1003,7 +1003,7 @@ class FriendsSR(FakeSubreddit):
 
 class AllSR(FakeSubreddit):
     name = 'all'
-    title = 'all subreddits'
+    title = 'all spaces'
 
     def keep_for_rising(self, sr_id):
         return True
@@ -1045,7 +1045,7 @@ class AllMinus(AllSR):
 
     @property
     def title(self):
-        return 'all subreddits except ' + ', '.join(sr.name for sr in self.srs)
+        return 'all spaces except ' + ', '.join(sr.name for sr in self.srs)
 
     @property
     def path(self):
@@ -1061,7 +1061,7 @@ class AllMinus(AllSR):
 
 class _DefaultSR(FakeSubreddit):
     #notice the space before reddit.com
-    name = ' reddit.com'
+    name = ' lightnet'
     path = '/'
     header = g.default_header_url
 
@@ -1253,8 +1253,8 @@ class ModContribSR(MultiReddit):
         return [sr._id for sr in self.srs if sr._spam]
 
 class ModSR(ModContribSR):
-    name  = "subreddits you moderate"
-    title = "subreddits you moderate"
+    name  = "spaces you moderate"
+    title = "spaces you moderate"
     query_param = "moderator"
     real_path = "mod"
 
@@ -1283,7 +1283,7 @@ class SubSR(FakeSubreddit):
 
     @property
     def path(self):
-        return "/subreddits/"
+        return "/spaces/"
 
 class DomainSR(FakeSubreddit):
     @property

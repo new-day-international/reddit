@@ -224,7 +224,7 @@ class LiveAdWeights(object):
         """Given a dictionary with all ads that should currently be running
         (where the dictionary keys are the subreddit IDs, and the paired
         value is the list of ads for that subreddit), update the ad system
-        to use those ads on those subreddits.
+        to use those ads on those spaces.
 
         Note: Old ads are not cleared out. It is expected that the caller
         include empty-list entries in `all_weights` for any Subreddits

@@ -905,7 +905,7 @@ class Comment(Thing, Printable):
             if not hasattr(cm, 'sr_id'):
                 cm.sr_id = links[cm.link_id].sr_id
 
-        subreddits = Subreddit._byID(set(cm.sr_id for cm in wrapped),
+        spaces = Subreddit._byID(set(cm.sr_id for cm in wrapped),
                                      data=True, return_dict=False, stale=True)
         cids = dict((w._id, w) for w in wrapped)
         parent_ids = set(cm.parent_id for cm in wrapped
@@ -915,7 +915,7 @@ class Comment(Thing, Printable):
         if parent_ids:
             parents = Comment._byID(parent_ids, data=True, stale=True)
 
-        can_reply_srs = set(s._id for s in subreddits if s.can_comment(user)) \
+        can_reply_srs = set(s._id for s in spaces if s.can_comment(user)) \
                         if c.user_is_loggedin else set()
         can_reply_srs.add(get_promote_srid())
 
@@ -1294,7 +1294,7 @@ class Message(Thing, Printable):
             elif self.sr_id:
                 sr = Subreddit._byID(self.sr_id)
                 is_moderator = sr.is_moderator_with_perms(c.user, 'mail')
-                # moderators can view messages on subreddits they moderate
+                # moderators can view messages on spaces they moderate
                 if is_moderator:
                     return True
                 elif self.first_message:
@@ -1322,11 +1322,11 @@ class Message(Thing, Printable):
         sr_ids = set(w.sr_id for w in wrapped if w.sr_id is not None)
         m_subreddits = Subreddit._byID(sr_ids, data=True, return_dict=True)
 
-        # load the links and their subreddits (if comment-as-message)
+        # load the links and their spaces (if comment-as-message)
         links = Link._byID(set(l.link_id for l in wrapped if l.was_comment),
                            data=True,
                            return_dict=True)
-        # subreddits of the links (for comment-as-message)
+        # spaces of the links (for comment-as-message)
         l_subreddits = Subreddit._byID(set(l.sr_id for l in links.values()),
                                        data=True, return_dict=True)
 

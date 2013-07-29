@@ -78,7 +78,7 @@ def organic_links(user):
     # make sure that these are sorted so the cache keys are constant
     sr_ids.sort()
 
-    # get the default subreddits if the user is not logged in
+    # get the default spaces if the user is not logged in
     user_id = None if isinstance(user, FakeAccount) else user
     sr_ids = Subreddit.user_subreddits(user, True)
 

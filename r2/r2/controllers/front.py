@@ -697,7 +697,7 @@ class FrontController(RedditController, OAuth2ResourceController):
             return self._edit_normal_reddit(location, created)
 
     @require_oauth2_scope("read")
-    @api_doc(api_section.subreddits, uri='/space/{subreddit}/about', extensions=['json'])
+    @api_doc(api_section.spaces, uri='/space/{subreddit}/about', extensions=['json'])
     def GET_about(self):
         """Return information about the subreddit.
 
@@ -776,7 +776,7 @@ class FrontController(RedditController, OAuth2ResourceController):
 
     @base_listing
     @validate(query=nop('q'))
-    @api_doc(api_section.subreddits, uri='/subreddits/search', extensions=['json', 'xml'])
+    @api_doc(api_section.spaces, uri='/spaces/search', extensions=['json', 'xml'])
     def GET_search_reddits(self, query, reverse, after, count, num):
         """Search reddits by title and description."""
         q = SubredditSearchQuery(query)
@@ -940,7 +940,7 @@ class FrontController(RedditController, OAuth2ResourceController):
                                         title=title or '',
                                         text=text or '',
                                         selftext=selftext or '',
-                                        subreddits=sr_names,
+                                        spaces=sr_names,
                                         captcha=captcha,
                                         resubmit=resubmit,
                                         never_show_self=never_show_self,

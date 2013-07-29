@@ -76,13 +76,13 @@ string_dict = dict(
     cover_disclaim = _("(don't worry, it only takes a few seconds)"),
 
     oauth_login_msg = _(
-        "Log in or register to connect your reddit account with %(app)s."),
+        "Log in or register to connect your lightnet account with %(app)s."),
 
     login_fallback_msg = _("try using our secure login form."),
 
     legal = _("I understand and agree that registration on or use of this site constitutes agreement to its %(user_agreement)s and %(privacy_policy)s."),
 
-    friends = _('to view reddit with only submissions from your friends, use [reddit.com/space/friends](%s)'),
+    friends = _('to view lightnet with only submissions from your friends, use [lightnetb.org/space/friends](%s)'),
 
     sr_created = _('your space has been created'),
 
@@ -123,7 +123,7 @@ string_dict = dict(
     submit_text = _("""You are submitting a text-based post. Speak your mind. A title is required, but expanding further in the text field is not. Beginning your title with "vote up if" is violation of intergalactic law."""),
     submit_link_label = _("Submit a new link"),
     submit_text_label = _("Submit a new text post"),
-    compact_suggest = _("Looks like you're browsing on a small screen. Would you like to try [reddit's mobile interface](%(url)s)?"),
+    compact_suggest = _("Looks like you're browsing on a small screen. Would you like to try [lightnet's mobile interface](%(url)s)?"),
     verify_email = _("we're going to need to verify your email address for you to proceed."),
     verify_email_submit = _("you'll be able to submit more frequently once you verify your email address"),
     email_verified =  _("your email address has been verfied"),
@@ -132,30 +132,30 @@ string_dict = dict(
     invalid_search_query = _("I couldn't understand your query, so I simplified it and searched for \"%(clean_query)s\" instead."),
     completely_invalid_search_query = _("I couldn't understand your search query. Please try again."),
     search_help = _("You may also want to check the [search help page](%(search_help)s) for more information."),
-    formatting_help_info = _('reddit uses a slightly-customized version of [Markdown](http://daringfireball.net/projects/markdown/syntax) for formatting. See below for some basics, or check [the commenting wiki page](/wiki/commenting) for more detailed help and solutions to common issues.'),
+    formatting_help_info = _('lightnet uses a slightly-customized version of [Markdown](http://daringfireball.net/projects/markdown/syntax) for formatting. See below for some basics, or check [the commenting wiki page](/wiki/commenting) for more detailed help and solutions to common issues.'),
     generic_quota_msg = _("You've submitted too many links recently. Please try again in an hour."),
     verified_quota_msg = _("Looks like you're either a brand new user or your posts have not been doing well recently. You may have to wait a bit to post again. In the meantime feel free to [check out the reddiquette](%(reddiquette)s) or join the conversation in a different thread."),
     unverified_quota_msg = _("Looks like you're either a brand new user or your posts have not been doing well recently. You may have to wait a bit to post again. In the meantime feel free to [check out the reddiquette](%(reddiquette)s), join the conversation in a different thread, or [verify your email address](%(verify)s)."),
-    read_only_msg = _("reddit is in \"emergency read-only mode\" right now. :( you won't be able to log in. we're sorry, and are working frantically to fix the problem."),
+    read_only_msg = _("lightnet is in \"emergency read-only mode\" right now. :( you won't be able to log in. we're sorry, and are working frantically to fix the problem."),
     heavy_load_msg = _("this page is temporarily in read-only mode due to heavy traffic."),
-    gold_benefits_msg = _("Being a reddit gold member gives you access to a bunch of new site features and other benefits. Be sure to check out the new options in the gold box at the bottom of [your preferences page](/prefs), and take a look at [the about gold page](/gold/about) to see what else is available!"),
+    gold_benefits_msg = _("Being a lightnet gold member gives you access to a bunch of new site features and other benefits. Be sure to check out the new options in the gold box at the bottom of [your preferences page](/prefs), and take a look at [the about gold page](/gold/about) to see what else is available!"),
     lounge_msg = _("please grab a drink and join us in [the lounge](%(link)s)."),
     postcard_msg = _("You sent us a postcard! (Or something similar.) When we run out of room on our refrigerator, we might one day auction off the stuff that people sent in. Is it okay if we include your thing?"),
-    over_comment_limit = _("Sorry, the maximum number of comments is %(max)d. (However, if you subscribe to reddit gold, it goes up to %(goldmax)d.)"),
+    over_comment_limit = _("Sorry, the maximum number of comments is %(max)d. (However, if you subscribe to lightnet gold, it goes up to %(goldmax)d.)"),
     over_comment_limit_gold = _("Sorry, the maximum number of comments is %d."),
-    youve_got_gold = _("%(sender)s just sent you %(amount)s of reddit gold! Wasn't that nice?"),
+    youve_got_gold = _("%(sender)s just sent you %(amount)s of lightnet gold! Wasn't that nice?"),
     giftgold_note = _("Here's a note that was included:\n\n----\n\n"),
-    youve_got_comment_gold = _("A redditor liked [your comment](%(url)s) so much, they gave you a month of reddit gold. Shiny!"),
-    gold_summary_autorenew = _("You're about to set up an ongoing, autorenewing subscription to reddit gold for yourself (%(user)s)."),
-    gold_summary_onetime = _("You're about to make a one-time purchase of %(amount)s of reddit gold for yourself (%(user)s)."),
-    gold_summary_creddits = _("You're about to purchase %(amount)s of reddit gold creddits. They work like gift certificates: each creddit you have will allow you to give one month of reddit gold to someone else."),
-    gold_summary_signed_gift = _("You're about to give %(amount)s of reddit gold to %(recipient)s, who will be told that it came from you."),
-    gold_summary_anonymous_gift = _("You're about to give %(amount)s of reddit gold to %(recipient)s. It will be an anonymous gift."),
-    gold_summary_comment_gift = _("Want to say thanks to *%(recipient)s* for this comment? Give them a month of [reddit gold](/gold/about)."),
-    gold_summary_comment_page = _("Give *%(recipient)s* a month of [reddit gold](/gold/about) for this comment:"),
+    youve_got_comment_gold = _("A redditor liked [your comment](%(url)s) so much, they gave you a month of lightnet gold. Shiny!"),
+    gold_summary_autorenew = _("You're about to set up an ongoing, autorenewing subscription to lightnet gold for yourself (%(user)s)."),
+    gold_summary_onetime = _("You're about to make a one-time purchase of %(amount)s of lightnet gold for yourself (%(user)s)."),
+    gold_summary_creddits = _("You're about to purchase %(amount)s of lightnet gold creddits. They work like gift certificates: each creddit you have will allow you to give one month of lightnet gold to someone else."),
+    gold_summary_signed_gift = _("You're about to give %(amount)s of lightnet gold to %(recipient)s, who will be told that it came from you."),
+    gold_summary_anonymous_gift = _("You're about to give %(amount)s of lightnet gold to %(recipient)s. It will be an anonymous gift."),
+    gold_summary_comment_gift = _("Want to say thanks to *%(recipient)s* for this comment? Give them a month of [lightnet gold](/gold/about)."),
+    gold_summary_comment_page = _("Give *%(recipient)s* a month of [lightnet gold](/gold/about) for this comment:"),
     unvotable_message = _("sorry, this has been archived and can no longer be voted on"),
     account_activity_blurb = _("This page shows a history of recent activity on your account. If you notice unusual activity, you should change your password immediately. Location information is guessed from your computer's IP address and may be wildly wrong, especially for visits from mobile devices. Note: due to a bug, private-use addresses (starting with 10.) sometimes show up erroneously in this list after regular use of the site."),
-    your_current_ip_is = _("You are currently accessing reddit from this IP address: %(address)s."),
+    your_current_ip_is = _("You are currently accessing lightnet from this IP address: %(address)s."),
     account_activity_apps_blurb = _("""
 These apps are authorized to access your account. Logging out of all sessions
 will revoke access from all apps. You may also revoke access from individual
@@ -183,12 +183,12 @@ Note: there are a couple of places outside of your space where someone can click
     an_error_occurred = _("an error occurred (status: %(status)s)"),
     an_error_occurred_friendly = _("an error occurred. please try again later! (status: %(status)s)"),
     rate_limit = _("please wait a few seconds and try again."),
-    subscribed_multi = _("multireddit of your subscriptions"),
-    mod_multi = _("multireddit of spaces you moderate"),
+    subscribed_multi = _("a union of these spaces"),
+    mod_multi = _("the spaces you moderate"),
 
-    r_all_description = _("/space/all displays content from all of reddit, including spaces you aren't subscribed to."),
-    r_all_minus_description = _("Displaying content from /space/all of reddit, except the following spaces:"),
-    all_minus_gold_only = _('Filtering /space/all is a feature only available to [reddit gold](/gold/about) subscribers. Displaying unfiltered results from /space/all.'),
+    r_all_description = _("/space/all displays content from all of lightnet, including spaces you aren't subscribed to."),
+    r_all_minus_description = _("Displaying content from /space/all of lightnet, except the following spaces:"),
+    all_minus_gold_only = _('Filtering /space/all is a feature only available to [lightnet gold](/gold/about) subscribers. Displaying unfiltered results from /space/all.'),
 
     missing_credit_name = _("missing name"),
     bad_credit_number = _("invalid credit card number"),
@@ -443,7 +443,7 @@ class RandomStringManager(object):
 rand_strings = RandomStringManager()
 
 rand_strings.add('sadmessages',   "Funny 500 page message", 10)
-rand_strings.add('create_reddit', "Reason to create a reddit", 20)
+rand_strings.add('create_reddit', "Reason to create a space", 20)
 
 
 def generate_strings():

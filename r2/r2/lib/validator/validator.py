@@ -513,7 +513,7 @@ subreddit_rx = re.compile(r"\A[A-Za-z0-9][A-Za-z0-9_]{2,20}\Z")
 
 def chksrname(x):
     #notice the space before reddit.com
-    if x in ('friends', 'all', ' reddit.com'):
+    if x in ('friends', 'all', ' lightnet'):
         return False
 
     try:

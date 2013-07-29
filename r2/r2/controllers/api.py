@@ -721,7 +721,7 @@ class ApiController(RedditController, OAuth2ResourceController):
                     container, type, type_and_permissions, note):
         """
         Complement to POST_unfriend: handles friending as well as
-        privilege changes on subreddits.
+        privilege changes on spaces.
         """
         if type in self._sr_friend_types:
             container = c.site
@@ -829,7 +829,7 @@ class ApiController(RedditController, OAuth2ResourceController):
     @validatedForm(VUser(),
                    VModhash(),
                    ip=ValidIP())
-    @api_doc(api_section.subreddits)
+    @api_doc(api_section.spaces)
     def POST_accept_moderator_invite(self, form, jquery, ip):
         rel = c.site.get_moderator_invite(c.user)
         if not c.site.remove_moderator_invite(c.user):
@@ -1463,7 +1463,7 @@ class ApiController(RedditController, OAuth2ResourceController):
                    stylesheet_contents = nop('stylesheet_contents'),
                    prevstyle = VLength('prevstyle', max_length=36),
                    op = VOneOf('op',['save','preview']))
-    @api_doc(api_section.subreddits)
+    @api_doc(api_section.spaces)
     def POST_subreddit_stylesheet(self, form, jquery,
                                   stylesheet_contents = '', prevstyle='', op='save'):
         
@@ -1553,7 +1553,7 @@ class ApiController(RedditController, OAuth2ResourceController):
     @validatedForm(VSrModerator(perms='config'),
                    VModhash(),
                    name = VCssName('img_name'))
-    @api_doc(api_section.subreddits)
+    @api_doc(api_section.spaces)
     def POST_delete_sr_img(self, form, jquery, name):
         """
         Called called upon requested delete on /about/stylesheet.
@@ -1571,7 +1571,7 @@ class ApiController(RedditController, OAuth2ResourceController):
     @require_oauth2_scope("modconfig")
     @validatedForm(VSrModerator(perms='config'),
                    VModhash())
-    @api_doc(api_section.subreddits)
+    @api_doc(api_section.spaces)
     def POST_delete_sr_header(self, form, jquery):
         """
         Called when the user request that the header on a sr be reset.
@@ -1613,7 +1613,7 @@ class ApiController(RedditController, OAuth2ResourceController):
               img_type = VImageType('img_type'),
               form_id = VLength('formid', max_length = 100), 
               header = VInt('header', max=1, min=0))
-    @api_doc(api_section.subreddits)
+    @api_doc(api_section.spaces)
     def POST_upload_sr_img(self, file, header, name, form_id, img_type):
         """
         Called on /about/stylesheet when an image needs to be replaced
@@ -1707,7 +1707,7 @@ class ApiController(RedditController, OAuth2ResourceController):
                    css_on_cname = VBoolean("css_on_cname"),
                    nearest_neighbors = VLength("nearest_neighbors", max_length = 1000),
                    )
-    @api_doc(api_section.subreddits)
+    @api_doc(api_section.spaces)
     def POST_site_admin(self, form, jquery, name, ip, sr, **kw):
         def apply_wikid_field(sr, form, pagename, value, prev, field, error):
             id_field_name = 'prev_%s_id' % field
@@ -2462,7 +2462,7 @@ class ApiController(RedditController, OAuth2ResourceController):
                 VModhash(),
                 action = VOneOf('action', ('sub', 'unsub')),
                 sr = VSubscribeSR('sr', 'sr_name'))
-    @api_doc(api_section.subreddits)
+    @api_doc(api_section.spaces)
     def POST_subscribe(self, action, sr):
         # only users who can make edits are allowed to subscribe.
         # Anyone can leave.
@@ -3186,7 +3186,7 @@ class ApiController(RedditController, OAuth2ResourceController):
         form.redirect("/prefs/otp")
 
     @json_validate(query=VLength("query", max_length=50))
-    @api_doc(api_section.subreddits, extensions=["json"])
+    @api_doc(api_section.spaces, extensions=["json"])
     def GET_subreddits_by_topic(self, responder, query):
         if not g.CLOUDSEARCH_SEARCH_API:
             return []

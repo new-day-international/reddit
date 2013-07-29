@@ -84,13 +84,13 @@ class Builder(object):
             if user and user.gold:
                 friend_rels = user.friend_rels()
 
-        subreddits = Subreddit.load_subreddits(items, stale=self.stale)
+        spaces = Subreddit.load_subreddits(items, stale=self.stale)
 
         can_ban_set = set()
         can_flair_set = set()
         can_own_flair_set = set()
         if user:
-            for sr_id, sr in subreddits.iteritems():
+            for sr_id, sr in spaces.iteritems():
                 if sr.can_ban(user):
                     can_ban_set.add(sr_id)
                 if sr.is_moderator_with_perms(user, 'flair'):
@@ -112,7 +112,7 @@ class Builder(object):
 
         modlink = {}
         modlabel = {}
-        for s in subreddits.values():
+        for s in spaces.values():
             modlink[s._id] = '/space/%s/about/moderators' % s.name
             modlabel[s._id] = (_('moderator of /space/%(reddit)s, speaking officially') %
                         dict(reddit = s.name) )
@@ -183,7 +183,7 @@ class Builder(object):
                          link = "/user/%s" % w.author.name)
 
             if hasattr(item, "sr_id") and item.sr_id is not None:
-                w.subreddit = subreddits[item.sr_id]
+                w.subreddit = spaces[item.sr_id]
 
             w.likes = likes.get((user, item))
 
@@ -583,7 +583,7 @@ class SearchBuilder(IDBuilder):
         # TODO: Consider a flag to disable this (and see listingcontroller.py)
         if item._spam or item._deleted:
             return False
-        # If checking (wrapped) links, filter out banned subreddits
+        # If checking (wrapped) links, filter out banned spaces
         elif hasattr(item, 'subreddit') and item.subreddit.spammy():
             return False
         elif (self.skip_deleted_authors and

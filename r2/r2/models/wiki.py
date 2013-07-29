@@ -55,7 +55,7 @@ special_length_restrictions_bytes = {'config/stylesheet': 128*1024, 'config/side
 
 modactions = {'config/sidebar': "Updated subreddit sidebar"}
 
-# Page "index" in the subreddit "reddit.com" and a seperator of "\t" becomes:
+# Page "index" in the subreddit "lightnet" and a seperator of "\t" becomes:
 #   "reddit.com\tindex"
 def wiki_id(sr, page):
     return ('%s%s%s' % (sr, PAGE_ID_SEP, page)).lower()
@@ -363,7 +363,7 @@ class WikiRevisionsByPage(tdb_cassandra.DenormalizedView):
         return wr.pageid
 
 class WikiPagesBySR(tdb_cassandra.DenormalizedView):
-    """ Associate revisions with subreddits, store only recent """
+    """ Associate revisions with spaces, store only recent """
     _use_db = True
     _connection_pool = 'main'
     _view_of = WikiPage
@@ -373,7 +373,7 @@ class WikiPagesBySR(tdb_cassandra.DenormalizedView):
         return wp.sr
 
 class WikiRevisionsRecentBySR(tdb_cassandra.DenormalizedView):
-    """ Associate revisions with subreddits, store only recent """
+    """ Associate revisions with spaces, store only recent """
     _use_db = True
     _connection_pool = 'main'
     _view_of = WikiRevision

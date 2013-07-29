@@ -433,7 +433,7 @@ class Account(Thing):
         self._commit()
 
     @property
-    def subreddits(self):
+    def spaces(self):
         from subreddit import Subreddit
         return Subreddit.user_subreddits(self)
 

@@ -200,14 +200,14 @@ class RedditTraffic(Templated):
         raise NotImplementedError()
 
 
-def make_subreddit_traffic_report(subreddits=None):
+def make_subreddit_traffic_report(spaces=None):
     """Return a report of subreddit traffic in the last full month.
 
-    If given a list of subreddits, those subreddits will be put in the report
-    otherwise the top subreddits by pageviews will be automatically chosen.
+    If given a list of spaces, those spaces will be put in the report
+    otherwise the top spaces by pageviews will be automatically chosen.
 
     """
-    subreddit_summary = traffic.PageviewsBySubreddit.top_last_month(subreddits)
+    subreddit_summary = traffic.PageviewsBySubreddit.top_last_month(spaces)
     report = []
     for srname, data in subreddit_summary:
         if srname == _DefaultSR.name:
@@ -744,23 +744,23 @@ class SubredditTrafficReport(Templated):
     def __init__(self):
         self.srs, self.invalid_srs, self.report = [], [], []
 
-        self.textarea = request.params.get("subreddits")
+        self.textarea = request.params.get("spaces")
         if self.textarea:
             requested_srs = [srname.strip()
                              for srname in self.textarea.splitlines()]
-            subreddits = Subreddit._by_name(requested_srs)
+            spaces = Subreddit._by_name(requested_srs)
 
             for srname in requested_srs:
-                if srname in subreddits:
+                if srname in spaces:
                     self.srs.append(srname)
                 else:
                     self.invalid_srs.append(srname)
 
-            if subreddits:
-                self.report = make_subreddit_traffic_report(subreddits.values())
+            if spaces:
+                self.report = make_subreddit_traffic_report(spaces.values())
 
             param = urllib.quote(self.textarea)
-            self.csv_url = "/traffic/subreddits/report.csv?subreddits=" + param
+            self.csv_url = "/traffic/spaces/report.csv?spaces=" + param
 
         Templated.__init__(self)
 
@@ -773,7 +773,7 @@ class SubredditTrafficReport(Templated):
         out = cStringIO.StringIO()
         writer = csv.writer(out)
 
-        writer.writerow((_("subreddit"),
+        writer.writerow((_("spaces"),
                          _("uniques"),
                          _("pageviews")))
         for (name, url), (uniques, pageviews) in self.report:

@@ -20,7 +20,7 @@
 # Inc. All Rights Reserved.
 ###############################################################################
 """
-These models represent the traffic statistics stored for subreddits and
+These models represent the traffic statistics stored for spaces and
 promoted links.  They are written to by Pig-based MapReduce jobs and read from
 various places in the UI.
 
@@ -594,7 +594,7 @@ class TargetedImpressionsByCodename(Base):
 
 
 class SubscriptionsBySubreddit(Base):
-    """Subscription statistics for subreddits.
+    """Subscription statistics for spaces.
 
     This table is different from the rest of the traffic ones.  It only
     contains data at a daily interval (hence no `interval` column) and is

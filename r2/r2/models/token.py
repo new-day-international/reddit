@@ -112,38 +112,38 @@ class OAuth2Scope:
             "id": "modflair",
             "name": _("Moderate Flair"),
             "description": _(
-                "Manage and assign flair in subreddits I moderate."),
+                "Manage and assign flair in spaces I moderate."),
         },
         "modposts": {
             "id": "modposts",
             "name": _("Moderate Posts"),
             "description": _(
                 "Approve, remove, mark nsfw, and distinguish content"
-                " in subreddits I moderate."),
+                " in spaces I moderate."),
         },
         "modconfig": {
             "id": "modconfig",
             "name": _("Moderate Subreddit Configuration"),
             "description": _(
                 "Manage the configuration, sidebar, and CSS"
-                " of subreddits I moderate."),
+                " of spaces I moderate."),
         },
         "modlog": {
             "id": "modlog",
             "name": _("Moderation Log"),
             "description": _(
-                "Access the moderation log in subreddits I moderate."),
+                "Access the moderation log in spaces I moderate."),
         },
         "modtraffic": {
             "id": "modtraffic",
             "name": _("Subreddit Traffic"),
-            "description": _("Access traffic stats in subreddits I moderate."),
+            "description": _("Access traffic stats in spaces I moderate."),
         },
-        "mysubreddits": {
-            "id": "mysubreddits",
-            "name": _("My Subreddits"),
+        "myspaces": {
+            "id": "myspaces",
+            "name": _("My Spaces"),
             "description": _(
-                "Access the list of subreddits I moderate, contribute to,"
+                "Access the list of spaces I moderate, contribute to,"
                 " and subscribe to."),
         },
         "privatemessages": {
@@ -180,22 +180,22 @@ class OAuth2Scope:
             self._parse_scope_str(scope_str)
         else:
             self.subreddit_only = False
-            self.subreddits = set()
+            self.spaces = set()
             self.scopes = set()
 
     def _parse_scope_str(self, scope_str):
         srs, sep, scopes = scope_str.rpartition(':')
         if sep:
             self.subreddit_only = True
-            self.subreddits = set(srs.split('+'))
+            self.spaces = set(srs.split('+'))
         else:
             self.subreddit_only = False
-            self.subreddits = set()
+            self.spaces = set()
         self.scopes = set(scopes.split(','))
 
     def __str__(self):
         if self.subreddit_only:
-            sr_part = '+'.join(sorted(self.subreddits)) + ':'
+            sr_part = '+'.join(sorted(self.spaces)) + ':'
         else:
             sr_part = ''
         return sr_part + ','.join(sorted(self.scopes))

@@ -69,9 +69,9 @@ api('wikipagesettings', WikiSettingsJsonTemplate)
 api('flairlist', FlairListJsonTemplate)
 api('flaircsv', FlairCsvJsonTemplate)
 
-api('subredditstylesheet', StylesheetTemplate)
-api('subredditstylesheetsource', StylesheetTemplate)
-api('createsubreddit', SubredditSettingsTemplate)
+api('spacestylesheet', StylesheetTemplate)
+api('spacestylesheetsource', StylesheetTemplate)
+api('createspace', SubredditSettingsTemplate)
 
 api('modaction', ModActionTemplate)
 

@@ -230,7 +230,7 @@
   <tr>
     <th>${_("display options")}</th>
     <td class="prefright">
-      ${checkbox(_("allow subreddits to show me custom styles"), "show_stylesheets")}
+      ${checkbox(_("allow spaces to show me custom styles"), "show_stylesheets")}
       <br/>
       ${checkbox(_("show user flair"), "show_flair")}
       <br/>
@@ -246,7 +246,7 @@
     <th>${_("content options")}</th>
     <td class="prefright">
       ${checkbox(_("I am over eighteen years old and willing to view adult content"), "over_18")}
-      &#32;<span class="little gray">(${_("required to view some subreddits")})</span>
+      &#32;<span class="little gray">(${_("required to view some spaces")})</span>
       <br/>
         ${checkbox(_("label posts that are not safe for work (NSFW)"), "label_nsfw", disabled = c.user.pref_no_profanity, disabled_text = "(requires not 'safer for work' mode)")}
       <br/>

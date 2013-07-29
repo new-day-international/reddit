@@ -202,8 +202,8 @@
     <ul>
       %if not compact and scope.subreddit_only:
         <li>
-          ${_("Only in the subreddits:")}&#32;
-          ${sr_list(scope.subreddits)}.
+          ${_("Only in the spaces:")}&#32;
+          ${sr_list(scope.spaces)}.
         </li>
       %endif
       %for name, scope_info in scope.details():
@@ -232,7 +232,7 @@
       <div class="app-permissions-details">
       %if scope.subreddit_only:
         ${_("Only in:")}&#32;
-        ${sr_list(scope.subreddits)}
+        ${sr_list(scope.spaces)}
         <br>
       %endif
       %if expiration:

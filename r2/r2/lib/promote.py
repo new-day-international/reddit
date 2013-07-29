@@ -690,15 +690,15 @@ def get_live_promotions(srids):
 
 def set_live_promotions(weights):
     start = time.time()
-    # First, figure out which subreddits have had ads recently
+    # First, figure out which spaces have had ads recently
     today = promo_datetime_now()
     yesterday = today - timedelta(days=1)
     tomorrow = today + timedelta(days=1)
     promo_weights = PromotionWeights.get_campaigns(yesterday, tomorrow)
     subreddit_names = set(p.sr_name for p in promo_weights)
-    subreddits = Subreddit._by_name(subreddit_names).values()
-    # Set the default for those subreddits to no ads
-    all_weights = {sr._id: [] for sr in subreddits}
+    spaces = Subreddit._by_name(subreddit_names).values()
+    # Set the default for those spaces to no ads
+    all_weights = {sr._id: [] for sr in spaces}
 
     # Mix in the currently live ads
     all_weights.update(weights)

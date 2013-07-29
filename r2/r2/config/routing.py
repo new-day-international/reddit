@@ -60,7 +60,7 @@ def make_map():
        action='lang_traffic', langcode='')
     mc('/traffic/adverts/:code', controller='front',
        action='advert_traffic', code='')
-    mc('/traffic/subreddits/report', controller='front',
+    mc('/traffic/spaces/report', controller='front',
        action='subreddit_traffic_report')
     mc('/account-activity', controller='front', action='account_activity')
 
@@ -75,22 +75,14 @@ def make_map():
        location='about')
 
     mc('/spaces/create', controller='front', action='newreddit')
-    mc('/subreddits/search', controller='front', action='search_reddits')
-    mc('/subreddits/login', controller='forms', action='login')
-    mc('/subreddits/:where', controller='reddits', action='listing',
+    mc('/spaces/search', controller='front', action='search_spaces')
+    mc('/spaces/login', controller='forms', action='login')
+    mc('/spaces/:where', controller='reddits', action='listing',
        where='popular', requirements=dict(where="popular|new|banned"))
 
-    mc('/subreddits/mine/:where', controller='myreddits', action='listing',
+    mc('/spaces/mine/:where', controller='myreddits', action='listing',
        where='subscriber',
        requirements=dict(where='subscriber|contributor|moderator'))
-
-    # These routes are kept for backwards-compatibility reasons
-    # Using the above /subreddits/ ones instead is preferable
-    mc('/reddits/create', controller='front', action='newreddit')
-    mc('/reddits/search', controller='front', action='search_reddits')
-    mc('/reddits/login', controller='forms', action='login')
-    mc('/reddits/:where', controller='reddits', action='listing',
-       where='popular', requirements=dict(where="popular|new|banned"))
 
     mc('/reddits/mine/:where', controller='myreddits', action='listing',
        where='subscriber',
@@ -112,7 +104,7 @@ def make_map():
     mc('/awards/received', controller='front', action='received_award')
 
     mc('/i18n', controller='redirect', action='redirect',
-       dest='http://www.reddit.com/space/i18n')
+       dest='http://www.lightnetb.org/space/i18n')
     mc('/feedback', controller='feedback', action='feedback')
     mc('/ad_inq', controller='feedback', action='ad_inq')
 
@@ -331,7 +323,7 @@ def make_map():
        dest='https://addons.mozilla.org/firefox/addon/socialite/')
 
     mc('/mobile', controller='redirect', action='redirect',
-       dest='http://m.reddit.com/')
+       dest='http://m.lightnetb.org/')
 
     mc('/authorize_embed', controller='front', action='authorize_embed')
 

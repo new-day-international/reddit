@@ -256,7 +256,7 @@ class HotController(FixListing, ListingController):
         """Build the Spotlight.
 
         The frontpage gets a Spotlight box that contains promoted and organic
-        links from the user's subscribed subreddits and promoted links targeted
+        links from the user's subscribed spaces and promoted links targeted
         to the frontpage. If the user has disabled ads promoted links will not
         be shown.
 
@@ -944,7 +944,7 @@ class RedditsController(ListingController):
     render_cls = SubredditsPage
 
     def title(self):
-        return _('subreddits')
+        return _('spaces')
 
     def keep_fn(self):
         base_keep_fn = ListingController.keep_fn(self)
@@ -976,7 +976,7 @@ class RedditsController(ListingController):
             #    reddits._filter(Subreddit.c.lang == c.content_langs)
 
             if g.domain != 'reddit.com':
-                # don't try to render special subreddits (like promos)
+                # don't try to render special spaces (like promos)
                 reddits._filter(Subreddit.c.author_id != -1)
 
         if self.where == 'popular':
@@ -984,9 +984,9 @@ class RedditsController(ListingController):
 
         return reddits
 
-    @listing_api_doc(section=api_section.subreddits,
-                     uri='/subreddits/{where}',
-                     uri_variants=['/subreddits/popular', '/subreddits/new', '/subreddits/banned'])
+    @listing_api_doc(section=api_section.spaces,
+                     uri='/spaces/{where}',
+                     uri_variants=['/spaces/popular', '/spaces/new', '/spaces/banned'])
     def GET_listing(self, where, **env):
         self.where = where
         return ListingController.GET_listing(self, **env)
@@ -1004,11 +1004,11 @@ class MyredditsController(ListingController, OAuth2ResourceController):
                     NavButton(getattr(plurals, "approved submitter"), 'contributor'),
                     NavButton(plurals.moderator,   'moderator'))
 
-        return [NavMenu(buttons, base_path = '/subreddits/mine/',
+        return [NavMenu(buttons, base_path = '/spaces/mine/',
                         default = 'subscriber', type = "flatlist")]
 
     def title(self):
-        return _('subreddits: ') + self.where
+        return _('spaces: ') + self.where
 
     def query(self):
         reddits = SRMember._query(SRMember.c._name == self.where,
@@ -1047,11 +1047,11 @@ class MyredditsController(ListingController, OAuth2ResourceController):
 
         return ListingController.build_listing(self, after=after, **kwargs)
 
-    @require_oauth2_scope("mysubreddits")
+    @require_oauth2_scope("myspaces")
     @validate(VUser())
-    @listing_api_doc(section=api_section.subreddits,
-                     uri='/subreddits/mine/{where}',
-                     uri_variants=['/subreddits/mine/subscriber', '/subreddits/mine/contributor', '/subreddits/mine/moderator'])
+    @listing_api_doc(section=api_section.spaces,
+                     uri='/spaces/mine/{where}',
+                     uri_variants=['/spaces/mine/subscriber', '/spaces/mine/contributor', '/spaces/mine/moderator'])
     def GET_listing(self, where='subscriber', **env):
         self.where = where
         return ListingController.GET_listing(self, **env)

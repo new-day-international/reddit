@@ -89,7 +89,7 @@ menu =   MenuHandler(hot          = _('hot'),
                      store        = _("store"),  
                      ad_inq       = _("advertise"),
                      gold         = _('reddit gold'),
-                     reddits      = _('subreddits'),
+                     reddits      = _('spaces'),
                      team         = _('team'),
                      rules        = _('rules'),
 
@@ -138,7 +138,7 @@ menu =   MenuHandler(hot          = _('hot'),
 
                      popular      = _("popular"),
                      create       = _("create"),
-                     mine         = _("my subreddits"),
+                     mine         = _("my spaces"),
 
                      i18n         = _("help translate"),
                      errors       = _("errors"),

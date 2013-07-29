@@ -30,7 +30,7 @@ class PromoMetrics(tdb_cassandra.View):
     Cassandra data store for promotion metrics. Used for inventory prediction.
 
     Usage:
-      # set metric value for many subreddits at once
+      # set metric value for many spaces at once
       > PromoMetrics.set('min_daily_pageviews.GET_listing',
                           {'funny': 63432, 'pics': 48829, 'books': 4})
 
@@ -38,12 +38,12 @@ class PromoMetrics(tdb_cassandra.View):
       > res = PromoMetrics.get('min_daily_pageviews.GET_listing', 'funny')
       {'funny': 1234}
 
-      # get metric value for many subreddits
+      # get metric value for many spaces
       > res = PromoMetrics.get('min_daily_pageviews.GET_listing',
                                ['funny', 'pics'])
       {'funny':1234, 'pics':4321}
 
-      # get metric values for all subreddits
+      # get metric values for all spaces
       > res = PromoMetrics.get('min_daily_pageviews.GET_listing')
     '''
     _use_db = True

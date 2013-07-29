@@ -161,9 +161,9 @@ class TextReport(object):
         rep += self.process_other('email', 'share emails rejected', 'reject')
 
         if show_all_time:
-            rep += self.process_other('css', 'subreddits with custom css', 
+            rep += self.process_other('css', 'spaces with custom css',
                                       'stylesheet_hash', all_time=True)
-            rep += self.process_other('css', 'subreddits with a custom header', 
+            rep += self.process_other('css', 'spaces with a custom header',
                                       'header', all_time=True)
             rep += "\n"
             rep += self.process_things(['account','subreddit','link','message','comment'], 

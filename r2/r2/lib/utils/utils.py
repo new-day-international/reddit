@@ -524,16 +524,16 @@ class UrlParser(object):
     def path_has_subreddit(self):
         """
         utility method for checking if the path starts with a
-        subreddit specifier (namely /space/ or /subreddits/).
+        subreddit specifier (namely /space/ or /spaces/).
         """
-        return self.path.startswith(('/space/', '/subreddits/', '/reddits/'))
+        return self.path.startswith(('/space/', '/spaces/'))
 
     def get_subreddit(self):
         """checks if the current url refers to a subreddit and returns
         that subreddit object.  The cases here are:
 
           * the hostname is unset or is g.domain, in which case it
-            looks for /space/XXXX or /subreddits.  The default in this case
+            looks for /space/XXXX or /spaces.  The default in this case
             is Default.
           * the hostname is a cname to a known subreddit.
 
@@ -545,7 +545,7 @@ class UrlParser(object):
             if not self.hostname or self.hostname.startswith(g.domain):
                 if self.path.startswith('/space/'):
                     return Subreddit._by_name(self.path.split('/')[2])
-                elif self.path.startswith(('/subreddits/', '/reddits/')):
+                elif self.path.startswith(('/spaces/')):
                     return Sub
                 else:
                     return DefaultSR()

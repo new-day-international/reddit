@@ -257,7 +257,7 @@ class OAuth2ResourceController(MinimalController):
             oauth2_perms = getattr(handler, "oauth2_perms", None)
             if oauth2_perms:
                 grant = OAuth2Scope(access_token.scope)
-                if grant.subreddit_only and c.site.name not in grant.subreddits:
+                if grant.subreddit_only and c.site.name not in grant.spaces:
                     self._auth_error(403, "insufficient_scope")
                 required_scopes = set(oauth2_perms['allowed_scopes'])
                 if not (grant.scopes >= required_scopes):

@@ -48,8 +48,8 @@ def load_all_reddits():
             if len(names) < 10:
                 names.append((sr.name, sr.over_18))
 
-    for name_prefix, subreddits in query_cache.iteritems():
-        SubredditsByPartialName._set_values(name_prefix, {'tups': subreddits})
+    for name_prefix, spaces in query_cache.iteritems():
+        SubredditsByPartialName._set_values(name_prefix, {'tups': spaces})
 
 def search_reddits(query, include_over_18=True):
     query = str(query.lower())
