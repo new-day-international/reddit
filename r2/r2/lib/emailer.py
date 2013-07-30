@@ -143,6 +143,11 @@ def send_queued_mail(test = False):
     clear = False
     if not test:
         session = smtplib.SMTP(g.smtp_server)
+
+        if g.smtp_username:
+            session.starttls()
+            session.login(g.smtp_username, g.smtp_password)
+
     def sendmail(email):
         try:
             mimetext = email.to_MIMEText()
