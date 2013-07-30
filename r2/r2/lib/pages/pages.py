@@ -536,8 +536,13 @@ class Reddit(Templated):
                 promote_buttons.append(NavButton(menu.promote, 'promoted', False))
                 toolbar.append(NavMenu(promote_buttons, type='tabmenu'))
 
+        # Add the page title item in the first position
         if isinstance(c.site, DefaultSR):
-            toolbar.insert(0, PageNameNav('nomenu', title=_("my subscribed spaces")))
+            if c.user_is_loggedin:
+                front_page_title = _("my subscribed spaces")
+            else
+                front_page_title = _("popular spaces")
+            toolbar.insert(0, PageNameNav('nomenu', title=front_page_title))
         else:
             if not c.cname:
                 toolbar.insert(0, PageNameNav('subreddit'))
