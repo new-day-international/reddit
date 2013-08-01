@@ -1726,7 +1726,7 @@ class SubredditTopBar(CachedTemplate):
                        css_class = 'sr-bar')
     
     def sr_bar (self):
-        separator = '<span class="separator wide_separator">&nbsp;|&nbsp;</span>'
+        separator = '<span class="wide_separator">&nbsp;|&nbsp;</span>'
 
         # Add the special spaces: myspaces, all, mod
         menus = []
