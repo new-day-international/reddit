@@ -376,8 +376,9 @@ def dedup_queue(queue, rk = None, limit=None,
         chan.basic_ack(0, multiple=True)
 
 
-
-def debug_queue(queue_name):
+def debug_queue(queue_name,acknowledge=False):
+    """Reads the messages in the specified queue, prints them out, and optionally
+    acknowledges them."""
     print "Debugging queue %s" % (queue_name)
 
     print "    Opening amqp connection on localhost"
@@ -413,5 +414,6 @@ def debug_queue(queue_name):
 
         print "        Message: %s" % (message.body, )
 
-        print "        Acknowledging message"
-        channel.basic_ack(message.delivery_tag)
+        if acknowledge:
+            print "        Acknowledging message"
+            channel.basic_ack(message.delivery_tag)
