@@ -412,3 +412,6 @@ def debug_queue(queue_name):
             break
 
         print "        Message: %s" % (message.body, )
+
+        print "        Acknowledging message"
+        channel.basic_ack(message.delivery_tag)
