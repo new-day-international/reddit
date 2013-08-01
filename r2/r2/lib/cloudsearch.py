@@ -555,7 +555,7 @@ def chunk_xml(xml, depth=0):
 
 
 def _run_changed(msgs, chan):
-    '''Consume the cloudsearch_changes queue, and print reporting information
+    '''Consume the cloudsearch_changes_q queue, and print reporting information
     on how long it took and how many remain
     
     '''
@@ -593,7 +593,7 @@ def run_changed(drain=False, min_size=500, limit=1000, sleep_time=10,
     '''
     if use_safe_get:
         CloudSearchUploader.use_safe_get = True
-    amqp.handle_items('cloudsearch_changes', _run_changed, min_size=min_size,
+    amqp.handle_items('cloudsearch_changes_q', _run_changed, min_size=min_size,
                       limit=limit, drain=drain, sleep_time=sleep_time,
                       verbose=verbose)
 

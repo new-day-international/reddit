@@ -81,7 +81,7 @@ def declare_queues(g):
         "vote_comment_q": MessageQueue(bind_to_self=True),
         "vote_fastlane_q": MessageQueue(bind_to_self=True),
         "log_q": MessageQueue(bind_to_self=True),
-        "cloudsearch_changes": MessageQueue(bind_to_self=True),
+        "cloudsearch_changes_q": MessageQueue(bind_to_self=True),
         "update_promos_q": MessageQueue(bind_to_self=True),
     })
 
@@ -91,7 +91,7 @@ def declare_queues(g):
                                for i in xrange(10)}
         queues.declare(sharded_vote_queues)
 
-    queues.cloudsearch_changes << "search_changes"
+    queues.cloudsearch_changes_q << "new_search_change"
     queues.scraper_q << "new_link"
     queues.newcomments_q << ("new_comment",
                              "new_fastlane_comment",

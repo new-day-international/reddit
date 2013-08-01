@@ -1018,7 +1018,7 @@ def changed(things, boost_only=False):
         if boost_only:
             msg['boost_only'] = True
 
-        amqp.add_item('search_changes', pickle.dumps(msg),
+        amqp.add_item('new_search_change', pickle.dumps(msg),
                       message_id = thing._fullname,
                       delivery_mode = amqp.DELIVERY_TRANSIENT)
 
