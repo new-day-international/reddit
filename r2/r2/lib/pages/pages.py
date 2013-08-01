@@ -1726,19 +1726,23 @@ class SubredditTopBar(CachedTemplate):
                        css_class = 'sr-bar')
     
     def sr_bar (self):
-        sep = '<span class="separator">&nbsp;|&nbsp;</span>'
+        separator = '<span class="separator wide_separator">&nbsp;|&nbsp;</span>'
+
+        # Add the special spaces: myspaces, all, mod
         menus = []
         menus.append(self.special_reddits())
-        menus.append(RawString(sep))
+        menus.append(RawString(separator))
 
-
+        # Add the remaining spaces one-by-one
         if not c.user_is_loggedin:
+            # Just add the popular spaces
             menus.append(self.popular_reddits())
         else:
+            # First add user's subscribed spaces
             menus.append(self.subscribed_reddits())
-            sep = '<span class="separator">&nbsp;&ndash;&nbsp;</span>'
-            menus.append(RawString(sep))
+            menus.append(RawString(separator))
 
+            # Then add the popular spaces
             menus.append(self.popular_reddits(exclude=self.my_reddits))
 
         return menus
