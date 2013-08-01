@@ -405,7 +405,7 @@ def debug_queue(queue_name):
     while True:
 
         print "        Reading queue message"
-        message = channel.basic_get(queue)
+        message = channel.basic_get(queue=queue_name)
 
         if message is None:
             print "        NO MESSAGES"
