@@ -554,43 +554,44 @@ def chunk_xml(xml, depth=0):
             yield chunk
 
 
-def _run_changed(msgs, chan):
-    '''Consume the cloudsearch_changes_q queue, and print reporting information
-    on how long it took and how many remain
-    
-    '''
-    start = datetime.now(g.tz)
-
-    changed = [pickle.loads(msg.body) for msg in msgs]
-
-    fullnames = set()
-    fullnames.update(LinkUploader.desired_fullnames(changed))
-    fullnames.update(SubredditUploader.desired_fullnames(changed))
-    things = Thing._by_fullname(fullnames, data=True, return_dict=False)
-
-    link_uploader = LinkUploader(g.CLOUDSEARCH_DOC_API, things=things)
-    subreddit_uploader = SubredditUploader(g.CLOUDSEARCH_SUBREDDIT_DOC_API,
-                                           things=things)
-
-    link_time = link_uploader.inject()
-    subreddit_time = subreddit_uploader.inject()
-    cloudsearch_time = link_time + subreddit_time
-
-    totaltime = (datetime.now(g.tz) - start).total_seconds()
-
-    print ("%s: %d messages in %.2fs seconds (%.2fs secs waiting on "
-           "cloudsearch); %d duplicates, %s remaining)" %
-           (start, len(changed), totaltime, cloudsearch_time,
-            len(changed) - len(things),
-            msgs[-1].delivery_info.get('message_count', 'unknown')))
-
-
 def run_changed(drain=False, min_size=500, limit=1000, sleep_time=10,
                 use_safe_get=False, verbose=False):
     '''Run by `cron` (through `paster run`) on a schedule to send Things to
         Amazon CloudSearch
     
     '''
+
+    @g.stats.amqp_processor('cloudsearch_changes_q')
+    def _run_changed(msgs, chan):
+        '''Consume the cloudsearch_changes_q queue, and print reporting information
+        on how long it took and how many remain
+
+        '''
+        start = datetime.now(g.tz)
+
+        changed = [pickle.loads(msg.body) for msg in msgs]
+
+        fullnames = set()
+        fullnames.update(LinkUploader.desired_fullnames(changed))
+        fullnames.update(SubredditUploader.desired_fullnames(changed))
+        things = Thing._by_fullname(fullnames, data=True, return_dict=False)
+
+        link_uploader = LinkUploader(g.CLOUDSEARCH_DOC_API, things=things)
+        subreddit_uploader = SubredditUploader(g.CLOUDSEARCH_SUBREDDIT_DOC_API,
+                                               things=things)
+
+        link_time = link_uploader.inject()
+        subreddit_time = subreddit_uploader.inject()
+        cloudsearch_time = link_time + subreddit_time
+
+        totaltime = (datetime.now(g.tz) - start).total_seconds()
+
+        print ("%s: %d messages in %.2fs seconds (%.2fs secs waiting on "
+               "cloudsearch); %d duplicates, %s remaining)" %
+               (start, len(changed), totaltime, cloudsearch_time,
+                len(changed) - len(things),
+                msgs[-1].delivery_info.get('message_count', 'unknown')))
+
     if use_safe_get:
         CloudSearchUploader.use_safe_get = True
     amqp.handle_items('cloudsearch_changes_q', _run_changed, min_size=min_size,
