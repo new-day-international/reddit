@@ -374,3 +374,33 @@ def dedup_queue(queue, rk = None, limit=None,
         worker.join()
 
         chan.basic_ack(0, multiple=True)
+
+def debug_queue(queue):
+    print "Debugging queue %s" % (queue)
+
+    print "    Opening amqp connection on localhost"
+    connection = amqp.Connection(host="localhost:5672 ",
+                           userid="guest",
+                           password="guest",
+                           virtual_host="/",
+                           insist=False)
+
+    print "    Opening a channel over that connection"
+    channel = connection.channel()
+    if channel:
+        print "    Channel opened %r" % (channel,)
+    else:
+        print "    ERROR - could not open channel"
+
+    # Read the messages
+    print "    Reading messages from queue..."
+    while True:
+
+        print "        Reading queue message"
+        message = channel.basic_get(queue)
+
+        if message is None:
+            print "        NO MESSAGES"
+            break
+
+        print "        Message: %s" % (message.body, )
