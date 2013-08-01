@@ -746,8 +746,6 @@ class Comment(Thing, Printable):
 
         link._incr('num_comments', 1)
 
-        # TODO.CMF - Test this works.
-        
         # Update the link's active date
         link._active = c._date
         link._commit('_active')
