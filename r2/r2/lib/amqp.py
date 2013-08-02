@@ -436,6 +436,10 @@ def debug_queue_batched(queue_name):
     print "debug_queue_batched - entering handle_items"
 
     # Enter the long-running handle-items loop.
-    amqp.handle_items(queue_name, print_messages, min_size=min_size,
-                      limit=limit, drain=drain, sleep_time=sleep_time,
-                      verbose=True)
+    handle_items(   queue_name,
+                    print_messages,
+                    min_size = min_size,
+                    limit = limit,
+                    drain = drain,
+                    sleep_time = sleep_time,
+                    verbose = True)
