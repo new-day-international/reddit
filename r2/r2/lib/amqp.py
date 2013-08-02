@@ -423,8 +423,8 @@ def debug_queue(queue_name,acknowledge=False):
 
 def debug_queue_batched(queue_name):
     drain = False
-    min_size = 500
-    limit = 1000
+    min_size = 1
+    limit = 100
     sleep_time = 10
 
     def print_messages(messages, chan):
