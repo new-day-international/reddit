@@ -371,7 +371,7 @@ class ApiController(RedditController, OAuth2ResourceController):
                               (c.user.name, filled_quota), "info")
 
                     verify_link = "/verify?reason=submit"
-                    reddiquette_link = "/wiki/reddiquette" 
+                    reddiquette_link = "/wiki/etiquette"
 
                     if c.user.email_verified:
                         msg = strings.verified_quota_msg % dict(reddiquette=reddiquette_link)
