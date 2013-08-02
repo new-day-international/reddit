@@ -120,7 +120,7 @@ string_dict = dict(
     comments_panel_text = _("""The following is a sample of what Reddit users had to say about this page. The full discussion is available [here](%(fd_link)s); you can also get there by clicking the link's title (in the middle of the toolbar, to the right of the comments button)."""),
 
     submit_link = _("""You are submitting a link. The key to a successful submission is interesting content and a descriptive title."""),
-    submit_text = _("""You are submitting a text-based post. Speak your mind. A title is required, but expanding further in the text field is not. Beginning your title with "vote up if" is violation of intergalactic law."""),
+    submit_text = _("""You are submitting a text-based post. Speak your mind. A title is required, expanding further in the text field is desired but optional."""),
     submit_link_label = _("Submit a new link"),
     submit_text_label = _("Submit a new text post"),
     compact_suggest = _("Looks like you're browsing on a small screen. Would you like to try [lightnet's mobile interface](%(url)s)?"),
