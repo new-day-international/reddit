@@ -245,6 +245,9 @@ def consume_items(queue, callback, verbose=True):
         if chan.is_open:
             chan.close()
 
+
+ALL_READ_MESSAGES = 0
+
 def handle_items(queue, callback, ack=True, limit=1, min_size=0,
                  drain=False, verbose=True, sleep_time=1):
     """Call callback() on every item in a particular queue. If the
@@ -303,7 +306,7 @@ def handle_items(queue, callback, ack=True, limit=1, min_size=0,
 
             if ack:
                 # ack *all* outstanding messages
-                chan.basic_ack(0, multiple=True)
+                chan.basic_ack(ALL_READ_MESSAGES, multiple=True)
 
             # flush any log messages printed by the callback
             sys.stdout.flush()
@@ -417,3 +420,22 @@ def debug_queue(queue_name,acknowledge=False):
         if acknowledge:
             print "        Acknowledging message"
             channel.basic_ack(message.delivery_tag)
+
+def debug_queue_batched(queue_name):
+    drain = False
+    min_size = 500
+    limit = 1000
+    sleep_time = 10
+
+    def print_messages(messages, chan):
+
+        print "    Reading %d messages" % (len(messages),)
+        for message in messages:
+            print "    Message: %s" % (message.body,)
+
+    print "debug_queue_batched - entering handle_items"
+
+    # Enter the long-running handle-items loop.
+    amqp.handle_items(queue_name, print_messages, min_size=min_size,
+                      limit=limit, drain=drain, sleep_time=sleep_time,
+                      verbose=True)
