@@ -1354,7 +1354,7 @@ class EditReddit(Reddit):
             is_moderator = c.user_is_loggedin and \
                 c.site.is_moderator(c.user) or c.user_is_admin
 
-            title = (_('subreddit settings') if is_moderator else
+            title = (_('space settings') if is_moderator else
                      _('about %(site)s') % dict(site=c.site.name))
 
         Reddit.__init__(self, title=title, *a, **kw)
@@ -2761,7 +2761,7 @@ class FlairSelectorLinkSample(CachedTemplate):
             )
 
 class FlairSelector(CachedTemplate):
-    """Provide user with flair options according to subreddit settings."""
+    """Provide user with flair options according to space settings."""
     def __init__(self, user=None, link=None, site=None):
         if user is None:
             user = c.user
