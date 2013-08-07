@@ -1297,6 +1297,10 @@ class ApiController(RedditController, OAuth2ResourceController):
             else:
                 queries.new_comment(item, inbox_rel)
 
+            # send the changed message
+            changed(item)
+
+
             #set the ratelimiter
             if should_ratelimit:
                 VRatelimit.ratelimit(rate_user=True, rate_ip = True,
