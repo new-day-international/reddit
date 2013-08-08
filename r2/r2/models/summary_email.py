@@ -1,14 +1,18 @@
 # -*- coding: utf-8 -*-
 __author__ = 'myers'
 
-
+import pprint, os, datetime, pytz
+# monkey
 import sqlalchemy as sa
 from r2.lib.db import tdb_sql
 from pylons import g, c, request
-from r2.models import Account, Frontpage, Subreddit
+from r2.models import Account, Frontpage, Subreddit, Thing, Link, Comment
 from r2.controllers.listingcontroller import ActiveController
 from r2.lib.template_helpers import JSPreload
+from r2.lib.db.operators import asc, desc, timeago
+from r2.lib.utils import fetch_things2, flatten
 
+from mako.template import Template
 
 # 4.      Daily Summary Email:
 #
@@ -20,7 +24,7 @@ from r2.lib.template_helpers import JSPreload
 #       c.      All new SPACES world readable (ie not "restricted") in last 24 hours.
 #
 
-
+# TODO: Make a better html template with css embedded and no js
 # TODO: find only accounts we haven't sent a email in the last 24 hours
 # TODO: record when we sent an email
 
@@ -32,23 +36,77 @@ def send_summary_emails():
 
 def send_account_summary_email(account_thing_id):
     account = Account._byID(account_thing_id, data=True)
+    # Find accounts that haven't gotten an email in the last 24 hours
+    a_day_ago = datetime.datetime.now(pytz.utc) - datetime.timedelta(hours=24)
+    
+    # if we've never sent an email, only tell about the last 24 hours
+    if getattr(account, 'last_email_sent_at', None) is None:
+        account.last_email_sent_at = a_day_ago
+    elif account.last_email_sent_at > a_day_ago:
+        return
 
-    controller = ActiveController()
+    #controller = ActiveController()
 
     # set globals that are needed to render this page.  I figured out what needed to be set by trial and error
-    c.site = Frontpage
-    c.user = account
+    #c.site = Frontpage
     c.content_langs = 'en-US'
-    c.js_preload = JSPreload()
-    request.get = {}
-    request.fullpath = '/'
-    request.environ['pylons.routes_dict'] = {'action': 'mailing_list'}
-    controller.render_params['loginbox'] = False
-    controller.render_params['enable_login_cover'] = False
+    #c.js_preload = JSPreload()
+    #c.render_style = "email"
+    # request.get = {}
+    # request.fullpath = '/'
+    # request.environ['pylons.routes_dict'] = {'action': 'mailing_list'}
+    # controller.render_params['loginbox'] = False
+    # controller.render_params['enable_login_cover'] = False
 
-    page = controller.build_listing(10, None, False, 5)
-    email(account.email, "Today's news", page)
-    # print account
+    # page = controller.build_listing(10, None, False, 5)
+
+    # Find all the "active" links for this user.  Frontpage uses the c.user global
+    # to find the right subreddits for the current user
+    c.user = account
+    c.user_is_loggedin = True
+    thing_ids = []
+    for link in Frontpage.get_links('active', 'all'):
+        thing_ids.append(link)
+    active_links_hash = Link._by_fullname(thing_ids, data=True)
+
+    active_links = [active_links_hash[t_id] for t_id in thing_ids if active_links_hash[t_id]._active > account.last_email_sent_at]
+    idx = 0
+    for ll in active_links:
+        idx += 1
+        ll.num = idx 
+    # for ll in active_links:
+    #     # pprint.pprint(dir(ll))
+    #     #print ll.author_slow.name
+    #     pprint.pprint(dir(ll.author_slow))
+    #     #raise 'hell'
+
+
+    # Find all new spaces created since we last sent the user an email
+    new_spaces = list(fetch_things2(Subreddit._query(
+        Subreddit.c._date > account.last_email_sent_at,
+        sort=asc('_date'))))
+
+    html_email_template = g.mako_lookup.get_template('summary_email.html')
+    html_body = html_email_template.render(
+        last_email_sent_at=account.last_email_sent_at,
+        new_spaces=new_spaces, 
+        active_links=active_links)
+    # with open('out.html', 'w') as ff:
+    #     ff.write(html_body)
+    email(account.email, "Today's news", html_body)
+
+    account.last_email_sent_at = datetime.datetime.now(pytz.utc)
+    account._commit()
+
+
+def reset_last_email_sent_at_for_all_accounts():
+    metadata = tdb_sql.make_metadata(g.dbm.type_db)
+    table = tdb_sql.get_data_table(metadata, 'account')
+    for row in sa.select([table]).where(table.c.key == 'email').execute():
+        account = Account._byID(row[0], data=True)
+        account.last_email_sent_at = None
+        account._commit()
+
 
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -68,3 +126,4 @@ def email(address, subject, html_body):
     server.login(g.smtp_username, g.smtp_password)
     server.sendmail(g.daily_email_from, address, msg.as_string())
     server.quit()
+
