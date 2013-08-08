@@ -38,7 +38,7 @@ from r2.lib import amqp, filters
 from r2.lib.db.operators import desc
 from r2.lib.db.sorts import epoch_seconds
 import r2.lib.utils as r2utils
-from r2.models import (Account, Link, Subreddit, Thing, All, DefaultSR,
+from r2.models import (Account, Link, Comment, Subreddit, Thing, All, DefaultSR,
                        MultiReddit, DomainSR, Friends, ModContribSR,
                        FakeSubreddit, NotFound)
 
@@ -164,10 +164,11 @@ class FieldsBase(object):
 
 
 class LinkFields(FieldsBase):
-    def __init__(self, link, author, sr):
+    def __init__(self, link, author, sr, comment=None):
         self.link = link
         self.author = author
         self.sr = sr
+        self.comment = comment
 
     @field(cloudsearch_type=int, lucene_type=None)
     def ups(self):
@@ -183,7 +184,10 @@ class LinkFields(FieldsBase):
 
     @field
     def fullname(self):
-        return self.link._fullname
+        if self.comment:
+            return self.comment._fullname
+        else:
+            return self.link._fullname
 
     @field
     def subreddit(self):
@@ -248,7 +252,10 @@ class LinkFields(FieldsBase):
 
     @field
     def selftext(self):
-        if self.link.is_self and self.link.selftext:
+        if self.comment:
+            return self.comment.body
+
+        elif self.link.is_self and self.link.selftext:
             return self.link.selftext
         else:
             return None
@@ -478,7 +485,7 @@ class CloudSearchUploader(object):
 
 
 class LinkUploader(CloudSearchUploader):
-    types = (Link,)
+    types = (Link, Comment,)
 
     def __init__(self, doc_api, things=None, version_offset=_VERSION_OFFSET):
         super(LinkUploader, self).__init__(doc_api, things, version_offset)
@@ -489,7 +496,13 @@ class LinkUploader(CloudSearchUploader):
         '''Return fields relevant to a Link search index'''
         account = self.accounts[thing.author_id]
         sr = self.srs[thing.sr_id]
-        return LinkFields(thing, account, sr).fields()
+        if isinstance(thing, Comment):
+            comment = thing
+            link = Link._byID(thing.link_id, data=True, return_dict=False)
+        else:
+            comment = None
+            link = thing
+        return LinkFields(link, account, sr, comment).fields()
 
     def batch_lookups(self):
         author_ids = [thing.author_id for thing in self.things
@@ -516,7 +529,8 @@ class LinkUploader(CloudSearchUploader):
                 raise
 
     def should_index(self, thing):
-        return (thing.promoted is None and getattr(thing, "sr_id", None) != -1)
+        return isinstance(thing, Comment) or \
+               (thing.promoted is None and getattr(thing, "sr_id", None) != -1)
 
 
 class SubredditUploader(CloudSearchUploader):
@@ -571,11 +585,15 @@ def run_changed(drain=False, min_size=1, limit=1000, sleep_time=10,
 
         changed = [pickle.loads(msg.body) for msg in msgs]
 
+        print "Processing messages from queue"
         fullnames = set()
         fullnames.update(LinkUploader.desired_fullnames(changed))
         fullnames.update(SubredditUploader.desired_fullnames(changed))
+
+        print "Loading things"
         things = Thing._by_fullname(fullnames, data=True, return_dict=False)
 
+        print "Uploading documents to Cloudsearch"
         link_uploader = LinkUploader(g.CLOUDSEARCH_DOC_API, things=things)
         subreddit_uploader = SubredditUploader(g.CLOUDSEARCH_SUBREDDIT_DOC_API,
                                                things=things)
@@ -1031,3 +1049,53 @@ class SubredditSearchQuery(CloudSearchQuery):
 
     known_syntaxes = ("plain",)
     default_syntax = "plain"
+
+
+def delete_all_cloudsearch_documents():
+    '''Deletes all the documents in a CloudSearch instance. Useful for
+    development instances where the database been cleared so you want
+    the CloudSearch instance to match.'''
+
+    # Query CloudSearch to get all the documents.
+    connection = httplib.HTTPConnection(g.CLOUDSEARCH_SEARCH_API, 80)
+    try:
+        connection.request('GET', "/2011-02-01/search?bq=(not%20flair:'bogus_flair')&size=1000")
+        resp = connection.getresponse()
+        response = resp.read()
+        if resp.status >= 300:
+            try:
+                reasons = json.loads(response)
+            except ValueError:
+                pass
+            raise CloudSearchHTTPError(resp.status, resp.reason, path,
+                                       response)
+    finally:
+        connection.close()
+
+    # Get the document ids for the hits from the search.
+    search_results = json.loads(response)
+    docs_to_delete = [doc['id'] for doc in search_results['hits']['hit']]
+
+    # Compute the new version.
+    version_string = str(int(time.time()) * 10 - int(_VERSION_OFFSET))
+
+    # Batch up the deletes into XML.
+    delete_batch = etree.Element("batch")
+    deletes = [etree.Element("delete", id=document_id, version=version_string)
+               for document_id in docs_to_delete]
+    delete_batch.extend(deletes)
+    delete_post_data = etree.tostring(delete_batch)
+
+    # Post them to the CloudSearch document endpoint.
+    connection = httplib.HTTPConnection(g.CLOUDSEARCH_DOC_API, 80)
+    try:
+        headers = {}
+        headers['Content-Type'] = 'application/xml'
+        connection.request('POST', "/2011-02-01/documents/batch", delete_post_data, headers)
+        response = connection.getresponse()
+        if not (200 <= response.status < 300):
+            raise CloudSearchHTTPError(response.status,
+                                       response.reason,
+                                       response.read())
+    finally:
+        connection.close()
