@@ -32,13 +32,9 @@
       %for m in thing.sr_bar():
         ${m.render()}
       %endfor
-
-      <%
-        editmore = 'edit spaces' if c.user_is_loggedin else 'more spaces'
-      %>
     </div>
 
-    ${plain_link(unsafe(_(editmore) + " &raquo;"),
+    ${plain_link(unsafe(_('more spaces') + " &raquo;"),
                  "/spaces/", id="sr-more-link")}
   </div>
 </div>
