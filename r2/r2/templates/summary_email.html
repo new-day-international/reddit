@@ -1,0 +1,110 @@
+<%!
+from r2.lib.template_helpers import get_domain
+from r2.lib.utils import timesince
+import datetime
+from r2.models import Account, Frontpage, Subreddit, Thing, Link, Comment
+
+#print 
+
+domain = get_domain(subreddit=False)
+%>
+<%namespace file="utils.html" import="plain_link, thing_timestamp, edited" />
+
+<html>
+<head>
+  <title>sample email: lightnet</title>
+  <meta charset="utf-8"/>
+</head>
+<body class="listing-page active-page" style="margin: 0;padding: 0;font: normal x-small verdana, arial, helvetica, sans-serif;background-color: #f1f1f1;z-index: 1;position: relative;min-width: 800px;color: #333;font-weight: normal;font-style: normal;font-variant: normal;font-family: sans-serif;line-height: 1.4">
+  <div class="content" role="main" style="margin: 7px 5px 0 5px;padding: 0;z-index: 1;border: 0 none;background-color: transparent;box-shadow: none">
+    <div id="siteTable" class="sitetable linklisting" style="margin: 0;padding: 0;list-style-type: none">
+
+% if active_links:
+      <h2>Active Posts</h2>
+% for link in active_links:
+<%    
+  if link.is_self:
+    absolute_url = "http://%s%s" % (domain, link.url)
+  else:
+    absolute_url = link.url
+
+  author_absolute_url = "http://%s/u/%s" % (domain, link.author_slow.name,)
+  comments_absolute_url = "http://%s%s" % (domain, link.make_permalink_slow(),)
+  space_absolute_url = "http://%s/space/%s" % (domain, link.subreddit_slow.name,)
+
+  comments = Comment._query(
+    Comment.c._date > last_email_sent_at,
+    Comment.c.link_id == link._id
+    )
+  comment_count = sum(1 for c in comments if not c._deleted)
+
+  if comment_count == 1:
+    comment_label = "1 comment"
+  else:
+    comment_label = "%s comments" % (comment_count,)
+
+%>
+
+      <div class="odd link self" style="margin: 0;padding: 8px 0 9px;padding-left: 3px;border-color: #fbf9f4;background-color: #fbfbfb;box-shadow: 0 1px 4px 0 #ccc;background-image: -webkit-linear-gradient(left, #fefefe, #fbfbfb);border-top-width: 0 !important">
+        <p class="parent" style="margin: 0;padding: 0"/>
+        <span class="rank" style="width: 2.2ex;overflow: hidden;float: left;margin-top: 15px;color: #c6c6c6;font-family: arial;font-size: medium;text-align: right;margin: 15px 0 0 8px;padding: 5px 5px 5px 0;background-color: transparent">${link.num}</span>
+        <div class="entry " style="margin: 1px 5px 1px 0;padding: 5px 0 5px 5px;overflow: hidden;margin-left: 3px;opacity: 1">
+          <p class="title" style="margin: 0;padding: 0;color: #015dcc;margin-right: 0.4em;overflow: hidden;font-size: medium;font-weight: normal;margin-bottom: 2px !important;text-shadow: 0 1px 0 #ececec;margin-top: 2px !important;font-style: normal;font-variant: normal;word-spacing: -1px">
+            <a class="title" href="${absolute_url}" style="text-decoration: none;color: #015dcc;margin-right: 0.4em;padding: 0;overflow: hidden;font-size: medium;font-weight: normal;margin-bottom: 2px !important;text-shadow: 0 1px 0 #ececec;margin-top: 2px !important;font-style: normal;font-variant: normal;word-spacing: -1px">${link.title}</a> 
+          </p>
+          <p class="tagline" style="margin: 0;padding: 0;color: #555;font-size: 11px">submitted 
+            ${thing_timestamp(link, timesince(link._date))} ago
+            by <a href="${author_absolute_url}" style="text-decoration: none;color: #333;">${link.author_slow.name}</a>
+            to <a href="${space_absolute_url}" class="subreddit hover" style="text-decoration: none;color: #333;margin-bottom: 10px">${link.subreddit_slow.name}</a>
+          </p>
+          <ul class="flat-list buttons" style="margin: 0;padding: 1px 0;list-style: none;list-style-type: none;display: inline-block;font-size: 11px">  
+            <li class="first" style="margin: 0;padding: 0;display: inline;white-space: nowrap;border: none;padding-right: 4px">
+              <a class="comments" href="${comments_absolute_url}" style="text-decoration: none;color: #777;font-weight: bold;padding: 0 1px">${comment_label} since ${timesince(last_email_sent_at)} ago</a>
+            </li>
+          </ul>
+        % if link.is_self:
+          <p style="white-space: nowrap;  overflow: hidden; text-overflow: ellipsis">${link.selftext[:512]}</p>
+        % endif
+        </div>
+    </div>
+
+    <div class="child" style="margin: 0 0 0 30px !important;padding: 0;background: none transparent !important"></div>
+    <div class="clearleft" style="margin: 0;padding: 0;clear: left;height: 0">
+      <!--IE6sux-->
+    </div>
+    <div class="clearleft" style="margin: 0;padding: 0;clear: left;height: 0">
+      <!--IE6sux-->
+    </div>
+  </div>
+% endfor
+% endif
+
+% if new_spaces:
+  <h2>New Spaces (since ${timesince(last_email_sent_at)} ago)</h2>
+  % for space in new_spaces:
+<%
+  space_absolute_url = "http://%s/space/%s" % (domain, space.name,)
+%>
+      <div class="odd link self" style="margin: 0;padding: 8px 0 9px;padding-left: 3px;border-color: #fbf9f4;background-color: #fbfbfb;box-shadow: 0 1px 4px 0 #ccc;background-image: -webkit-linear-gradient(left, #fefefe, #fbfbfb);border-top-width: 0 !important">
+        <div class="entry " style="margin: 1px 5px 1px 0;padding: 5px 0 5px 5px;overflow: hidden;margin-left: 3px;opacity: 1">
+          <p class="title" style="margin: 0;padding: 0;color: #015dcc;margin-right: 0.4em;overflow: hidden;font-size: medium;font-weight: normal;margin-bottom: 2px !important;text-shadow: 0 1px 0 #ececec;margin-top: 2px !important;font-style: normal;font-variant: normal;word-spacing: -1px">
+            <a class="title" href="${space_absolute_url}" style="text-decoration: none;color: #015dcc;margin-right: 0.4em;padding: 0;overflow: hidden;font-size: medium;font-weight: normal;margin-bottom: 2px !important;text-shadow: 0 1px 0 #ececec;margin-top: 2px !important;font-style: normal;font-variant: normal;word-spacing: -1px">${space.title}</a> 
+          </p>
+        </div>
+    </div>
+
+    <div class="child" style="margin: 0 0 0 30px !important;padding: 0;background: none transparent !important"></div>
+    <div class="clearleft" style="margin: 0;padding: 0;clear: left;height: 0">
+      <!--IE6sux-->
+    </div>
+    <div class="clearleft" style="margin: 0;padding: 0;clear: left;height: 0">
+      <!--IE6sux-->
+    </div>
+  </div>
+  % endfor
+
+% endif
+    </div>
+  </div>
+</body>
+</html>
