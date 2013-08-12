@@ -76,6 +76,7 @@ class Link(Thing, Printable):
                      contest_mode=False,
                      skip_commentstree_q="",
                      ignore_reports=False,
+                     comment_author_id=None,
                      )
     _essentials = ('sr_id', 'author_id')
     _nsfw = re.compile(r"\bnsfw\b", re.I)
@@ -377,6 +378,11 @@ class Link(Thing, Printable):
         else:
             saved = hidden = clicked = {}
 
+        # get the comment authors
+        author_ids = set(l.comment_author_id for l in wrapped if l.comment_author_id)
+        authors = Account._byID(author_ids, data=True,
+                                return_dict=True, stale=True)
+
         for item in wrapped:
             show_media = False
             if not hasattr(item, "score_fmt"):
@@ -561,6 +567,11 @@ class Link(Thing, Printable):
 
             item.editted = getattr(item, "editted", False)
 
+            if item.comment_author_id:
+                item.comment_author = authors[item.comment_author_id]
+            else:
+                item.comment_author = item.author
+
             taglinetext = ''
             if item.different_sr:
                 author_text = (" <span>" + _("by %(author)s to %(reddit)s") +
@@ -570,27 +581,34 @@ class Link(Thing, Printable):
             if item.editted:
                 if item.score_fmt == Score.points:
                     taglinetext = ("<span>" +
-                                   _("%(score)s submitted %(when)s "
+                                   _("%(score)s added %(when)s "
                                      "ago%(lastedited)s") +
                                    "</span>")
                     taglinetext += author_text
                 elif item.different_sr:
-                    taglinetext = _("submitted %(when)s ago%(lastedited)s "
+                    taglinetext = _("added %(when)s ago%(lastedited)s "
                                     "by %(author)s to %(reddit)s")
                 else:
-                    taglinetext = _("submitted %(when)s ago%(lastedited)s "
+                    taglinetext = _("added %(when)s ago%(lastedited)s "
                                     "by %(author)s")
             else:
                 if item.score_fmt == Score.points:
                     taglinetext = ("<span>" +
-                                   _("%(score)s submitted %(when)s ago") +
+                                   _("%(score)s added %(when)s ago") +
                                    "</span>")
                     taglinetext += author_text
                 elif item.different_sr:
-                    taglinetext = _("submitted %(when)s ago by %(author)s "
-                                    "to %(reddit)s")
+                    if item.comment_author_id:
+                        taglinetext = _("last comment %(whenactive)s ago by %(commentauthor)s, added %(when)s ago by %(author)s "
+                                        "to %(reddit)s")
+                    else:
+                        taglinetext = _("added %(when)s ago by %(author)s "
+                                        "to %(reddit)s")
                 else:
-                    taglinetext = _("submitted %(when)s ago by %(author)s")
+                    if item.comment_author_id:
+                        taglinetext = _("last comment %(whenactive)s ago by %(commentauthor)s, added %(when)s ago by %(author)s")
+                    else:
+                        taglinetext = _("added %(when)s ago by %(author)s")
             item.taglinetext = taglinetext
 
         if user_is_loggedin:
@@ -746,9 +764,10 @@ class Comment(Thing, Printable):
 
         link._incr('num_comments', 1)
 
-        # Update the link's active date
+        # Update the link's active date and comment_author
+        link.comment_author_id = author._id
         link._active = c._date
-        link._commit('_active')
+        link._commit()
 
         to = None
         name = 'inbox'
@@ -890,18 +909,20 @@ class Comment(Thing, Printable):
         from r2.lib.wrapped import CachedVariable
         from r2.lib.pages import WrappedUser
 
-        #fetch parent links
+        # fetch parent links
         links = Link._byID(set(l.link_id for l in wrapped), data=True,
                            return_dict=True, stale=True)
 
         # fetch authors
-        authors = Account._byID(set(l.author_id for l in links.values()), data=True,
+        author_ids = set(l.author_id for l in links.values())
+        author_ids.update(set(l.comment_author_id for l in links.values() if l.comment_author_id))
+        authors = Account._byID(author_ids, data=True,
                                 return_dict=True, stale=True)
 
-        #get srs for comments that don't have them (old comments)
-        for cm in wrapped:
-            if not hasattr(cm, 'sr_id'):
-                cm.sr_id = links[cm.link_id].sr_id
+        # get spaces for comments that don't have them (old comments)
+        for comment in wrapped:
+            if not hasattr(comment, 'sr_id'):
+                comment.sr_id = links[comment.link_id].sr_id
 
         spaces = Subreddit._byID(set(cm.sr_id for cm in wrapped),
                                      data=True, return_dict=False, stale=True)

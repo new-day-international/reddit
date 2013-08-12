@@ -219,7 +219,9 @@ ${parent.thing_data_attributes(what)} data-ups="${what.upvotes}" data-downs="${w
   ${unsafe(taglinetext % dict(reddit=self.subreddit(),
                               score=capture(self.score, thing, thing.likes, tag='span'),
                               when=capture(thing_timestamp, thing, thing.timesince),
+                              whenactive=capture(thing_timestamp, thing, thing.activesince),
                               author=WrappedUser(thing.author, thing.attribs, thing).render(),
+                              commentauthor=WrappedUser(thing.comment_author, thing.attribs, thing).render(),
                               lastedited=capture(edited, thing, thing.lastedited)
                               ))}
 </%def>

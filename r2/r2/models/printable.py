@@ -37,7 +37,7 @@ class Printable(object):
     margin = 0
     is_focal = False
     childlisting = None
-    cache_ignore = set(['c', 'author', 'score_fmt', 'child',
+    cache_ignore = set(['c', 'author', 'comment_author', 'score_fmt', 'child',
                         # displayed score is cachable, so remove score
                         # related fields.
                         'voting_score', 'display_score',
@@ -46,7 +46,7 @@ class Printable(object):
                         'downvotes', '_downs',
                         'subreddit_slow', '_deleted', '_spam',
                         'cachable', 'make_permalink', 'permalink',
-                        'timesince', 'votehash'
+                        'timesince', 'activesince', 'votehash'
                         ])
 
     @classmethod
@@ -57,6 +57,7 @@ class Printable(object):
             # caching of thing templates
             item.display = CachedVariable("display")
             item.timesince = CachedVariable("timesince")
+            item.activesince = CachedVariable("activesince")
             item.votehash = CachedVariable("votehash")
             item.childlisting = CachedVariable("childlisting")
 
