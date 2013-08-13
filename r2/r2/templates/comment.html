@@ -48,9 +48,10 @@ ${parent.midcol(not thing.collapsed, cls = cls)}
 <%def name="ParentDiv()">
   ${parent.ParentDiv()}
   <a name="${thing._id36}" ></a>
-  %if c.profilepage:
-    %if thing.link: 
+  %if c.profilepage or c.show_comment_parent_link:
+    %if thing.link:
       %if thing.link.title:
+        <span class="reply">${_("Re:")}&#32;</span>
         <a href="${thing.link.url}" class="title"
            %if thing.nofollow:
              rel="nofollow"
@@ -61,15 +62,16 @@ ${parent.midcol(not thing.collapsed, cls = cls)}
       %else:
           ${thing.link.url}
       %endif
+      &#32;
+      ${_("by")}
+      &#32;
+      ${thing.link_author.render()}
+      &#32;
+      ${_("in")}
+      &#32;
+      ${plain_link(thing.subreddit.name, thing.subreddit_path, sr_path = False,
+                   cname = False, _class = "subreddit hover")}
     %endif
-    &#32;
-    ${_("by")}
-    &#32;
-    ${thing.link_author.render()}
-    ${_("in")}
-    &#32;
-    ${plain_link(thing.subreddit.name, thing.subreddit_path, sr_path = False,
-                 cname = False, _class = "subreddit hover")}
   %endif
 </%def>
 

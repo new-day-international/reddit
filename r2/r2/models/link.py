@@ -941,6 +941,7 @@ class Comment(Thing, Printable):
         min_score = user.pref_min_comment_score
 
         profilepage = c.profilepage
+        show_comment_parent_link = profilepage or c.show_comment_parent_link
         user_is_admin = c.user_is_admin
         user_is_loggedin = c.user_is_loggedin
         focal_comment = c.focal_comment
@@ -1026,7 +1027,7 @@ class Comment(Thing, Printable):
             if focal_comment == item._id36:
                 extra_css += " border"
 
-            if profilepage:
+            if show_comment_parent_link:
                 item.link_author = WrappedUser(authors[item.link.author_id])
 
                 item.subreddit_path = item.subreddit.path
@@ -1429,7 +1430,7 @@ class Message(Thing, Printable):
                     item.body = _('[unblock user to see this message]')
             taglinetext = ''
             if item.hide_author:
-                taglinetext = _("subreddit message %(author)s sent %(when)s ago")
+                taglinetext = _("space message %(author)s sent %(when)s ago")
             elif item.author_id == c.user._id:
                 taglinetext = _("to %(dest)s sent %(when)s ago")
             elif item.to_id == c.user._id or item.to_id is None:
@@ -1445,7 +1446,6 @@ class Message(Thing, Printable):
                     item.updated_author = _("%(author)s via %(subreddit)s")
             else:
                 item.updated_author = ''
-
 
         # Run this last
         Printable.add_props(user, wrapped)

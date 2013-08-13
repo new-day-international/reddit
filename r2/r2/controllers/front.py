@@ -817,6 +817,10 @@ class FrontController(RedditController, OAuth2ResourceController):
         else:
             site = c.site
 
+        # Show the parents for comments so we get the link / original post
+        # link for search results comments.
+        c.show_comment_parent_link = True
+
         if not syntax:
             syntax = SearchQuery.default_syntax
 
