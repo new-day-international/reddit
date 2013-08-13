@@ -199,7 +199,11 @@ class LinkFields(FieldsBase):
 
     @field
     def title(self):
-        return self.link.title
+        # Don't want comments to match link titles
+        if self.comment:
+            return None
+        else:
+            return self.link.title
 
     @field(cloudsearch_type=int)
     def sr_id(self):
