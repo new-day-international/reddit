@@ -1681,7 +1681,7 @@ class SubredditTopBar(CachedTemplate):
                                            css_class = 'bottom-option',
                                            dest = '/spaces/'))
         return SubredditMenu(drop_down_buttons,
-                             title = _('my spaces'),
+                             title = _('jump to'),
                              type = 'srdrop')
 
     def subscribed_reddits(self):
