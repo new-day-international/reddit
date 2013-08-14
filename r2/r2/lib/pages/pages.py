@@ -297,7 +297,7 @@ class Reddit(Templated):
         if is_single_subreddit:
             if is_moderator_with_perms('access'):
                 buttons.append(NamedButton("banned", css_class="reddit-ban"))
-            if is_moderator_with_perms('flair'):
+            if g.enable_flair and is_moderator_with_perms('flair'):
                 buttons.append(NamedButton("flair", css_class="reddit-flair"))
 
         buttons.append(NamedButton("log", css_class="reddit-moderationlog"))

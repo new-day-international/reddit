@@ -138,6 +138,8 @@ class Globals(object):
 
         ConfigValue.bool: [
             'debug',
+            'enable_flair',
+            'enable_gilding',
             'log_start',
             'sqlprinting',
             'template_debug',
@@ -258,6 +260,9 @@ class Globals(object):
         """
 
         global_conf.setdefault("debug", False)
+
+        global_conf.setdefault("enable_gilding", False)
+        global_conf.setdefault("enable_flair", False)
 
         self.config = ConfigValueParser(global_conf)
         self.config.add_spec(self.spec)

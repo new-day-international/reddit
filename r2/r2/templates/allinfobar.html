@@ -38,7 +38,7 @@
   </div>
 %endif
 
-%if not thing.gilding_listing:
+%if g.enable_gilding and not thing.gilding_listing:
 <div class="gilded-comments-link">
   <a href="/space/all/comments/gilded">${_("See gilded comments")}</a>
 </div>

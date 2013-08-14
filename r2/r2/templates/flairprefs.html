@@ -20,7 +20,7 @@
 ## reddit Inc. All Rights Reserved.
 ###############################################################################
 
-%if thing.sr_flair_enabled:
+%if g.enable_flair and thing.sr_flair_enabled:
   <form class="toggle flairtoggle">
     <input id="flair_enabled" type="checkbox" name="flair_enabled"
         %if thing.user_flair_enabled:
