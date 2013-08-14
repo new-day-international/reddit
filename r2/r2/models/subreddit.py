@@ -82,7 +82,7 @@ class Subreddit(Thing, Printable):
                      css_on_cname = True,
                      domain = None,
                      wikimode = "disabled",
-                     wiki_edit_karma = 100,
+                     wiki_edit_karma = 0,
                      wiki_edit_age = 0,
                      over_18 = False,
                      exclude_banned_modqueue = False,
