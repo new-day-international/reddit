@@ -11,22 +11,10 @@ from r2.controllers.listingcontroller import ActiveController
 from r2.lib.template_helpers import JSPreload
 from r2.lib.db.operators import asc, desc, timeago
 from r2.lib.utils import fetch_things2, flatten
+from r2.lib import amqp
 
 from mako.template import Template
 
-# 4.      Daily Summary Email:
-#
-#       a.      For all subscribed SPACES  sorted By SPACE and then by most recently
-#               active.  Pride:  Rating, title (as link to Item),  creator, count of new comments in last 24 hours
-#
-#       b.      For ALL SPACES – new Items, sorted by SPACE:  Rating, title (as link to Item),  total comments
-#
-#       c.      All new SPACES world readable (ie not "restricted") in last 24 hours.
-#
-
-# TODO: Make a better html template with css embedded and no js
-# TODO: find only accounts we haven't sent a email in the last 24 hours
-# TODO: record when we sent an email
 
 def send_summary_emails():
     metadata = tdb_sql.make_metadata(g.dbm.type_db)
@@ -126,4 +114,31 @@ def email(address, subject, html_body):
     server.login(g.smtp_username, g.smtp_password)
     server.sendmail(g.daily_email_from, address, msg.as_string())
     server.quit()
+
+# An short running upstart job, triggered by cron
+def queue_summary_emails():
+    # find all accounts that should get an email
+
+    # this implementation is slow, as it iterates over all accounts that have an email
+    # address.  One idea to make it faster is to turn the "last_email_sent_at" data 
+    # attribute into an actual sql column you can query
+
+    metadata = tdb_sql.make_metadata(g.dbm.type_db)
+    table = tdb_sql.get_data_table(metadata, 'account')
+    for ii in sa.select([table]).where(table.c.key == 'email').execute():
+        # using _add_item over add_item as that skips using a daemon thread to talk
+        # to the amqp server that might not finish it's job before the process exits
+        amqp._add_item('summary_email_q', str(ii.thing_id))
+
+# Run from upstart job as a rabbitmq consumer.
+def run_summary_email_q(verbose=False):
+    queue_name = 'summary_email_q'
+
+    @g.stats.amqp_processor(queue_name)
+    def _run_summary_email(msg):
+        account_thing_id = int(msg.body)
+        send_account_summary_email(account_thing_id)
+
+    amqp.consume_items(queue_name, _run_summary_email, verbose=verbose)
+
 
