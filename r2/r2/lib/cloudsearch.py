@@ -190,11 +190,7 @@ class LinkFields(FieldsBase):
             return self.link._fullname
 
     @field
-    def subreddit(self):
-        return self.sr.name
-
-    @field
-    def reddit(self):
+    def space(self):
         return self.sr.name
 
     @field
@@ -255,10 +251,9 @@ class LinkFields(FieldsBase):
                 return None
 
     @field
-    def selftext(self):
+    def bodytext(self):
         if self.comment:
             return self.comment.body
-
         elif self.link.is_self and self.link.selftext:
             return self.link.selftext
         else:
@@ -589,15 +584,12 @@ def run_changed(drain=False, min_size=1, limit=1000, sleep_time=10,
 
         changed = [pickle.loads(msg.body) for msg in msgs]
 
-        print "Processing messages from queue"
         fullnames = set()
         fullnames.update(LinkUploader.desired_fullnames(changed))
         fullnames.update(SubredditUploader.desired_fullnames(changed))
 
-        print "Loading things"
         things = Thing._by_fullname(fullnames, data=True, return_dict=False)
 
-        print "Uploading documents to Cloudsearch"
         link_uploader = LinkUploader(g.CLOUDSEARCH_DOC_API, things=things)
         subreddit_uploader = SubredditUploader(g.CLOUDSEARCH_SUBREDDIT_DOC_API,
                                                things=things)
