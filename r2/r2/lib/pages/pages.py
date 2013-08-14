@@ -394,6 +394,9 @@ class Reddit(Templated):
         if isinstance(c.site, AllSR):
             ps.append(AllInfoBar(c.site, c.user))
 
+        if c.site == Friends:
+            ps.append(FriendsInfoBar(c.site, c.user))
+
         # don't show the subreddit info bar on cnames unless the option is set
         if not isinstance(c.site, FakeSubreddit) and (not c.cname or c.site.show_cname_sidebar):
             ps.append(SubredditInfoBar())
@@ -1805,6 +1808,14 @@ class AllInfoBar(Templated):
         self.gilding_listing = False
         if request.path.startswith("/comments/gilded"):
             self.gilding_listing = True
+
+        Templated.__init__(self)
+
+class FriendsInfoBar(Templated):
+    def __init__(self, site, user):
+        self.sr = site
+        self.css_class = None
+        self.description = strings.r_friends_description
 
         Templated.__init__(self)
 
