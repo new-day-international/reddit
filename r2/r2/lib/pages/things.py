@@ -142,7 +142,11 @@ class CommentButtons(PrintableButtons):
         # do we show the delete button?
         show_delete = is_author and delete and not thing._deleted
 
-        can_gild = (
+        # Removing the gilding for now...
+        can_gild = False
+
+        old_can_gild = (
+
             # you can't gild your own comment
             not is_author
             # no point in showing the button for things you've already gilded
