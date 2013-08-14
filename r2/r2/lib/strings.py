@@ -190,6 +190,8 @@ Note: there are a couple of places outside of your space where someone can click
     r_all_minus_description = _("Displaying content from /space/all of lightnet, except the following spaces:"),
     all_minus_gold_only = _('Filtering /space/all is a feature only available to [lightnet gold](/gold/about) subscribers. Displaying unfiltered results from /space/all.'),
 
+    r_friends_description = _("/space/friends displays content from all your lightnet friends."),
+
     missing_credit_name = _("missing name"),
     bad_credit_number = _("invalid credit card number"),
     bad_credit_expiry = _("invalid expiration date"),
