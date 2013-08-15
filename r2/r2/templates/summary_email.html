@@ -107,5 +107,12 @@ domain = get_domain(subreddit=False)
 
 % endif
   </div>
+
+<% 
+    unsubscribe_absolute_url = "http://%s%s" % (domain, '/prefs/#activity_summary_email')
+
+%>
+
+  <div>You can unsubscribe on <a href="${unsubscribe_absolute_url}">your preference page</a></div>
 </body>
 </html>

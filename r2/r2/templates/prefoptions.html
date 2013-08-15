@@ -312,6 +312,13 @@
   </tr>
   %endif
   <tr>
+    <th><a id="activity_summary_email" name="activity_summary_email"></a>${_("activity summary email")}</th>
+    <td class="prefright">
+        ${checkbox(_("send a summary of recent activity every day"), "send_activity_summary_email")}
+        <br/>
+    </td>
+  </tr>
+  <tr>
     <td>
       <input type="submit" class="btn" value="${_('save options')}"/>
     </td>
