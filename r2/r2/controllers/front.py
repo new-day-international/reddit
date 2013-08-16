@@ -57,7 +57,7 @@ from operator import attrgetter
 import string
 import random as rand
 import re, socket
-import time as time_module
+import time
 from urllib import quote_plus
 
 class FrontController(RedditController, OAuth2ResourceController):
@@ -896,7 +896,7 @@ class FrontController(RedditController, OAuth2ResourceController):
             res = listing.listing()
         except SearchException + (socket.error,) as e:
             return self.search_fail(e)
-        timing = time_module.time() - builder.start_time
+        timing = time.time() - builder.start_time
 
         return builder.results, timing, res
 
