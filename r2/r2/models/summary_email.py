@@ -29,7 +29,7 @@ def queue_summary_emails():
         if should_send_activity_summary_email(account):
             # using _add_item over add_item as that skips using a daemon thread to talk
             # to the amqp server that might not finish it's job before the process exits
-            amqp._add_item('summary_email_q', str(ii.thing_id))
+            amqp._add_item('summary_email_q', str(account._id))
     end = datetime.datetime.now()
     print "Time to scan accounts to queue emails: %s" % (end - start)
 
@@ -53,6 +53,8 @@ def should_send_activity_summary_email(account):
     start_of_epoc = pytz.utc.localize(datetime.datetime.utcfromtimestamp(0))
     print getattr(account, 'last_email_sent_at', start_of_epoc)
     if getattr(account, 'last_email_sent_at', start_of_epoc) > a_day_ago:
+        return False
+    if not getattr(account, 'email_verified', False):
         return False
 
     return True
