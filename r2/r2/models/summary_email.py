@@ -149,7 +149,7 @@ from email.mime.text import MIMEText
 def send_email(address, subject, html_body):
     msg = MIMEMultipart('alternative')
     msg['Subject'] = subject
-    msg['From'] = g.daily_email_from
+    msg['From'] = g.share_reply
     msg['To'] = address
 
     html_part = MIMEText(html_body.encode('utf-8'), 'html')
