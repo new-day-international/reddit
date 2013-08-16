@@ -306,22 +306,22 @@ class Email(object):
                 )
 
     subjects = {
-        Kind.SHARE : _("[reddit] %(user)s has shared a link with you"),
+        Kind.SHARE : _("[%(domain)s] %(user)s has shared a link with you"),
         Kind.FEEDBACK : _("[feedback] feedback from '%(user)s'"),
         Kind.ADVERTISE :  _("[ad_inq] feedback from '%(user)s'"),
-        Kind.OPTOUT : _("[reddit] email removal notice"),
-        Kind.OPTIN  : _("[reddit] email addition notice"),
-        Kind.RESET_PASSWORD : _("[reddit] reset your password"),
-        Kind.VERIFY_EMAIL : _("[reddit] verify your email address"),
-        Kind.BID_PROMO : _("[reddit] your bid has been accepted"),
-        Kind.ACCEPT_PROMO : _("[reddit] your promotion has been accepted"),
-        Kind.REJECT_PROMO : _("[reddit] your promotion has been rejected"),
-        Kind.QUEUED_PROMO : _("[reddit] your promotion has been charged"),
-        Kind.LIVE_PROMO   : _("[reddit] your promotion is now live"),
-        Kind.FINISHED_PROMO : _("[reddit] your promotion has finished"),
-        Kind.NEW_PROMO : _("[reddit] your promotion has been created"),
-        Kind.NERDMAIL : _("[reddit] hey, nerd!"),
-        Kind.GOLDMAIL : _("[reddit] reddit gold activation link")
+        Kind.OPTOUT : _("[%(domain)s] email removal notice"),
+        Kind.OPTIN  : _("[%(domain)s] email addition notice"),
+        Kind.RESET_PASSWORD : _("[%(domain)s] reset your password"),
+        Kind.VERIFY_EMAIL : _("[%(domain)s] verify your email address"),
+        Kind.BID_PROMO : _("[%(domain)s] your bid has been accepted"),
+        Kind.ACCEPT_PROMO : _("[%(domain)s] your promotion has been accepted"),
+        Kind.REJECT_PROMO : _("[%(domain)s] your promotion has been rejected"),
+        Kind.QUEUED_PROMO : _("[%(domain)s] your promotion has been charged"),
+        Kind.LIVE_PROMO   : _("[%(domain)s] your promotion is now live"),
+        Kind.FINISHED_PROMO : _("[%(domain)s] your promotion has finished"),
+        Kind.NEW_PROMO : _("[%(domain)s] your promotion has been created"),
+        Kind.NERDMAIL : _("[%(domain)s] hey, nerd!"),
+        Kind.GOLDMAIL : _("[%(domain)s] %(domain)s gold activation link")
         }
 
     def __init__(self, user, thing, email, from_name, date, ip, banned_ip,
@@ -342,9 +342,9 @@ class Email(object):
         self.reply_to = reply_to
         self.subject = self.subjects.get(kind, "")
         try:
-            self.subject = self.subject % dict(user = self.from_name())
+            self.subject = self.subject % dict(user = self.from_name(), domain = g.domain)
         except UnicodeDecodeError:
-            self.subject = self.subject % dict(user = "a user")
+            self.subject = self.subject % dict(user = "a user", domain = g.domain)
         
 
     def from_name(self):
