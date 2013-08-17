@@ -158,6 +158,6 @@ def send_email(address, subject, html_body):
     server = smtplib.SMTP(g.smtp_server)
     server.starttls()
     server.login(g.smtp_username, g.smtp_password)
-    server.sendmail(g.daily_email_from, address, msg.as_string())
+    server.sendmail(g.share_reply, address, msg.as_string())
     server.quit()
 
