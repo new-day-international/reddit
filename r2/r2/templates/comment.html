@@ -54,13 +54,12 @@ ${parent.midcol(not thing.collapsed, cls = cls)}
   %if in_search_listing:
     %if thing.link:
       %if thing.link.title:
-        <span class="reply">${_("Re:")}&#32;</span>
-        <a href="${thing.link.url}" class="title"
+        <a href="${thing.permalink + '?context=5'}" class="title"
            %if thing.nofollow:
              rel="nofollow"
            %endif
            >
-          ${thing.link.title}
+          ${_("Re:")}&#32;${thing.link.title}
         </a>
       %else:
           ${thing.link.url}
