@@ -267,17 +267,7 @@
     <li class="first">
       ${self.bylink_button(_("permalink"), thing.permalink)}
     </li>
-  %endif
-  %if thing.saved:
-    <li class="comment-unsave-button">
-       ${self.state_button("unsave", _("unsave"), "toggle_save(this)", _("save"))}
-    </li>
   %else:
-    <li class="comment-save-button">
-       ${self.state_button("save", _("save"), "toggle_save(this)", _("unsave"))}
-    </li>
-  %endif
-  %if in_search_listing:
     <li>
       ${self.bylink_button(_("context"), thing.permalink + "?context=3")}
     </li>
@@ -287,6 +277,15 @@
                           _sr_path = True, 
                           a_class = None, 
                           newwindow = thing.new_window)}
+    </li>
+  %endif
+  %if thing.saved:
+    <li class="comment-unsave-button">
+       ${self.state_button("unsave", _("unsave"), "toggle_save(this)", _("save"))}
+    </li>
+  %else:
+    <li class="comment-save-button">
+       ${self.state_button("save", _("save"), "toggle_save(this)", _("unsave"))}
     </li>
   %endif
   %if thing.deleted:
@@ -310,14 +309,14 @@
     %endif
     ${self.banbuttons()}
     ${self.distinguish()}
-    % if thing.can_gild:
+    %if thing.can_gild:
       <li>
       <a href="/gold?goldtype=gift&months=1&comment=${thing.thing._fullname}"
           title="${_("give lightnet gold in appreciation of this comment.")}"
           class="give-gold login-required"
           >${_("give gold")}</a>
       </li>
-    % endif
+    %endif
     %if not in_search_listing and thing.can_reply:
       <li>
         ${self.simple_button(_("reply {verb}"), "reply")}
