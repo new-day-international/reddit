@@ -70,7 +70,7 @@ from r2.lib.utils import (
 )
 from r2.lib.validator import (
     build_arg_list,
-    chksrname,
+    check_space_name,
     fullname_regex,
     valid_jsonp_callback,
     validate,
@@ -353,7 +353,7 @@ def set_subreddit():
         try:
             c.site = Subreddit._by_name(sr_name, stale=can_stale)
         except NotFound:
-            sr_name = chksrname(sr_name)
+            sr_name = check_space_name(sr_name)
             if sr_name:
                 redirect_to("/spaces/search?q=%s" % sr_name)
             elif not c.error_page and not request.path.startswith("/api/login/") :

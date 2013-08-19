@@ -22,7 +22,7 @@
 from pylons.controllers.util import abort, redirect_to
 
 from r2.lib.base import BaseController
-from r2.lib.validator import chkuser, chksrname
+from r2.lib.validator import check_user, check_space_name
 
 
 class RedirectController(BaseController):
@@ -30,13 +30,13 @@ class RedirectController(BaseController):
         return redirect_to(str(dest))
 
     def GET_user_redirect(self, username):
-        user = chkuser(username)
+        user = check_user(username)
         if not user:
             abort(400)
         return redirect_to("/user/" + user, _code=301)
 
     def GET_timereddit_redirect(self, timereddit, rest=None):
-        tr_name = chksrname(timereddit)
+        tr_name = check_space_name(timereddit)
         if not tr_name:
             abort(400)
         if rest:

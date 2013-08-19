@@ -502,13 +502,7 @@ class ApiController(RedditController, OAuth2ResourceController):
     @validatedForm(VCaptcha(),
                    VRatelimit(rate_ip = True, prefix = "rate_register_"),
                    name = VFullname(['user']),
-                   email=ValidEmails(
-                       "email",
-                       num=1,
-                       docs={
-                           "email": "(optional) the user's email address",
-                       },
-                   ),
+                   email=VEmail('email'),
                    password = VPassword(['passwd', 'passwd2']),
                    rem = VBoolean('rem'))
     def _handle_register(self, form, responder, name, email,
@@ -517,7 +511,8 @@ class ApiController(RedditController, OAuth2ResourceController):
         if not (responder.has_errors("user", errors.BAD_USERNAME,
                                 errors.USERNAME_TAKEN_DEL,
                                 errors.USERNAME_TAKEN) or
-                responder.has_errors("email", errors.BAD_EMAILS) or
+                responder.has_errors("email", errors.BAD_EMAIL,
+                                errors.EMAIL_TAKEN) or
                 responder.has_errors("passwd", errors.BAD_PASSWORD) or
                 responder.has_errors("passwd2", errors.BAD_PASSWORD_MATCH) or
                 responder.has_errors('ratelimit', errors.RATELIMIT) or

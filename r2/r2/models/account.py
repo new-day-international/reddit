@@ -272,9 +272,8 @@ class Account(Thing):
     @classmethod
     @memoize('account._by_name')
     def _by_name_cache(cls, name, allow_deleted = False):
-        #relower name here, just in case
         deleted = (True, False) if allow_deleted else False
-        q = cls._query(lower(Account.c.name) == name.lower(),
+        q = cls._query(lower(Account.c.name) == name,
                        Account.c._spam == (True, False),
                        Account.c._deleted == deleted)
 
@@ -291,6 +290,28 @@ class Account(Thing):
             return cls._byID(uid, True)
         else:
             raise NotFound, 'Account %s' % name
+    @classmethod
+
+    @memoize('account._by_email')
+    def _by_email_cache(cls, email, allow_deleted = False):
+        deleted = (True, False) if allow_deleted else False
+        q = cls._query(lower(Account.c.email) == email,
+                       Account.c._spam == (True, False),
+                       Account.c._deleted == deleted)
+
+        q._limit = 1
+        l = list(q)
+        if l:
+            return l[0]._id
+
+    @classmethod
+    def _by_email(cls, email, allow_deleted = False, _update = False):
+        #lower name here so there is only one cache
+        uid = cls._by_email_cache(email.lower(), allow_deleted, _update = _update)
+        if uid:
+            return cls._byID(uid, True)
+        else:
+            raise NotFound, 'Account with email %s' % email
 
     @classmethod
     def _fullname_to_realnameID(cls, fullname):
@@ -692,7 +713,6 @@ def valid_admin_cookie(cookie):
     return (constant_time_compare(cookie, expected_cookie),
             first_login)
 
-
 def valid_otp_cookie(cookie):
     if g.read_only_mode:
         return False
@@ -717,7 +737,6 @@ def valid_otp_cookie(cookie):
     expected_cookie = c.user.make_otp_cookie(remembered_at)
     return constant_time_compare(cookie, expected_cookie)
 
-
 def valid_feed(name, feedhash, path):
     if name and feedhash and path:
         from r2.lib.template_helpers import add_sr
@@ -741,11 +760,14 @@ def make_feedurl(user, path, ext = "rss"):
     u.set_extension(ext)
     return u.unparse()
 
-def valid_login(name, password):
+def valid_login(name, email, password):
     try:
-        a = Account._by_name(name)
+        a = Account._by_email(email)
     except NotFound:
-        return False
+        try:
+            a = Account._by_name(name)
+        except NotFound:
+            return False
 
     if not a._loaded: a._load()
     if a._banned:

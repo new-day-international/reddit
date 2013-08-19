@@ -511,7 +511,7 @@ class VCssMeasure(Validator):
 
 subreddit_rx = re.compile(r"\A[A-Za-z0-9][A-Za-z0-9_]{2,20}\Z")
 
-def chksrname(x):
+def check_space_name(x):
     #notice the space before reddit.com
     if x in ('friends', 'all', ' lightnet'):
         return False
@@ -1056,7 +1056,7 @@ class VPassword(Validator):
 
 user_rx = re.compile(r"\A[\w-]{3,20}\Z", re.UNICODE)
 
-def chkuser(x):
+def check_user(x):
     if x is None:
         return None
     try:
@@ -1072,7 +1072,7 @@ class VUname(VRequired):
     def __init__(self, item, *a, **kw):
         VRequired.__init__(self, item, errors.BAD_USERNAME, *a, **kw)
     def run(self, user_name):
-        user_name = chkuser(user_name)
+        user_name = check_user(user_name)
         if not user_name:
             return self.error(errors.BAD_USERNAME)
         else:
@@ -1123,19 +1123,53 @@ class VLoggedOut(Validator):
         if c.user_is_loggedin:
             self.set_error(errors.LOGGED_IN)
 
+email_re  = re.compile(r'.+@.+\..+')
+
+def check_email(x):
+    if x is None:
+        return None
+    try:
+        return str(x) if email_re.match(x) else None
+    except TypeError:
+        return None
+    except UnicodeEncodeError:
+        return None
+
+class VEmail(VRequired):
+    def __init__(self, item, *a, **kw):
+        VRequired.__init__(self, item, errors.BAD_EMAIL, *a, **kw)
+    def run(self, email):
+        email = check_email(email)
+        if not email:
+            return self.error(errors.BAD_EMAIL)
+        else:
+            try:
+                a = Account._by_email(email, True)
+                return self.error(errors.EMAIL_TAKEN)
+            except NotFound:
+                return email
+
+    def param_docs(self):
+        return {
+            self.param[0]: "a valid, unused, email",
+        }
+
 class VLogin(VRequired):
     def __init__(self, item, *a, **kw):
         VRequired.__init__(self, item, errors.WRONG_PASSWORD, *a, **kw)
 
-    def run(self, user_name, password):
-        user_name = chkuser(user_name)
+    def run(self, login_string, password):
+        user_name = check_user(login_string)
+        email = check_email(login_string)
         user = None
-        if user_name:
+        if user_name or email:
             try:
                 str(password)
             except UnicodeEncodeError:
                 password = password.encode('utf8')
-            user = valid_login(user_name, password)
+            user = valid_login(user_name, email, password)
+            if not user:
+                user = valid_login
         if not user:
             self.error()
             return False
@@ -1253,7 +1287,7 @@ class VExistingUname(VRequired):
 
         # make sure the name satisfies our user name regexp before
         # bothering to look it up.
-        name = chkuser(name)
+        name = check_user(name)
         if name:
             try:
                 return Account._by_name(name)

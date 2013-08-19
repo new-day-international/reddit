@@ -106,7 +106,8 @@
           <input value="" name="email" id="email_reg"
                  type="email" maxlength="50" tabindex="3"/>
           <label for="email_reg" class="note">${_('we only send email at your request')}</label>
-            ${error_field("BAD_EMAILS", "email", kind="span")}
+            ${error_field("BAD_EMAIL", "email", kind="span")}
+            ${error_field("EMAIL_TAKEN", "email", kind="span")}
         </li>
         <li>
           <label for="passwd_reg">${_('password')}:</label>
