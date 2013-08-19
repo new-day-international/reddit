@@ -3196,7 +3196,7 @@ class ApiController(RedditController, OAuth2ResourceController):
 
         exclude = Subreddit.default_subreddits()
 
-        faceting = {"reddit":{"sort":"-sum(text_relevance)", "count":20}}
+        faceting = {"space":{"sort":"-sum(text_relevance)", "count":20}}
         results = SearchQuery(query, sort="relevance", faceting=faceting,
                               syntax="plain").run()
 

@@ -724,7 +724,7 @@ _SEARCH = "/2011-02-01/search?"
 INVALID_QUERY_CODES = ('CS-UnknownFieldInMatchExpression',
                        'CS-IncorrectFieldTypeInMatchExpression',
                        'CS-InvalidMatchSetExpression',)
-DEFAULT_FACETS = {"reddit": {"count":20}}
+DEFAULT_FACETS = {"space": {"count":9}}
 def basic_query(query=None, bq=None, faceting=None, size=1000,
                 start=0, rank="-relevance", return_fields=None, record_stats=False,
                 search_api=None):
