@@ -46,9 +46,12 @@ ${parent.midcol(not thing.collapsed, cls = cls)}
 </%def>
 
 <%def name="ParentDiv()">
+<%
+  in_search_listing = c.profilepage or c.show_comment_parent_link
+%>
   ${parent.ParentDiv()}
   <a name="${thing._id36}" ></a>
-  %if c.profilepage or c.show_comment_parent_link:
+  %if in_search_listing:
     %if thing.link:
       %if thing.link.title:
         <span class="reply">${_("Re:")}&#32;</span>
