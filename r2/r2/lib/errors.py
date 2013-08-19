@@ -47,7 +47,7 @@ error_list = dict((
         ('DELETED_COMMENT', _('that comment has been deleted')),
         ('DELETED_THING', _('that element has been deleted')),
         ('BAD_PASSWORD', _('that password is unacceptable')),
-        ('WRONG_PASSWORD', _('invalid password')),
+        ('WRONG_PASSWORD', _('invalid password, real name ID, or email')),
         ('BAD_PASSWORD_MATCH', _('passwords do not match')),
         ('NO_NAME', _('please enter a name')),
         ('NO_EMAIL', _('please enter an email address')),

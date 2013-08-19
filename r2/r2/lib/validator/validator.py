@@ -1168,8 +1168,7 @@ class VLogin(VRequired):
             except UnicodeEncodeError:
                 password = password.encode('utf8')
             user = valid_login(user_name, email, password)
-            if not user:
-                user = valid_login
+
         if not user:
             self.error()
             return False

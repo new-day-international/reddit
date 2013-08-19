@@ -761,9 +761,17 @@ def make_feedurl(user, path, ext = "rss"):
     return u.unparse()
 
 def valid_login(name, email, password):
-    try:
-        a = Account._by_email(email)
-    except NotFound:
+
+    # First try the email address
+    a = None
+    if email:
+        try:
+            a = Account._by_email(email)
+        except NotFound:
+            a = None
+
+    # Then try the name
+    if not a:
         try:
             a = Account._by_name(name)
         except NotFound:
