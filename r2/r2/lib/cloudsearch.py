@@ -702,9 +702,9 @@ class Results(object):
     @property
     def subreddit_facets(self):
         '''Filter out spaces that the user isn't allowed to see'''
-        if not self._subreddits and 'reddit' in self._facets:
+        if not self._subreddits and 'space' in self._facets:
             sr_facets = [(sr['value'], sr['count']) for sr in
-                         self._facets['reddit']]
+                         self._facets['space']]
 
             # look up spaces
             srs_by_name = Subreddit._by_name([name for name, count
