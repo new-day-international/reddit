@@ -263,9 +263,11 @@
 <%
    in_search_listing = c.profilepage or c.show_comment_parent_link
 %>
-  <li class="first">
-    ${self.bylink_button(_("permalink"), thing.permalink)}
-  </li>
+  %if not in_search_listing:
+    <li class="first">
+      ${self.bylink_button(_("permalink"), thing.permalink)}
+    </li>
+  %endif
   %if thing.saved:
     <li class="comment-unsave-button">
        ${self.state_button("unsave", _("unsave"), "toggle_save(this)", _("save"))}
