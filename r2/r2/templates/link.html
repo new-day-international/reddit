@@ -201,12 +201,11 @@ ${parent.thing_data_attributes(what)} data-ups="${what.upvotes}" data-downs="${w
  ${self.thumbnail()}
 </%def>
 
-
 <%def name="link_at_domain()">
   %if (not thing.is_self) or c.user_is_admin:
     <span class="domain">
       %if not thing.is_self:
-        (${plain_link(thing.domain_link_text, thing.url, _sr_path = False)})
+        (${plain_link(thing.domain_link_text, thing.url, _sr_path = False, target = '_blank')})
       %endif
       %if c.user_is_admin:
         &#32;

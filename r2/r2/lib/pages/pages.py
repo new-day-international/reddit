@@ -68,7 +68,6 @@ from r2.lib.scraper import get_media_embed
 from r2.lib.log import log_text
 from r2.lib.memoize import memoize
 from r2.lib.utils import trunc_string as _truncate, to_date
-from r2.lib.filters import safemarkdown
 
 from babel.numbers import format_currency
 from collections import defaultdict

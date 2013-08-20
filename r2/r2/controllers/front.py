@@ -315,7 +315,7 @@ class FrontController(RedditController, OAuth2ResourceController):
 
         if previous_visits:
             # Confusing to new users.
-            # displayPane.append(CommentVisitsBox(previous_visits))
+            displayPane.append(CommentVisitsBox(previous_visits))
 
             # Used in later "more comments" renderings
             pv_hex = md5(repr(previous_visits)).hexdigest()

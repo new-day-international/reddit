@@ -101,30 +101,32 @@
       ${language_checkboxes(default = c.user.pref_content_langs)}
     </td>
   </tr>
-  %if c.user_is_loggedin:
-  <tr>
-    <th>${_("clicking options")}</th>
-    <td class="prefright">
-      ${checkbox(_("display links with a reddit toolbar"), "frame")}
-      <br/>
-      ${checkbox(_("open links in a new window"), "newwindow")}
-    </td>
-  </tr>
+%if c.user_is_loggedin:
+  %if false:
+    <tr>
+      <th>${_("clicking options")}</th>
+      <td class="prefright">
+        ${checkbox(_("display links with a reddit toolbar"), "frame")}
+        <br/>
+        ${checkbox(_("open links in a new window"), "newwindow")}
+      </td>
+    </tr>
+  %endif
   <tr>
     <th>${_("media")}</th>
     <td class="prefright">
       %if not c.user.pref_compress:
-      ${media_radio("on", _("show thumbnails next to links"))}
-      ${media_radio("off", _("don't show thumbnails next to links"))}
-      ${media_radio("subreddit", _("show thumbnails based on that space's media preferences"))}
-     ${checkbox(_("make safe(r) for work "), "no_profanity", disabled = not c.user.pref_over_18, disabled_text = "(requires over 18)")}
-      &#32;
-      <span class="little gray">
-        ${_("(Don't show thumbnails next to anything labeled NSFW)")}
-      </span>
+        ${media_radio("on", _("show thumbnails next to links"))}
+        ${media_radio("off", _("don't show thumbnails next to links"))}
+        ${media_radio("subreddit", _("show thumbnails based on that space's media preferences"))}
+       ${checkbox(_("make safe(r) for work "), "no_profanity", disabled = not c.user.pref_over_18, disabled_text = "(requires over 18)")}
+        &#32;
+        <span class="little gray">
+          ${_("(Don't show thumbnails next to anything labeled NSFW)")}
+        </span>
       %else:
-      <p class="error">${_("to enable thumbnails, disable compressed link display")}</p>
-      <input type="hidden" name="media" value="${c.user.pref_media}"/>
+        <p class="error">${_("to enable thumbnails, disable compressed link display")}</p>
+        <input type="hidden" name="media" value="${c.user.pref_media}"/>
       %endif
      <br/>
     </td>
@@ -132,7 +134,6 @@
   <tr>
     <th>${_("link options")}</th>
     <td class="prefright">
-%if c.user_is_loggedin:
       <p>
         ${checkbox(_("show the spotlight box on the front page"), "organic")}
         &#32;
@@ -140,9 +141,6 @@
           ${_("(it shows new and promoted links, and gives you a say in what's spam and what isn't.)")}
         </span>
       </p>
-%else:
-      <p>${checkbox(_("show me new links on the front page"), "organic")}</p>
-%endif
 
       <p>${checkbox(_("show me links I've recently viewed"), "clickgadget")}</p>
       <p>${checkbox(_("compress the link display"), "compress")}</p>
@@ -179,28 +177,34 @@
   <tr>
     <th>${_("comment options")}</th>
     <td class="prefright">
-    <% 
-       input = capture(num_input, c.user.pref_min_comment_score,
-                       'min_comment_score')
-       %>
-    <p>
-      ${unsafe(_("don't show me comments with a score less than %(num)s") % dict(num = input))}
-      &#32;<span class="little gray">${_("(blank for none)")}</span>
-    </p>
-    <p>
-      <% 
-       input = capture(num_input, c.user.pref_num_comments,
-       'num_comments')
-       %>
-    <% s = c.user.pref_num_comments %>
-    ${unsafe(_("display %(num)s comments by default") % \
-    dict(num = input))}
-    &#32;
-    <span class="little gray">
-      (1 - ${g.max_comments});
+      <%
+         input = capture(num_input, c.user.pref_min_comment_score,
+                         'min_comment_score')
+         %>
+      <p>
+        ${unsafe(_("don't show me comments with a score less than %(num)s") % dict(num = input))}
+        &#32;<span class="little gray">${_("(blank for none)")}</span>
+      </p>
+      <p>
+        <%
+         input = capture(num_input, c.user.pref_num_comments,
+         'num_comments')
+         %>
+      <% s = c.user.pref_num_comments %>
+      ${unsafe(_("display %(num)s comments by default") % \
+      dict(num = input))}
       &#32;
-      ${_("the smaller the number, the faster your comments pages will load")}
-    </span>
+      <span class="little gray">
+        (1 - ${g.max_comments});
+        &#32;
+        ${_("the smaller the number, the faster your comments pages will load")}
+      </span>
+      <p>
+      ${checkbox(_("highlight new comments"), "highlight_new_comments")}
+      &#32;<span class="little gray">
+        (${_("we'll remember your visits for 48 hours and show you which comments you haven't seen yet")})
+      </span>
+      </p>
     </td>
   </tr>
   <tr>
@@ -298,23 +302,11 @@
       </span>
     </td>
   </tr>
-  %endif
-  %if c.user.gold:
+%endif
   <tr>
-    <th>${_("comments")}</th>
+    <th>${_("email options")}</th>
     <td class="prefright">
-        ${checkbox(_("highlight new comments"), "highlight_new_comments")}
-        &#32;<span class="little gray">
-          (${_("we'll remember your visits for 48 hours and show you which comments you haven't seen yet")})
-        </span>
-        <br/>
-    </td>
-  </tr>
-  %endif
-  <tr>
-    <th><a id="activity_summary_email" name="activity_summary_email"></a>${_("activity summary email")}</th>
-    <td class="prefright">
-        ${checkbox(_("send a summary of recent activity every day"), "send_activity_summary_email")}
+        ${checkbox(_("send an email summary of recent activity every day"), "send_activity_summary_email")}
         <br/>
     </td>
   </tr>
