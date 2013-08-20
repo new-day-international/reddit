@@ -15,6 +15,24 @@ from r2.lib import amqp
 
 from mako.template import Template
 
+# useful for testing sending emails: paster run run.ini r2/models/summary_email.py -c 'reset_last_email_sent_at_for_all_accounts()'
+def test_send_summary_emails():
+    accounts = fetch_things2(Account._query(Account.c.email != None, sort=asc('_date')))
+    for account in accounts:
+        a_day_ago = datetime.datetime.now(pytz.utc) - datetime.timedelta(hours=24)
+        account.last_email_sent_at = a_day_ago
+        account._commit()
+        send_account_summary_email(account._id, verbose=True)
+
+# useful for testing sending emails: paster run run.ini r2/models/summary_email.py -c 'reset_last_email_sent_at_for_all_accounts()'
+def reset_last_email_sent_at_for_all_accounts():
+    start_of_epoc = pytz.utc.localize(datetime.datetime.utcfromtimestamp(0))
+
+    accounts = fetch_things2(Account._query(Account.c.email != None, sort=asc('_date')))
+    for account in accounts:
+        account.last_email_sent_at = start_of_epoc
+        account._commit()
+
 # An short running crontab launched upstart job
 def queue_summary_emails():
     start = datetime.datetime.now()
@@ -51,7 +69,6 @@ def should_send_activity_summary_email(account):
     a_day_ago = datetime.datetime.now(pytz.utc) - datetime.timedelta(hours=24)
 
     start_of_epoc = pytz.utc.localize(datetime.datetime.utcfromtimestamp(0))
-    print getattr(account, 'last_email_sent_at', start_of_epoc)
     if getattr(account, 'last_email_sent_at', start_of_epoc) > a_day_ago:
         return False
     if not getattr(account, 'email_verified', False):
@@ -59,13 +76,8 @@ def should_send_activity_summary_email(account):
 
     return True
 
-def test_send_summary_emails():
-    accounts = fetch_things2(Account._query(Account.c.email != None, sort=asc('_date')))
-    for account in accounts:
-        if should_send_activity_summary_email(account):
-            print "%r" % (account.email,)
 
-def send_account_summary_email(account_thing_id):
+def send_account_summary_email(account_thing_id, verbose=False):
     account = Account._byID(account_thing_id, data=True)
     if not should_send_activity_summary_email(account):
         return
@@ -127,32 +139,27 @@ def send_account_summary_email(account_thing_id):
         active_links=active_links)
     # with open('out.html', 'w') as ff:
     #     ff.write(html_body)
-    send_email(account.email, "Today's news", html_body)
+    if verbose:
+        print "sending email to %s" % (account.email,)
+    send_email(account.email, html_body)
 
     account.last_email_sent_at = datetime.datetime.now(pytz.utc)
     account._commit()
 
 
-def reset_last_email_sent_at_for_all_accounts():
-    metadata = tdb_sql.make_metadata(g.dbm.type_db)
-    table = tdb_sql.get_data_table(metadata, 'account')
-    for row in sa.select([table]).where(table.c.key == 'email').execute():
-        account = Account._byID(row[0], data=True)
-        account.last_email_sent_at = None
-        account._commit()
 
 
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-def send_email(address, subject, html_body):
+def send_email(address, html_body):
     msg = MIMEMultipart('alternative')
-    msg['Subject'] = subject
-    msg['From'] = g.share_reply
+    msg['Subject'] = g.summary_email_subject
+    msg['From'] = '"%s" <%s>' % (g.summary_email_from_name, g.share_reply,)
     msg['To'] = address
 
-    html_part = MIMEText(html_body.encode('utf-8'), 'html')
+    html_part = MIMEText(html_body.encode('utf-8'), 'html', 'utf-8')
     msg.attach(html_part)
 
     server = smtplib.SMTP(g.smtp_server)
