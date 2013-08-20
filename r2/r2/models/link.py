@@ -508,10 +508,12 @@ class Link(Thing, Printable):
                 get_domain(cname=cname, subreddit=False),
                 item._id36)
 
-            if item.is_self:
-                item.href_url = item.permalink
-            else:
-                item.href_url = item.url
+            # always go to the permalink
+            item.href_url = item.permalink
+
+            # make the domain link
+            if not item.is_self:
+                item.domain_link_text = _("Go to link at %s") % item.domain
 
             # show the toolbar if the preference is set and the link
             # is neither a promoted link nor a self post

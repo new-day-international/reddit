@@ -102,7 +102,7 @@
     %endif
     &#32;
 
-    ${self.domain()}
+    ${self.link_at_domain()}
 
     %if c.user_is_admin:
         %for link_note in thing.link_notes:
@@ -202,14 +202,18 @@ ${parent.thing_data_attributes(what)} data-ups="${what.upvotes}" data-downs="${w
 </%def>
 
 
-<%def name="domain()">
-  <span class="domain">
-    (${plain_link(thing.domain, thing.domain_path, _sr_path = False)})
-    %if c.user_is_admin:
-      &#32;
-      <a class="adminbox" href="/admin/domain/${thing.domain}">d</a>
-    %endif
-  </span>
+<%def name="link_at_domain()">
+  %if (not thing.is_self) or c.user_is_admin:
+    <span class="domain">
+      %if not thing.is_self:
+        (${plain_link(thing.domain_link_text, thing.url, _sr_path = False)})
+      %endif
+      %if c.user_is_admin:
+        &#32;
+        <a class="adminbox" href="/admin/domain/${thing.domain}">d</a>
+      %endif
+    </span>
+  %endif
 </%def>
 
 <%def name="tagline()">
