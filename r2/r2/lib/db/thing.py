@@ -30,8 +30,7 @@ from copy import copy, deepcopy
 import operators
 import tdb_sql as tdb
 import sorts
-from .. utils import iters, Results, tup, to36, Storage, timefromnow
-from .. utils import iters, Results, tup, to36, Storage, thing_utils, timefromnow
+from .. utils import Results, tup, to36, timefromnow
 from r2.config import cache
 from r2.lib.cache import sgm
 from r2.lib.log import log_text
@@ -572,7 +571,7 @@ class Thing(DataThing):
     _type_prefix = 't'
 
     def __init__(self, ups = 0, downs = 0, date = None, deleted = False,
-                 spam = False, id = None, **attrs):
+                 spam = False, active = None, id = None, **attrs):
         DataThing.__init__(self)
 
         with self.safe_set_attr:
@@ -582,13 +581,14 @@ class Thing(DataThing):
                 self._loaded = False
 
             if not date: date = datetime.now(g.tz)
-            
+            if not active: active = date
+
             self._ups = ups
             self._downs = downs
             self._date = date
             self._deleted = deleted
             self._spam = spam
-            self._active = date
+            self._active = active
 
         #new way
         for k, v in attrs.iteritems():
@@ -623,7 +623,7 @@ class Thing(DataThing):
     @classmethod
     def _build(cls, id, bases):
         return cls(bases.ups, bases.downs, bases.date,
-                   bases.deleted, bases.spam, id)
+                   bases.deleted, bases.spam, bases.active, id)
 
     @classmethod
     def _query(cls, *all_rules, **kw):

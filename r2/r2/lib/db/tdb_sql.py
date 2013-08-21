@@ -655,7 +655,8 @@ def get_thing(type_id, thing_id):
                        downs = row.downs,
                        date = row.date,
                        deleted = row.deleted,
-                       spam = row.spam)
+                       spam = row.spam,
+                       active = row.active)
         if single:
             res = stor
             # check that we got what we asked for

@@ -299,6 +299,10 @@ def replace_render(listing, item, render_func):
         # compute the last edited time here so we don't end up caching it
         if hasattr(item, "_active"):
             replacements['activesince'] = timesince(item._active)
+            if item._date == item._active:
+                print "item active matches date"
+            else:
+                print "item active does NOT match date"
 
         # Set in front.py:GET_comments()
         replacements['previous_visits_hex'] = c.previous_visits_hex
