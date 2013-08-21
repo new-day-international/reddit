@@ -613,7 +613,7 @@ class VSubredditName(VRequired):
         VRequired.__init__(self, item, errors.BAD_SR_NAME, *a, **kw)
 
     def run(self, name):
-        name = chksrname(name)
+        name = check_space_name(name)
         if not name:
             return self.error()
         else:
