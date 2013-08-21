@@ -601,14 +601,14 @@ class Link(Thing, Printable):
                     taglinetext += author_text
                 elif item.different_sr:
                     if item.comment_author_id:
-                        taglinetext = _("last comment %(whenactive)s ago by %(commentauthor)s, added %(when)s ago by %(author)s "
-                                        "to %(reddit)s")
+                        taglinetext = _("last comment %(whenactive)s ago by %(commentauthor)s, started %(when)s ago by %(author)s "
+                                        "in %(reddit)s")
                     else:
                         taglinetext = _("added %(when)s ago by %(author)s "
                                         "to %(reddit)s")
                 else:
                     if item.comment_author_id:
-                        taglinetext = _("last comment %(whenactive)s ago by %(commentauthor)s, added %(when)s ago by %(author)s")
+                        taglinetext = _("last comment %(whenactive)s ago by %(commentauthor)s, started %(when)s ago by %(author)s")
                     else:
                         taglinetext = _("added %(when)s ago by %(author)s")
             item.taglinetext = taglinetext
