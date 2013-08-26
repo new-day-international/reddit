@@ -468,9 +468,10 @@ class Link(Thing, Printable):
                 item.hide_score = True
             elif user == item.author:
                 item.hide_score = False
-# TODO: uncomment to let gold users see the score of upcoming links
-#            elif user.gold:
-#                item.hide_score = False
+#   TODO: uncomment to let gold users see the score of upcoming links
+#           elif user.gold:
+#               item.hide_score = False
+
             elif item._date > timeago("2 hours"):
                 item.hide_score = True
             else:
@@ -579,26 +580,24 @@ class Link(Thing, Printable):
             if item.score_fmt == Score.points:
                 taglinetext = ("<span>" +  _("%(score)s added %(when)s ago") + "</span>")
                 if item.different_sr:
-                    taglinetext += (" <span>" + _("by %(author)s to %(reddit)s") + "</span>")
+                    taglinetext += "<span>" + _("by %(author)s to %(reddit)s") + "</span>"
                 else:
-                    taglinetext += " <span>" + _("by %(author)s") + "</span>"
-
-            elif item.different_sr:
-                if item.comment_author_id:
-                    taglinetext = _("last comment %(whenactive)s ago by %(commentauthor)s, "
-                                    "started %(when)s ago by %(author)s "
-                                    "in %(reddit)s")
-
-                else:
-                    taglinetext = _("added %(when)s ago by %(author)s "
-                                    "to %(reddit)s")
+                    taglinetext += "<span>" + _("by %(author)s") + "</span>"
 
             else:
+                # note the last comment author and item creator as appropriate
                 if item.comment_author_id:
                     taglinetext = _("last comment %(whenactive)s ago by %(commentauthor)s, "
                                     "started %(when)s ago by %(author)s")
                 else:
                     taglinetext = _("added %(when)s ago by %(author)s")
+
+                # note the reddit if appropriate
+                if item.different_sr:
+                    if item.comment_author_id:
+                        taglinetext += _(" in %(reddit)s")
+                    else:
+                        taglinetext += _(" to %(reddit)s")
 
             item.taglinetext = taglinetext
 
