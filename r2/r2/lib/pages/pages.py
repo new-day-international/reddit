@@ -529,7 +529,7 @@ class Reddit(Templated):
             neighbor_buttons = []
             for sr in neighbor_srs:
                 neighbor_buttons.append(SubredditButton(sr))
-            toolbar.append(NavMenu(neighbor_buttons, title='neighbors', type='tabdrop'))
+            toolbar.append(NavMenu(neighbor_buttons, title='neighbors', type='tabdrop', css_class='neighbors'))
 
         # Add the promote menu item for admin users or sponsors.
         if c.user_is_loggedin:
