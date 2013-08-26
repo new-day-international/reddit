@@ -198,7 +198,8 @@ ${parent.thing_data_attributes(what)} data-ups="${what.upvotes}" data-downs="${w
     %endif
     ${self.arrow(thing, 0, thing.likes == False)}
   </div>
- ${self.thumbnail()}
+## Removing Thumbnails for now since they're messing up the lines
+## ${self.thumbnail()}
 </%def>
 
 <%def name="link_at_domain()">
