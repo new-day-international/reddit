@@ -78,7 +78,7 @@ class Link(Thing, Printable):
                      ignore_reports=False,
                      comment_author_id=None,
                      )
-    _essentials = ('sr_id', 'author_id', 'comment_author_id')
+    _essentials = ('sr_id', 'author_id')
     _nsfw = re.compile(r"\bnsfw\b", re.I)
 
     def __init__(self, *a, **kw):
@@ -574,43 +574,32 @@ class Link(Thing, Printable):
             else:
                 item.comment_author = item.author
 
+            # generate the appropriate tagline text
             taglinetext = ''
-            if item.different_sr:
-                author_text = (" <span>" + _("by %(author)s to %(reddit)s") +
-                               "</span>")
-            else:
-                author_text = " <span>" + _("by %(author)s") + "</span>"
-            if item.editted:
-                if item.score_fmt == Score.points:
-                    taglinetext = ("<span>" +
-                                   _("%(score)s added %(when)s "
-                                     "ago%(lastedited)s") +
-                                   "</span>")
-                    taglinetext += author_text
-                elif item.different_sr:
-                    taglinetext = _("added %(when)s ago%(lastedited)s "
-                                    "by %(author)s to %(reddit)s")
+            if item.score_fmt == Score.points:
+                taglinetext = ("<span>" +  _("%(score)s added %(when)s ago") + "</span>")
+                if item.different_sr:
+                    taglinetext += (" <span>" + _("by %(author)s to %(reddit)s") + "</span>")
                 else:
-                    taglinetext = _("added %(when)s ago%(lastedited)s "
-                                    "by %(author)s")
-            else:
-                if item.score_fmt == Score.points:
-                    taglinetext = ("<span>" +
-                                   _("%(score)s added %(when)s ago") +
-                                   "</span>")
-                    taglinetext += author_text
-                elif item.different_sr:
-                    if item.comment_author_id:
-                        taglinetext = _("last comment %(whenactive)s ago by %(commentauthor)s, started %(when)s ago by %(author)s "
-                                        "in %(reddit)s")
-                    else:
-                        taglinetext = _("added %(when)s ago by %(author)s "
-                                        "to %(reddit)s")
+                    taglinetext += " <span>" + _("by %(author)s") + "</span>"
+
+            elif item.different_sr:
+                if item.comment_author_id:
+                    taglinetext = _("last comment %(whenactive)s ago by %(commentauthor)s, "
+                                    "started %(when)s ago by %(author)s "
+                                    "in %(reddit)s")
+
                 else:
-                    if item.comment_author_id:
-                        taglinetext = _("last comment %(whenactive)s ago by %(commentauthor)s, started %(when)s ago by %(author)s")
-                    else:
-                        taglinetext = _("added %(when)s ago by %(author)s")
+                    taglinetext = _("added %(when)s ago by %(author)s "
+                                    "to %(reddit)s")
+
+            else:
+                if item.comment_author_id:
+                    taglinetext = _("last comment %(whenactive)s ago by %(commentauthor)s, "
+                                    "started %(when)s ago by %(author)s")
+                else:
+                    taglinetext = _("added %(when)s ago by %(author)s")
+
             item.taglinetext = taglinetext
 
         if user_is_loggedin:
