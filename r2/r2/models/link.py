@@ -78,7 +78,7 @@ class Link(Thing, Printable):
                      ignore_reports=False,
                      comment_author_id=None,
                      )
-    _essentials = ('sr_id', 'author_id')
+    _essentials = ('sr_id', 'author_id', 'comment_author_id')
     _nsfw = re.compile(r"\bnsfw\b", re.I)
 
     def __init__(self, *a, **kw):
