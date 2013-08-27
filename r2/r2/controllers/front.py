@@ -183,7 +183,7 @@ class FrontController(RedditController, OAuth2ResourceController):
         if append:
             copy = list(old_visits) # make a copy
             copy.append(new_visit)
-            if len(copy) > 10:
+            if len(copy) > 1:
                 copy.pop(0)
             g.hardcache.set(hc_key, copy, 86400 * 2)
 
