@@ -41,7 +41,7 @@ from r2.lib.pages import (EnemyList, FriendList, ContributorList, ModList,
                           ClickGadget, UrlParser, WrappedUser)
 from r2.lib.pages import FlairList, FlairCsv, FlairTemplateEditor, \
     FlairSelector
-from r2.lib.pages import PrefApps
+from r2.lib.pages import PrefApps, SubredditTopBar
 from r2.lib.pages.things import wrap_links, default_thing_wrapper
 from r2.models.last_modified import LastModified
 
@@ -1840,6 +1840,9 @@ class ApiController(RedditController, OAuth2ResourceController):
             queries.new_subreddit(sr)
             changed(sr)
 
+            # Clear the space bar at the top of the page so it comes up correct.
+            SubredditTopBar.clear_cache()
+
         #editting an existing reddit
         elif sr.is_moderator_with_perms(c.user, 'config') or c.user_is_admin:
             #assume sr existed, or was just built
@@ -2480,6 +2483,8 @@ class ApiController(RedditController, OAuth2ResourceController):
                 if sr.remove_subscriber(c.user):
                     sr._incr('_ups', -1)
             changed(sr, True)
+            SubredditTopBar.clear_cache()
+
         except CreationError:
             # This only seems to happen when someone is pounding on the
             # subscribe button or the DBs are really lagged; either way,

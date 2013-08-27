@@ -1653,6 +1653,11 @@ class SubredditTopBar(CachedTemplate):
         CachedTemplate.__init__(self, name = name, langs = langs, t = t,
                                over18 = c.over18)
 
+    @classmethod
+    def clear_cache(cls):
+        Templated.clear_cache("SubredditTopBar", c.user.name)
+        Templated.clear_cache("RedditHeader", c.user.name)
+
     @property
     def my_reddits(self):
         if self._my_reddits is None:

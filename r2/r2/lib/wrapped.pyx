@@ -417,6 +417,13 @@ class Templated(object):
             ret[ekeys[fkey]] = val
         return ret
 
+    @classmethod
+    def clear_cache(cls, class_name, key):
+        from pylons import g
+
+        cache_key = 'render_%s(%s)' % (class_name, md5(key).hexdigest())
+        g.rendercache.delete(cache_key)
+
     def render(self, style = None, **kw):
         from r2.lib.filters import unsafe
         res = self._render(None, style, **kw)
@@ -513,6 +520,11 @@ class CachedTemplate(Templated):
         for x in a:
             keys.append(make_cachable(x))
         
+        # import sys
+        # result = "<%s:[%s]>" % (self.__class__.__name__, u''.join(keys))
+        # print "CachedTemplate.cache_key -> ", result
+        # sys.stdout.flush()
+
         return "<%s:[%s]>" % (self.__class__.__name__, u''.join(keys))
 
 
