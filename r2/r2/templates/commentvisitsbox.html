@@ -20,13 +20,13 @@
 ## reddit Inc. All Rights Reserved.
 ###############################################################################
 
-<div class="rounded gold-accent comment-visits-box">
+<div class="rounded comment-visits-box">
   <div class="title">
-    ${_("You've been here before. To highlight comments that were posted since one of your visits, select it below:")}
+    ${_("Comments posted since your last visit (if any) are highlighted below in blue.")}
   </div>
 
   %for i, visit in enumerate(thing.visits):
-  <div>
+  <div class="comment-visits">
     <input id="comment-visits-${i}" name="comment-visits"
            type="radio" value="${i}"
            onclick="highlight_new_comments(this.value)"
@@ -40,7 +40,7 @@
   </div>
   %endfor
 
-  <div>
+  <div class="comment-visits">
     <input id="comment-visits-none" name="comment-visits"
            type="radio" value="-1"
            onclick="highlight_new_comments(-1)" />
