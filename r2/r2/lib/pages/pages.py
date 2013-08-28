@@ -362,11 +362,7 @@ class Reddit(Templated):
                 fake_sub = isinstance(c.site, FakeSubreddit)
 
                 # Add a button for managing subscriptions
-                import sys
-                print "c.site.name -> '", c.site.name, "'"
-                sys.stdout.flush()
-
-                if fake_sub and c.site.name.strip() == "lightnet":
+                if fake_sub and c.site.name.strip() == g.default_sr:
                     ps.append(SideBox(title=strings.manage_subscriptions_label,
                                       css_class="submit manage-subscriptions",
                                       link="/spaces",
