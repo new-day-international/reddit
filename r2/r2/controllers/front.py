@@ -1178,7 +1178,8 @@ class FormsController(RedditController):
             c.user.email_verified = True
             c.user._commit()
             Award.give_if_needed("verified_email", c.user)
-            return self.redirect(dest)
+            content = PaneStack([PrefEmailConfirmed(email_address=c.user.email)])
+            return BoringPage(_("verified email"), content=content).render()
         else:
             # failure. let 'em know.
             content = PaneStack(

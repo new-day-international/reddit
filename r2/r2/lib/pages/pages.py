@@ -778,6 +778,12 @@ class PrefFeeds(Templated):
 class PrefOTP(Templated):
     pass
 
+class PrefEmailConfirmed(Templated):
+    """Preference form for updating email address and passwords"""
+    def __init__(self, email_address):
+        self.email_address = email_address
+        Templated.__init__(self)
+
 class PrefUpdate(Templated):
     """Preference form for updating email address and passwords"""
     def __init__(self, email = True, password = True, verify = False):
