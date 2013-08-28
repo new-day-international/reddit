@@ -22,6 +22,8 @@
 
 <%namespace file="printablebuttons.html" import="ynbutton" />
 
+%if False: # remove "contest mode" feature
+
 %if thing.can_edit:
   %if thing.contest_mode:
     ${ynbutton(_("disable contest mode"), _("contest mode disabled"), "set_contest_mode",
@@ -37,3 +39,5 @@
 %if thing.can_edit or thing.contest_mode:
   &nbsp;<span class="help-hoverable" title="${_('contest mode randomizes sorting and hides scores. this feature is temporarily available to assist best of 2012 contests.')}">(?)</span>
 %endif
+
+%endif # False - remove "contest mode" feature
