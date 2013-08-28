@@ -119,6 +119,7 @@ string_dict = dict(
     private_subreddit_message = _("the moderators of this space have set it to private. you must be a moderator or approved submitter to view its contents."),
     comments_panel_text = _("""The following is a sample of what Reddit users had to say about this page. The full discussion is available [here](%(fd_link)s); you can also get there by clicking the link's title (in the middle of the toolbar, to the right of the comments button)."""),
 
+    manage_subscriptions_label = _("Manage my subscriptions"),
     submit_link = _("""You are submitting a link. The key to a successful submission is interesting content and a descriptive title."""),
     submit_text = _("""You are submitting a text-based post. Speak your mind. A title is required, expanding further in the text field is desired but optional."""),
     submit_link_label = _("Submit a new link"),

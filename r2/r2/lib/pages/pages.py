@@ -360,6 +360,20 @@ class Reddit(Templated):
                                       show_icon=False))
             else:
                 fake_sub = isinstance(c.site, FakeSubreddit)
+
+                # Add a button for managing subscriptions
+                import sys
+                print "c.site.name -> '", c.site.name, "'"
+                sys.stdout.flush()
+
+                if fake_sub and c.site.name.strip() == "lightnet":
+                    ps.append(SideBox(title=strings.manage_subscriptions_label,
+                                      css_class="submit manage-subscriptions",
+                                      link="/spaces",
+                                      sr_path=None,
+                                      show_cover=True))
+
+                # Add button for submitting links
                 if c.site.link_type != 'self':
                     ps.append(SideBox(title=c.site.submit_link_label or
                                             strings.submit_link_label,
@@ -367,6 +381,8 @@ class Reddit(Templated):
                                       link="/submit",
                                       sr_path=not fake_sub,
                                       show_cover=True))
+
+                # Add button for submitting text items
                 if c.site.link_type != 'link':
                     ps.append(SideBox(title=c.site.submit_text_label or
                                             strings.submit_text_label,
