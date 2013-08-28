@@ -384,9 +384,9 @@ class FrontController(RedditController, OAuth2ResourceController):
               name=nop('name'))
     def GET_newreddit(self, name):
         """Create a subreddit form"""
-        title = _('create a subreddit')
+        title = _('create a space')
         content=CreateSubreddit(name=name or '')
-        res = FormPage(_("create a subreddit"),
+        res = FormPage(title,
                        content=content,
                        ).render()
         return res
