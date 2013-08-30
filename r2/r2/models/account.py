@@ -55,7 +55,8 @@ class Account(Thing):
     _data_int_props = Thing._data_int_props + ('link_karma', 'comment_karma',
                                                'report_made', 'report_correct',
                                                'report_ignored', 'spammer',
-                                               'reported', 'gold_creddits', )
+                                               'reported', 'gold_creddits',
+                                               'cache_prefix',)
     _int_prop_suffix = '_karma'
     _essentials = ('name', )
     _defaults = dict(pref_numsites = 25,
@@ -114,6 +115,7 @@ class Account(Thing):
                      gold_creddit_escrow = 0,
                      otp_secret=None,
                      state=0,
+                     cache_prefix=0,
                      )
 
     def __eq__(self, other):
@@ -211,6 +213,9 @@ class Account(Thing):
                            old_link_karma, old_comment_karma))
 
         return karmas
+
+    def clear_cache(self):
+        self._incr('cache_prefix')
 
     def update_last_visit(self, current_time):
         from admintools import apply_updates

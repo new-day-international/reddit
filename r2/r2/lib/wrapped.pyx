@@ -25,6 +25,10 @@ from datetime import datetime
 import re, types
 
 from hashlib import md5
+from pylons import c, g, request
+from pylons.controllers.util import abort
+from r2.lib.log import log_text
+
 
 class _TemplateUpdater(object):
     # this class is just a hack to get around Cython's closure rules
@@ -47,9 +51,9 @@ class _TemplateUpdater(object):
 class StringTemplate(object):
     """
     Simple-minded string templating, where variables of the for $____
-    in a strinf are replaced with values based on a dictionary.
+    in a string are replaced with values based on a dictionary.
 
-    Unline the built-in Template class, this supports an update method
+    Unlike the built-in Template class, this supports an update method
 
     We could use the built in python Template class for this, but
     unfortunately it doesn't handle unicode as gracefully as we'd
@@ -101,7 +105,7 @@ class CacheStub(object):
     specified.
 
     This class is suitable as a stub object (in the case of API calls)
-    and wil render in a string form suitable for replacement with
+    and will render in a string form suitable for replacement with
     StringTemplate in the case of normal rendering. 
     """
     def __init__(self, item, style):
@@ -130,13 +134,14 @@ class Templated(object):
     takes an thing to be wrapped).
 
     Templated objects are suitable for rendering and caching, with a
-    render loop desgined to fetch other cached templates and insert
+    render loop designed to fetch other cached templates and insert
     them into the current template.
 
     """
 
     # is this template cachable (see CachedTemplate)
     cachable = False
+
     # attributes that will not be made into the cache key
     cache_ignore = set()
 
@@ -153,9 +158,6 @@ class Templated(object):
             self.render_class = self.__class__
 
     def _notfound(self, style):
-        from pylons import g, request
-        from pylons.controllers.util import abort
-        from r2.lib.log import log_text
         if g.debug:
             raise NotImplementedError (repr(self), style)
         else:
@@ -174,7 +176,6 @@ class Templated(object):
         Fetches template from the template manager
         """
         from r2.config.templates import tpm
-        from pylons import g
 
         use_cache = not g.reload_templates
         template = None
@@ -270,7 +271,7 @@ class Templated(object):
         if not isinstance(c.render_tracker, dict):
             primary = True
             c.render_tracker = {}
-        
+
         # insert a stub for cachable non-primary templates
         if self.cachable:
             res = CacheStub(self, style)
@@ -287,7 +288,7 @@ class Templated(object):
             res = self.render_nocache(attr, style)
         timer.intermediate('self-render')
 
-        # if this is the primary template, let the caching games begin
+       # if this is the primary template, let the caching games begin
         if primary:
             # updates will be the (self-updated) list of all of
             # the cached templates that have been cached or
@@ -301,15 +302,16 @@ class Templated(object):
                 # any of the subsequent render()s call cached objects.
                 current = c.render_tracker
                 c.render_tracker = {}
-    
+
                 # do a multi-get.  NOTE: cache keys are the first item
                 # in the tuple that is the current dict's values.
                 # This dict cast will generate a new dict of cache_key
                 # to value
                 cached = self._read_cache(dict(current.values()))
                 timer.intermediate('fetch-cache')
+
                 # replacements will be a map of key -> rendered content
-                # for updateing the current set of updates
+                # for updating the current set of updates
                 replacements = {}
 
                 new_updates = {}
@@ -324,6 +326,7 @@ class Templated(object):
                         r = item.render_nocache(attr, style)
                     else:
                         r = cached[cache_key]
+
                     # store the unevaluated templates in
                     # cached for caching
                     replacements[key] = r.finalize(kw)
@@ -342,7 +345,7 @@ class Templated(object):
                     updates[k] = cache_key, (value, kw)
 
                 updates.update(new_updates)
-    
+
             # at this point, we haven't touched res, but updates now
             # has the list of all the updates we could conceivably
             # want to make, and to_cache is the list of cache keys
@@ -356,7 +359,7 @@ class Templated(object):
             self._write_cache(_to_cache)
             timer.intermediate('write-cache')
 
-            # edge case: this may be the primary tempalte and cachable
+            # edge case: this may be the primary template and cachable
             if isinstance(res, CacheStub):
                 res = updates[res.name][1][0]
             timer.intermediate('replace')
@@ -416,13 +419,6 @@ class Templated(object):
         for fkey, val in found.iteritems():
             ret[ekeys[fkey]] = val
         return ret
-
-    @classmethod
-    def clear_cache(cls, class_name, key):
-        from pylons import g
-
-        cache_key = 'render_%s(%s)' % (class_name, md5(key).hexdigest())
-        g.rendercache.delete(cache_key)
 
     def render(self, style = None, **kw):
         from r2.lib.filters import unsafe
@@ -494,13 +490,19 @@ class CachedTemplate(Templated):
         template_hash = getattr(self.template(style), "hash",
                                 id(self.__class__))
 
+        # add the cache prefix
+        if c.user:
+            keys = [c.user.cache_prefix]
+        else:
+            keys = []
+
         # these values are needed to render any link on the site, and
         # a menu is just a set of links, so we best cache against
         # them.
-        keys = [c.user_is_loggedin, c.user_is_admin, c.domain_prefix,
+        keys.extend([c.user_is_loggedin, c.user_is_admin, c.domain_prefix,
                 style, c.secure, c.cname, c.lang, c.site.path,
                 getattr(c.user, "gold", False),
-                template_hash]
+                template_hash])
 
         # if viewing a single subreddit, take flair settings into account.
         if c.user and hasattr(c.site, '_id'):
@@ -519,7 +521,7 @@ class CachedTemplate(Templated):
         keys.append(repr(auto_keys))
         for x in a:
             keys.append(make_cachable(x))
-        
+
         # import sys
         # result = "<%s:[%s]>" % (self.__class__.__name__, u''.join(keys))
         # print "CachedTemplate.cache_key -> ", result

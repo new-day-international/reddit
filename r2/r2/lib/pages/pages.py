@@ -229,7 +229,7 @@ class Reddit(Templated):
             self._content = content
 
         self.toolbars = self.build_toolbars()
-    
+
     def wiki_actions_menu(self, moderator=False):
         buttons = []
         
@@ -1670,11 +1670,6 @@ class SubredditTopBar(CachedTemplate):
             t += c.user._id
         CachedTemplate.__init__(self, name = name, langs = langs, t = t,
                                over18 = c.over18)
-
-    @classmethod
-    def clear_cache(cls):
-        Templated.clear_cache("SubredditTopBar", c.user.name)
-        Templated.clear_cache("RedditHeader", c.user.name)
 
     @property
     def my_reddits(self):
