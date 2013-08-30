@@ -324,11 +324,11 @@ class Account(Thing):
         fullname = fullname.replace(' ', '_')
         fullname = fullname.replace('.', '')
         fullname += "_"
-        suffixNumber = 007
+        suffixNumber = 1
 
         # Loop adding numbers until we get a new unique name
         while True:
-            realnameCandidate = fullname + "%03d" % suffixNumber
+            realnameCandidate = fullname + "%d" % suffixNumber
             try:
                 a = Account._by_name(realnameCandidate, True)
             except NotFound:
