@@ -64,6 +64,8 @@ try:
             text = unicode(text, 'utf-8')
         except TypeError:
             text = unicode(text)
+        if not g.compress_whitespace:
+            return text
         return uspace_compress(text)
 except ImportError:
     c_websafe      = python_websafe
@@ -73,6 +75,8 @@ except ImportError:
     _spaces = re.compile('[\s]+')
     _ignore = re.compile('(' + SC_OFF + '|' + SC_ON + ')', re.S | re.I)
     def spaceCompress(content):
+        if not g.compress_whitespace:
+            return content
         res = ''
         sc = True
         for p in _ignore.split(content):
