@@ -138,7 +138,7 @@ menu =   MenuHandler(hot          = _('hot'),
 
                      popular      = _("popular"),
                      create       = _("create"),
-                     mine         = _("jump to"),
+                     mine         = _("my subscribed spaces"),
 
                      i18n         = _("help translate"),
                      errors       = _("errors"),
@@ -211,7 +211,8 @@ class NavMenu(Styled):
         self.base_path = base_path
 
         #add the menu style, but preserve existing css_class parameter
-        kw['style'], css_class = menu_style(type)
+        style, css_class = menu_style(type)
+        kw['style'] = style
         kw['css_class'] = css_class + ' ' + kw.get('css_class', '')
 
         #used by flatlist to delimit menu items
@@ -227,6 +228,7 @@ class NavMenu(Styled):
         # (possibly None)
         self.default = default
         self.selected = self.find_selected()
+        self.is_dropdown = (style == "dropdown")
 
         Styled.__init__(self, title = title, **kw)
 
