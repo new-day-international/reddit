@@ -1286,18 +1286,29 @@ class VExistingUname(VRequired):
 
         # make sure the name satisfies our user name regexp before
         # bothering to look it up.
-        name = check_user(name)
-        if name:
+        user_name = check_user(name)
+        email = check_email(name)
+        user = None
+        if user_name:
             try:
-                return Account._by_name(name)
+                user = Account._by_name(user_name)
             except NotFound:
-                self.error(errors.USER_DOESNT_EXIST)
+                pass
+
+        if email:
+            try:
+                user = Account._by_email(email)
+            except NotFound:
+                pass
+
+        if user:
+            return user
         else:
-            self.error()
+            self.error(errors.USER_DOESNT_EXIST)
 
     def param_docs(self):
         return {
-            self.param: 'the name of an existing user'
+            self.param: 'the name or email of an existing user'
         }
 
 class VMessageRecipient(VExistingUname):
