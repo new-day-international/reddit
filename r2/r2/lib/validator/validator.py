@@ -1001,8 +1001,12 @@ class VSubmitSR(Validator):
             self.set_error(errors.SUBREDDIT_NOTALLOWED)
             return
 
+        if link_type == 'file' and not sr.allow_user_uploads:
+            self.set_error(errors.NO_FILES)
+            return 
+
         if self.require_linktype:
-            if link_type not in ('link', 'self'):
+            if link_type not in ('link', 'self', 'file'):
                 self.set_error(errors.INVALID_OPTION)
                 return
             elif link_type == 'link' and sr.link_type == 'self':

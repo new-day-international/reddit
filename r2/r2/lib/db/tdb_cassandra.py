@@ -46,7 +46,7 @@ import base64
 connection_pools = g.cassandra_pools
 default_connection_pool = g.cassandra_default_pool
 
-keyspace = 'reddit'
+keyspace = g.cassandra_keyspace
 thing_cache = g.thing_cache
 disallow_db_writes = g.disallow_db_writes
 tz = g.tz

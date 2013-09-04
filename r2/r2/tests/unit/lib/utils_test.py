@@ -84,3 +84,23 @@ class TestCanonicalizeEmail(unittest.TestCase):
         # to be byte strings with non-ascii in 'em.
         canonical = utils.canonicalize_email("\xe2\x9c\x93@example.com")
         self.assertEquals(canonical, "\xe2\x9c\x93@example.com")
+
+from r2.lib.utils import filename_to_link_title, titlecase_with_exceptions, truncate_html_words
+class TestTextUtils(unittest.TestCase):
+    def test_filename_to_link_title(self):
+        assert filename_to_link_title('Monkey_Style_Email_Jitsu.pdf') == 'Monkey Style Email Jitsu [PDF]'
+        assert filename_to_link_title('Monkey Style Email Jitsu.pdf') == 'Monkey Style Email Jitsu [PDF]'
+        assert filename_to_link_title('Monkey-Style-Email-Jitsu.pdf') == 'Monkey Style Email Jitsu [PDF]'
+        assert filename_to_link_title('entertainment_center_maldives_desktop_1600x1200_hd-wallpaper-206944.jpg') == 'Entertainment Center Maldives Desktop 1600x1200 Hd Wallpaper 206944 [JPG]'
+        assert filename_to_link_title('foo') == 'Foo'
+
+    def test_titlecase_with_exceptions(self):
+        assert titlecase_with_exceptions('there is a    way') == 'There is a    Way'
+        assert titlecase_with_exceptions('a whim   of an elephant') == 'A Whim   of an Elephant'
+
+    def test_truncate_html_words(self):
+        assert truncate_html_words('<h1>one two three four five six seven</h1>', 5) == '<h1>one two three four five ...</h1>'
+
+
+
+

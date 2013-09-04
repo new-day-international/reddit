@@ -1,0 +1,214 @@
+## The contents of this file are subject to the Common Public Attribution
+## License Version 1.0. (the "License"); you may not use this file except in
+## compliance with the License. You may obtain a copy of the License at
+## http://code.reddit.com/LICENSE. The License is based on the Mozilla Public
+## License Version 1.1, but Sections 14 and 15 have been added to cover use of
+## software over a computer network and provide for limited attribution for the
+## Original Developer. In addition, Exhibit A has been modified to be
+## consistent with Exhibit B.
+##
+## Software distributed under the License is distributed on an "AS IS" basis,
+## WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+## the specific language governing rights and limitations under the License.
+##
+## The Original Code is reddit.
+##
+## The Original Developer is the Initial Developer.  The Initial Developer of
+## the Original Code is reddit Inc.
+##
+## All portions of the code written by reddit are Copyright (c) 2006-2013
+## reddit Inc. All Rights Reserved.
+###############################################################################
+
+<%!
+   from r2.lib.strings import strings
+   from r2.lib.pages import UserText
+   from r2.lib.template_helpers import add_sr
+%>
+
+<%namespace file="utils.html" import="error_field, submit_form, _a_buffered, reddit_selector, text_with_links"/>
+<%namespace name="utils" file="utils.html"/>
+
+<%
+  if thing.default_sr:
+    sr = "&#32;" + _a_buffered(thing.default_sr.name, href=thing.default_sr.path)
+  else:
+    sr = g.default_sr
+%>
+
+<h1>${unsafe(_("submit file to %(sr)s") % dict(sr=sr))}</h1>
+
+<div style="margin-left: 20px">
+  <div class="spacer">
+    <div id="file-desc" class="infobar">${strings.submit_file}</div>
+  </div>
+
+  <div class="spacer" style="margin: 15px 0 15px 0">
+    <%utils:round_field title="${_('file')}" id="file-field">
+
+      <form id="fileupload" class="submit content" action="${thing.s3_user_upload_url}" method="post" enctype="multipart/form-data">
+        <input name="key" type="hidden" />
+        <input name="AWSAccessKeyId" type="hidden" />
+        <input name="acl" value="public-read" type="hidden" />
+        <input name="Content-Type" type="hidden" />
+        <input name="policy" type="hidden" />
+        <input name="signature" type="hidden" />
+        <input name="file" type="file" />
+        <span class="progress"></span>
+        <button class="cancel" style="display: none">Cancel</button>
+      </form>
+    </%utils:round_field>
+  </div>
+
+</div>
+
+<%utils:submit_form onsubmit="return post_form(this, 'submit', linkstatus, null, true)" 
+                    action=${add_sr("/submit")},
+                    _class=""
+                    _id="newlink">
+
+<input name="kind" value="file" type="hidden"/>
+<input id="url" name="url" value="" type="hidden" />
+
+<div class="spacer">
+  <%utils:round_field title="${_('title')}" id="title-field">
+    <textarea name="title" rows="2" required>${thing.title}</textarea>
+    ${error_field("NO_TEXT", "title", "div")}
+    ${error_field("TOO_LONG", "title", "div")}
+
+    ${error_field("NO_URL", "url", "div")}
+    ${error_field("BAD_URL", "url", "div")}
+    ${error_field("DOMAIN_BANNED", "url", "div")}
+    ${error_field("ALREADY_SUB", "url", "div")}
+    ${error_field("NO_LINKS", "sr")}
+    ${error_field("NO_SELFS", "sr")}
+    ${error_field("NO_FILES", "sr")}
+
+
+  </%utils:round_field>
+</div>
+
+<div class="spacer">
+  <%utils:round_field title="${_('choose a space')}" id="reddit-field">
+    ${reddit_selector(thing.default_sr.name if thing.default_sr else None, thing.sr_searches, thing.spaces, required=True)}
+  </%utils:round_field>
+</div>
+
+%if c.user.gold:
+  <div class="spacer">
+    <%utils:round_field title="${_('options')}" css_class="gold-accent">
+      <input class="nomargin" type="checkbox" checked="checked" name="sendreplies" id="sendreplies" data-send-checked="true"/>
+      <label for="sendreplies">
+        ${_("send replies to my inbox")}
+      </label>
+      &#32;<span class="little gray">(${_("beta")})</span>
+    </%utils:round_field>
+  </div>
+%endif
+
+<div class="spacer">
+    ${thing.captcha}
+</div>
+
+<div class="spacer">
+  <div class="roundfield info-notice" title="${_('why a brick? read to the bottom of the rules page to find out!')}">
+    ${text_with_links(_("please be mindful of lightnet's %(few_rules)s and practice %(good_reddiquette)s."),
+        few_rules=dict(
+          link_text=_("few rules"),
+          path="/rules",
+          target="_blank"),
+        good_reddiquette=dict(
+          link_text=_("good lightnet etiquette"),
+          path="/wiki/etiquette",
+          target="_blank"),
+    )}
+  </div>
+</div>
+
+<input name="resubmit" value="${thing.resubmit}" type="hidden"/>
+<div class="spacer">
+  <button class="btn" name="submit" value="form" type="submit">${_("submit")}</button>
+  <span class="status"></span>
+  ${error_field("RATELIMIT", "ratelimit")}
+  ${error_field("INVALID_OPTION", "sr")}
+</div>
+</%utils:submit_form>
+</div>
+
+<script src="/static/vendor/jQuery-File-Upload-8.8.2/js/vendor/jquery.ui.widget.js"></script>
+<script src="/static/vendor/jQuery-File-Upload-8.8.2/js/jquery.iframe-transport.js"></script>
+<script src="/static/vendor/jQuery-File-Upload-8.8.2/js/jquery.fileupload.js"></script>
+
+<script type="text/javascript">
+if (typeof Function.empty != 'function') Function.empty = function(){};
+if (typeof console == 'undefined') console = {};
+if (typeof console.log == 'undefined') console.log = Function.empty;
+
+$(function() {
+
+  var arr = window.location.href.split("/");
+  var urlPrefix = arr[0] + "//" + arr[2];
+
+
+  $('#fileupload').fileupload({
+    /* redirectParamName: 'success_action_redirect',
+       redirect: urlPrefix + '/static/vendor/jQuery-File-Upload-8.8.2/cors/result.html', */
+    add: function(e, data) {
+      $('#fileupload .progress').text("preparing upload...");
+      console.log("File added, lets start uploading it.  Get s3 upload permissions...");
+
+      console.log("is data equal to ", $('#fileupload').fileupload('active') == data);
+
+      $.post('/api/user_upload_permission.json', {filename: data.files[0].name}, function (responseObj) {
+          console.log("Got permissions, setting keys", responseObj);
+
+          $('#fileupload').attr('action', responseObj.upload_url);
+          $('#fileupload').find('input[name=AWSAccessKeyId]').val(responseObj.aws_access_key);
+          $('#fileupload').find('input[name=key]').val(responseObj.key);
+          $('#fileupload').find('input[name=policy]').val(responseObj.policy);
+          $('#fileupload').find('input[name=signature]').val(responseObj.signature);
+          $('#fileupload').find('input[name=Content-Type]').val(responseObj.content_type);
+          if (responseObj.suggested_link_title && $('textarea[name=title]').val() == '') {
+            $('textarea[name=title]').val(responseObj.suggested_link_title);
+          }
+          console.log("now uploading file");
+          $('#url').val(responseObj.destination_url);
+          $.data($('#url'), 'uploaded', false);
+          var xhr = data.submit();
+          $('#fileupload').data('jqXHR', xhr);
+          $('#fileupload input[name=file]').hide();
+          $('#fileupload .progress').show();
+          $('#fileupload .cancel').show();
+        }, 'json');
+    },
+    fail: function(e, data) {
+      console.log('fail');
+      console.log(data);
+      $('#fileupload .progress').text("upload failed");
+    },
+    done: function (e, data) {
+      console.log('done with file upload', data);
+      $.data($('#url'), 'uploaded', true);
+      $('#fileupload .progress').text("uploaded");
+    },
+    progress: function (e, data) {
+      console.log("progress", data);
+      var progressPercentage = parseInt(data.loaded / data.total * 100, 10);
+      $('#fileupload .progress').text("uploading \"" + data.files[0].name + "\"... " + progressPercentage + "%");
+    }
+  }).prop('disabled', !$.support.fileInput)
+    .parent().addClass($.support.fileInput ? undefined : 'disabled');
+
+  $('.cancel').click(function(e) {
+    e.preventDefault();
+    var jqXHR = $('#fileupload').data('jqXHR');
+    if (jqXHR) {
+      jqXHR.abort();
+    }
+    $('#fileupload input[name=file]').show();
+    $('#fileupload .progress').hide();
+    $('#fileupload .cancel').hide();
+  });
+
+});
+</script>

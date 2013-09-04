@@ -48,7 +48,8 @@ def make_map():
     mc('/adminon', controller='forms', action='adminon')
     mc('/adminoff', controller='forms', action='adminoff')
     mc('/submit', controller='front', action='submit')
-
+    mc('/submit/file', controller='front', action='submit_file_link')
+    
     mc('/over18', controller='post', action='over18')
 
     mc('/search', controller='front', action='search')

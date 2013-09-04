@@ -34,7 +34,7 @@ from r2.lib import amqp
 
 from r2.lib.utils import get_title, sanitize_url, timeuntil, set_last_modified
 from r2.lib.utils import query_string, timefromnow, randstr
-from r2.lib.utils import timeago, tup, filter_links
+from r2.lib.utils import timeago, tup, filter_links, filename_to_link_title
 from r2.lib.pages import (EnemyList, FriendList, ContributorList, ModList,
                           BannedList, WikiBannedList, WikiMayContributeList,
                           BoringPage, FormPage, CssError, UploadedImage,
@@ -55,7 +55,7 @@ from r2.lib import media
 from r2.lib.db import tdb_cassandra
 from r2.lib import promote
 from r2.lib.comment_tree import delete_comment
-from r2.lib import tracking,  cssfilter, emailer
+from r2.lib import tracking, cssfilter, emailer, s3_helpers
 from r2.lib.subreddit_search import search_reddits
 from r2.lib.log import log_text
 from r2.lib.filters import safemarkdown
@@ -71,6 +71,8 @@ from r2.lib.lock import TimeoutExpired
 from r2.models import wiki
 from r2.lib.merge import ConflictException
 
+import mimetypes
+import pytz
 import csv
 from collections import defaultdict
 from datetime import datetime, timedelta
@@ -120,7 +122,6 @@ class ApiController(RedditController, OAuth2ResourceController):
     def ajax_login_redirect(self, form, jquery, dest):
         form.redirect("/login" + query_string(dict(dest=dest)))
 
-    
     @require_oauth2_scope("read")
     @validate(link1 = VUrl(['url']),
               link2 = VByName('id'),
@@ -248,7 +249,7 @@ class ApiController(RedditController, OAuth2ResourceController):
                    save = VBoolean('save'),
                    sendreplies = VBoolean('sendreplies'),
                    selftext = VSelfText('text'),
-                   kind = VOneOf('kind', ['link', 'self']),
+                   kind = VOneOf('kind', ['link', 'self', 'file']),
                    then = VOneOf('then', ('tb', 'comments'),
                                  default='comments'),
                    extension=VLength("extension", 20, docs={"extension":
@@ -274,7 +275,6 @@ class ApiController(RedditController, OAuth2ResourceController):
         (see [/api/save](#POST_api_save) for more information).
 
         """
-
         from r2.models.admintools import is_banned_domain
 
         if isinstance(url, (unicode, str)):
@@ -322,9 +322,8 @@ class ApiController(RedditController, OAuth2ResourceController):
 
         banmsg = None
 
-        if kind == 'link':
+        if kind in ('link', 'file'):
             check_domain = True
-
             # check for no url, or clear that error field on return
             if form.has_errors("url", errors.NO_URL, errors.BAD_URL):
                 pass
@@ -393,7 +392,7 @@ class ApiController(RedditController, OAuth2ResourceController):
         cleaned_title = cleaned_title.strip()
 
         # well, nothing left to do but submit it
-        l = Link._submit(cleaned_title, url if kind == 'link' else 'self',
+        l = Link._submit(cleaned_title, url if kind in ('link', 'file',) else 'self',
                          c.user, sr, ip, spam=c.user._spam, sendreplies=sendreplies)
 
         if banmsg:
@@ -1176,7 +1175,7 @@ class ApiController(RedditController, OAuth2ResourceController):
 
             amqp.add_item('usertext_edited', item._fullname)
 
-            if kind == 'link':
+            if kind in ('link', 'file',):
                 set_last_modified(item, 'comments')
                 LastModified.touch(item._fullname, 'Comments')
 
@@ -1695,6 +1694,7 @@ class ApiController(RedditController, OAuth2ResourceController):
                    show_cname_sidebar = VBoolean('show_cname_sidebar'),
                    type = VOneOf('type', ('public', 'private', 'restricted', 'archived')),
                    link_type = VOneOf('link_type', ('any', 'link', 'self')),
+                   allow_user_uploads = VBoolean('allow_user_uploads'),
                    submit_link_label=VLength('submit_link_label', max_length=60),
                    submit_text_label=VLength('submit_text_label', max_length=60),
                    comment_score_hide_mins=VInt('comment_score_hide_mins',
@@ -1742,7 +1742,8 @@ class ApiController(RedditController, OAuth2ResourceController):
                   if k in ('name', 'title', 'domain', 'description',
                            'show_media', 'exclude_banned_modqueue',
                            'show_cname_sidebar', 'type',
-                           'link_type', 'submit_link_label', 'comment_score_hide_mins',
+                           'link_type', 'allow_user_uploads', 'submit_link_label', 
+                           'comment_score_hide_mins',
                            'submit_text_label', 'lang', 'css_on_cname',
                            'header_title', 'over_18', 'wikimode', 'wiki_edit_karma',
                            'wiki_edit_age', 'allow_top', 'public_description',
@@ -3391,3 +3392,38 @@ class ApiController(RedditController, OAuth2ResourceController):
             giftmessage=None,
             comment=comment._fullname,
         ))
+
+    @json_validate(VUser(),
+                   filename=VPrintable('filename', max_length=100),)
+    def POST_user_upload_permission(self, responder, filename):
+        # TODO: make sure there isn't a file with the same name as the one the user is suggesting.  If so change the key name.
+        # TODO: use s3 api to count how many files this user has previously uploaded
+        ret = {}
+
+        try:
+            ret['suggested_link_title'] = filename_to_link_title(filename)
+        except Exception, ee:
+            g.log.warning("Error while trying to get a suggested link title %r", ee)
+        ret['content_type'] = mimetypes.guess_type(filename)[0]
+        ret['upload_url'] = 'http://%s.s3.amazonaws.com' % (g.s3_user_files_bucket,)
+        ret['key'] = "u/%s/%s" % (c.user.name, filename,)
+        ret['aws_access_key'] = g.S3KEY_ID
+        ret['destination_url'] = "http://%s/%s" % (g.s3_user_files_host, ret['key'],)
+
+        five_minutes_from_now = datetime.now(pytz.utc) + timedelta(minutes=5)
+        ret['policy'], ret['signature'] = s3_helpers.encode_and_sign_upload_policy({
+            'expiration': five_minutes_from_now.strftime('%Y-%m-%dT%H:%M:%S.000Z'),
+            'conditions': [ 
+                {'Content-Type': ret['content_type']},
+                {'bucket': g.s3_user_files_bucket}, 
+                {'key': ret['key']},
+                {'acl': 'public-read'},
+                ['content-length-range', 0, g.s3_user_max_file_size],
+                #['starts-with', '$success_action_redirect', ''],
+            ]
+        }, g.S3SECRET_KEY)
+        return ret
+    
+
+
+

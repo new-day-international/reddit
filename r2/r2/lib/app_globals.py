@@ -192,6 +192,7 @@ class Globals(object):
             'wiki_page_registration_info',
             'wiki_page_privacy_policy',
             'wiki_page_user_agreement',
+            'cassandra_keyspace',
         ],
 
         ConfigValue.choice: {
@@ -482,11 +483,10 @@ class Globals(object):
         self.startup_timer.intermediate("memcache")
 
         ################# CASSANDRA
-        keyspace = "reddit"
         self.cassandra_pools = {
             "main":
                 StatsCollectingConnectionPool(
-                    keyspace,
+                    self.cassandra_keyspace,
                     stats=self.stats,
                     logging_name="main",
                     server_list=self.cassandra_seeds,

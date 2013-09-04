@@ -95,6 +95,7 @@ error_list = dict((
         ('CLAIMED_CODE', _("that code has already been claimed -- perhaps by you?")),
         ('NO_SELFS', _("that space doesn't allow text posts")),
         ('NO_LINKS', _("that space only allows text posts")),
+        ('NO_FILES', _("that space does not allow files")),
         ('TOO_OLD', _("that's a piece of history now; it's too late to reply to it")),
         ('BAD_CSS_NAME', _('invalid css name')),
         ('BAD_CSS', _('invalid css')),

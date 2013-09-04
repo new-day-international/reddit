@@ -906,6 +906,23 @@ class FrontController(RedditController, OAuth2ResourceController):
         href = comment.make_permalink_slow(context=5, anchor=True)
         return self.redirect(href)
 
+
+    @validate(title=VRequired('title', None),
+              then=VOneOf('then', ('tb','comments'), default='comments'))
+    def GET_submit_file_link(self, title, then):
+        captcha = Captcha() if c.user.needs_captcha() else None
+        sr_names = (Subreddit.submit_sr_names(c.user) or
+                    Subreddit.submit_sr_names(None))
+
+        return FormPage(_("submit"),
+                show_sidebar=True,
+                page_classes=['submit-page'],
+                content=NewFileLink(url='',
+                                title=title or '',
+                                spaces=sr_names,
+                                captcha=captcha,
+                                then=then)).render()
+
     @validate(url=VRequired('url', None),
               title=VRequired('title', None),
               text=VRequired('text', None),

@@ -1,4 +1,32 @@
-import re
+import re, os
+
+def filename_to_link_title(filename):
+    """
+    guess a title for this file
+    """
+
+    name, ext = os.path.splitext(filename)
+    ext = ext[1:]
+    postfix = ''
+    if ext:
+        postfix = " [%s]" % (ext.upper(),)
+    name = titlecase_with_exceptions(name.replace("_", " ").replace("-", " "))
+
+    return "%s%s" % (name, postfix,)
+
+def titlecase_with_exceptions(s):
+    """
+    Make a sentance title case, but don't capitalize English articles
+
+    Adapted from http://stackoverflow.com/questions/3728655/python-titlecase-a-string-with-exceptions
+    """
+    exceptions = ['a', 'an', 'of', 'the', 'is']
+    word_list = re.split(' ', s)       #re.split behaves as expected
+    final = [word_list[0].capitalize()]
+    for word in word_list[1:]:
+        final.append(word in exceptions and word or word.capitalize())
+    return " ".join(final)
+
 
 def truncate_html_words(s, num):
     """
@@ -59,3 +87,8 @@ def truncate_html_words(s, num):
         out += '</%s>' % tag
     # Return string
     return out
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
+

@@ -1,0 +1,61 @@
+[DEFAULT]
+smtp_server = smtp.gmail.com:587
+smtp_username = myers@maski.org
+smtp_password = Trollfec5
+daily_email_from = myers@maski.org
+
+S3KEY_ID = AKIAI3T5ORV7RJICJNFQ
+S3SECRET_KEY = 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
+s3_user_files_bucket = files.test.lightnet.is
+s3_user_files_host = files.test.lightnet.is
+
+debug = true
+reload_templates = true
+uncompressedJS = true
+disable_ads = true
+disable_captcha = true
+disable_ratelimit = true
+disable_require_admin_otp = true
+
+set debug = true
+
+# amqp
+amqp_user = reddit_test
+amqp_pass = reddit_test
+amqp_virtual_host = /reddit_test
+
+domain = reddit.local
+media_domain = media.reddit.local
+
+#db name       db         host      user, pass, port, conn, overflow_conn
+main_db =      reddit_test,   127.0.0.1, *,    *,    *,    *,    *
+comment_db =   reddit_test,   127.0.0.1, *,    *,    *,    *,    *
+comment2_db =  reddit_test,   127.0.0.1, *,    *,    *,    *,    *
+vote_db =      reddit_test,   127.0.0.1, *,    *,    *,    *,    *
+email_db =     reddit_test,   127.0.0.1, *,    *,    *,    *,    *
+authorize_db = reddit_test,   127.0.0.1, *,    *,    *,    *,    *
+award_db =     reddit_test,   127.0.0.1, *,    *,    *,    *,    *
+hc_db =        reddit_test,   127.0.0.1, *,    *,    *,    *,    *
+traffic_db =   reddit_test,   127.0.0.1, *,    *,    *,    *,    *
+
+cassandra_keyspace = reddit_test
+
+memcaches = 127.0.0.1:11212
+
+# caches to use for locking
+lockcaches = 127.0.0.1:11212
+stalecaches =
+rendercaches = 127.0.0.1:11212
+pagecaches = 127.0.0.1:11212
+
+# -- permacache options --
+# permacache is memcaches -> cassanda -> memcachedb
+# memcaches that sit in front of cassandra
+permacache_memcaches = 127.0.0.1:11212
+
+# so tests can post link after link with running into rate limiting
+MIN_RATE_LIMIT_KARMA = 0
+
+[server:main]
+port = 8001
+

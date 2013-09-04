@@ -22,6 +22,7 @@
 
 import os
 import sys
+import simplejson 
 
 from boto.s3.key import Key
 
@@ -109,3 +110,22 @@ def copy_to_s3(s3_connection, local_path, dst_path, verbose=False):
         kw['cb'] = callback
 
     k.set_contents_from_filename(logfile, **kw)
+
+
+# adapted from http://aws.amazon.com/articles/1434?_encoding=UTF8&jiveRedirect=1
+import base64
+import hmac, hashlib
+def encode_and_sign_upload_policy(policy, aws_secret_key):
+    encoded_policy = base64.b64encode(simplejson.dumps(policy).replace('\n', '').replace('\r', ''))
+    encoded_policy_signature = base64.b64encode(hmac.new(aws_secret_key, encoded_policy, hashlib.sha1).digest())
+    return encoded_policy, encoded_policy_signature
+
+from boto.s3.connection import S3Connection
+from pylons import g
+def list_user_uploads_bucket():
+    connection = S3Connection(g.S3KEY_ID or None, g.S3SECRET_KEY or None)
+    bucket = connection.get_bucket(g.s3_user_files_bucket, validate=True)
+    rs = bucket.list()
+
+    for key in rs:
+        print key.name

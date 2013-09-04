@@ -39,22 +39,41 @@ pkg_resources.working_set.add_entry(conf_dir)
 pkg_resources.require('Paste')
 pkg_resources.require('PasteScript')
 
+wsgiapp = None
 
 def stage_for_paste():
-     wsgiapp = loadapp('config:test.ini', relative_to=conf_dir)
-     test_app = paste.fixture.TestApp(wsgiapp)
+    global wsgiapp
 
-     # this is basically what 'paster run' does (see r2/commands.py)
-     test_response = test_app.get("/_test_vars")
-     request_id = int(test_response.body)
-     test_app.pre_request_hook = lambda self: \
-         paste.registry.restorer.restoration_end()
-     test_app.post_request_hook = lambda self: \
-         paste.registry.restorer.restoration_begin(request_id)
-     paste.registry.restorer.restoration_begin(request_id)
+    if wsgiapp is None:
+        wsgiapp = loadapp('config:test.ini', relative_to=conf_dir)
+
+    test_app = paste.fixture.TestApp(wsgiapp, extra_environ={'REMOTE_ADDR': '127.0.0.1'})
+
+    # this is basically what 'paster run' does (see r2/commands.py)
+    test_response = test_app.get("/_test_vars")
+    request_id = int(test_response.body)
+    test_app.pre_request_hook = lambda self: \
+        paste.registry.restorer.restoration_end()
+    test_app.post_request_hook = lambda self: \
+        paste.registry.restorer.restoration_begin(request_id)
+    paste.registry.restorer.restoration_begin(request_id)
+    return test_app
 
 
-class RedditTestCase(TestCase):
+class TestCaseSnakeCaseMethods:
+    """
+    a mix in that will force you to use PEP-8 method names
+    """
+    def assert_equal(self, *args, **kwargs):
+        return self.assertEqual(*args, **kwargs)
+
+    def tearDown(self, *args, **kwargs):
+        return self.tear_down(*args, **kwargs)
+
+    def setUp(self, *args, **kwargs):
+        return self.set_up(*args, **kwargs)
+
+class RedditTestCase(TestCase, TestCaseSnakeCaseMethods):
     """Base Test Case for tests that require the app environment to run.
 
     App startup does take time, so try to use unittest.TestCase directly when
@@ -62,5 +81,5 @@ class RedditTestCase(TestCase):
 
     """
     def __init__(self, *args, **kwargs):
-        stage_for_paste()
+        self.app = stage_for_paste()
         TestCase.__init__(self, *args, **kwargs)

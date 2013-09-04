@@ -41,7 +41,7 @@ from pylons.i18n import _, ungettext
 from pylons import c, request, g
 from pylons.controllers.util import abort
 
-from r2.lib import media, inventory
+from r2.lib import media, inventory, s3_helpers
 from r2.lib import promote, tracking
 from r2.lib.reddit_captcha import get_iden
 from r2.lib.filters import (
@@ -384,6 +384,13 @@ class Reddit(Templated):
                                             strings.submit_text_label,
                                       css_class="submit submit-text",
                                       link="/submit?selftext=true",
+                                      sr_path=not fake_sub,
+                                      show_cover=True))
+                if c.site.allow_user_uploads:
+                    ps.append(SideBox(title=c.site.submit_file_label or
+                                            strings.submit_file_label,
+                                      css_class="submit submit-file",
+                                      link="/submit/file",
                                       sr_path=not fake_sub,
                                       show_cover=True))
 
@@ -2257,6 +2264,44 @@ class NewLink(Templated):
 
         Templated.__init__(self, captcha = captcha, url = url,
                          title = title, text = text, spaces = spaces,
+                         then = then)
+
+
+class NewFileLink(Templated):
+    """Render the file link submission form"""
+    def __init__(self, captcha = None, url = '', title= '', 
+                 spaces = (), then = 'comments', resubmit=False, never_show_self=False):
+
+        self.show_link = self.show_self = False
+        self.sr_searches = simplejson.dumps(popular_searches(include_over_18=c.over18))
+
+        tabs = []
+        tabs.append(('file', ('file-desc', 'file-field')))
+        self.default_tab = tabs[0][0]
+        all_fields = set(chain(*(parts for (tab, parts) in tabs)))
+        buttons = []
+
+        for tab_name, parts in tabs:
+            to_show = ','.join('#' + p for p in parts)
+            to_hide = ','.join('#' + p for p in all_fields if p not in parts)
+            onclick = "return select_form_tab(this, '%s', '%s');"
+            onclick = onclick % (to_show, to_hide)
+            if tab_name == self.default_tab:
+                self.default_show = to_show
+                self.default_hide = to_hide
+
+            buttons.append(JsButton(tab_name, onclick=onclick, css_class=tab_name + "-button"))
+
+        self.s3_user_upload_url = 'http://%s.s3.amazonaws.com' % (g.s3_user_files_bucket,)
+        self.formtabs_menu = JsNavMenu(buttons, type = 'formtab')
+        self.resubmit = resubmit
+        if c.default_sr:
+            self.default_sr = None
+        else:
+            self.default_sr = c.site
+
+        Templated.__init__(self, captcha = captcha, url = url,
+                         title = title, spaces = spaces,
                          then = then)
 
 class ShareLink(CachedTemplate):
