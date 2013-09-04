@@ -1611,8 +1611,7 @@ class WelcomeBar(InfoBar):
         if messages:
             message = random.choice(messages).split(" / ")
         else:
-            message = (_("reddit is a platform for internet communities"),
-                       _("where your votes shape what the world is talking about."))
+            message = (_("Welcome to lightnet. The tech platform for a new civilization."))
         InfoBar.__init__(self, message=message)
 
 class ClientInfoBar(InfoBar):
