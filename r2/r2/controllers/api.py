@@ -347,8 +347,9 @@ class ApiController(RedditController, OAuth2ResourceController):
             elif check_domain:
 
                 banmsg = is_banned_domain(url, request.ip)
-        else:
-            form.has_errors('text', errors.TOO_LONG)
+
+        if form.has_errors('text', errors.TOO_LONG):
+            pass
 
         if form.has_errors("title", errors.TOO_LONG, errors.NO_TEXT):
             pass
@@ -406,6 +407,10 @@ class ApiController(RedditController, OAuth2ResourceController):
 
             l._commit()
             l.set_url_cache()
+
+        elif kind in ('link', 'file') and selftext and selftext != '':
+            l.selftext = selftext
+            l._commit()
 
         queries.queue_vote(c.user, l, True, ip,
                            cheater = (errors.CHEATER, None) in c.errors)
