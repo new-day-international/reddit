@@ -120,12 +120,39 @@ def encode_and_sign_upload_policy(policy, aws_secret_key):
     encoded_policy_signature = base64.b64encode(hmac.new(aws_secret_key, encoded_policy, hashlib.sha1).digest())
     return encoded_policy, encoded_policy_signature
 
+import threading
+
+def get_user_upload_bucket():
+    local_thread = threading.local()
+    if not hasattr(local_thread, 'user_upload_bucket'):
+        connection = S3Connection(g.S3KEY_ID or None, g.S3SECRET_KEY or None)
+        local_thread.user_upload_bucket = connection.get_bucket(g.s3_user_files_bucket, validate=True)
+    return local_thread.user_upload_bucket
+
 from boto.s3.connection import S3Connection
 from pylons import g
-def list_user_uploads_bucket():
-    connection = S3Connection(g.S3KEY_ID or None, g.S3SECRET_KEY or None)
-    bucket = connection.get_bucket(g.s3_user_files_bucket, validate=True)
-    rs = bucket.list()
+def list_user_uploads_bucket(username):
+    rs = bucket.list(prefix='u/%s/' % (username,))
 
     for key in rs:
-        print key.name
+        print key.name, key.size
+
+def find_nonconflicting_filename(subreddit_name, filename, s3_bucket_factory=get_user_upload_bucket):
+    """
+    If they've already uploaded a file named "file.txt" we don't
+    want them to overwrite that file.  A second upload with the 
+    same name should be "file.1.text"
+    """
+    prefix = 'space/%s/' % (subreddit_name,)
+
+    bucket = s3_bucket_factory()
+    rs = bucket.list(prefix=prefix)
+    filenames = [key.name[len(prefix):] for key in rs]
+
+    base, ext = os.path.splitext(filename)
+    counter = 0
+    while filename in filenames:
+        counter += 1
+        filename = "%s.%s%s" % (base, counter, ext)
+
+    return filename
