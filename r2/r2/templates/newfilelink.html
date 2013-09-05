@@ -43,13 +43,9 @@
     <div id="file-desc" class="infobar" style="width=520px;">${strings.submit_file}</div>
   </div>
 
-
   <div class="spacer">
     <%utils:round_field title="${_('file')}" id="file-field">
       <form id="fileupload" class="submit content" action="${thing.s3_user_upload_url}" method="post" enctype="multipart/form-data" style="margin-left: 0px; width=520px;">
-
-
-
         <input name="key" type="hidden" />
         <input name="AWSAccessKeyId" type="hidden" />
         <input name="acl" value="public-read" type="hidden" />
