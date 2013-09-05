@@ -38,12 +38,18 @@
 
 <h1>${unsafe(_("submit file to %(sr)s") % dict(sr=sr))}</h1>
 
-<div style="margin-left: 20px">
+<%utils:submit_form   onsubmit="return post_form(this, 'submit', linkstatus, null, true)"
+                      action=${add_sr("/submit")},
+                      _class=""
+                      _id="newlink">
+
+<div class="formtabs-content">
+
   <div class="spacer">
     <div id="file-desc" class="infobar">${strings.submit_file}</div>
   </div>
 
-  <div class="spacer" style="margin: 15px 0 15px 0">
+  <div class="spacer">
     <%utils:round_field title="${_('file')}" id="file-field">
 
       <form id="fileupload" class="submit content" action="${thing.s3_user_upload_url}" method="post" enctype="multipart/form-data">
@@ -60,12 +66,6 @@
     </%utils:round_field>
   </div>
 
-</div>
-
-<%utils:submit_form onsubmit="return post_form(this, 'submit', linkstatus, null, true)" 
-                    action=${add_sr("/submit")},
-                    _class=""
-                    _id="newlink">
 
 <input name="kind" value="file" type="hidden"/>
 <input id="url" name="url" value="" type="hidden" />
@@ -134,6 +134,8 @@
 </div>
 </%utils:submit_form>
 </div>
+
+</div> ## formtabs-content
 
 <script src="/static/vendor/jQuery-File-Upload-8.8.2/js/vendor/jquery.ui.widget.js"></script>
 <script src="/static/vendor/jQuery-File-Upload-8.8.2/js/jquery.iframe-transport.js"></script>
