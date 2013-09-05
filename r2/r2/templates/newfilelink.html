@@ -62,8 +62,8 @@
 
 </div>
 
-<%utils:submit_form onsubmit="return post_form(this, 'submit', linkstatus, null, true)" 
-                    action=${add_sr("/submit")},
+<%utils:submit_form onsubmit="" 
+                    action=${add_sr("/submit")}
                     _class=""
                     _id="newlink">
 
@@ -80,9 +80,9 @@
     ${error_field("BAD_URL", "url", "div")}
     ${error_field("DOMAIN_BANNED", "url", "div")}
     ${error_field("ALREADY_SUB", "url", "div")}
-    ${error_field("NO_LINKS", "sr")}
-    ${error_field("NO_SELFS", "sr")}
-    ${error_field("NO_FILES", "sr")}
+    ${error_field("NO_LINKS", "sr", "div")}
+    ${error_field("NO_SELFS", "sr", "div")}
+    ${error_field("NO_FILES", "sr", "div")}
 
 
   </%utils:round_field>
@@ -148,7 +148,21 @@ $(function() {
 
   var arr = window.location.href.split("/");
   var urlPrefix = arr[0] + "//" + arr[2];
-
+  $('#newlink').submit(function(e) {
+    e.preventDefault();
+    if ($('#url').data('uploaded')) {
+      post_form(this, 'submit', linkstatus, null, true);
+    } else {
+      var jqXHR = $('#fileupload').data('jqXHR');
+      $('#newlink .status').text("Waiting for upload to finish...");
+      jqXHR.done(function() {
+        post_form(this, 'submit', linkstatus, null, true);
+      }.bind(this));
+      jqXHR.always(function() {
+        $('#newlink .status').text("");
+      });
+    }
+  });
 
   $('#fileupload').fileupload({
     /* redirectParamName: 'success_action_redirect',
@@ -173,26 +187,31 @@ $(function() {
           }
           console.log("now uploading file");
           $('#url').val(responseObj.destination_url);
-          $.data($('#url'), 'uploaded', false);
+          $('#url').data('uploaded', false);
           var xhr = data.submit();
           $('#fileupload').data('jqXHR', xhr);
           $('#fileupload input[name=file]').hide();
           $('#fileupload .progress').show();
+
           $('#fileupload .cancel').show();
+          xhr.always(function() {
+            $('#fileupload .cancel').hide();
+          });
+
         }, 'json');
     },
     fail: function(e, data) {
-      console.log('fail');
-      console.log(data);
       $('#fileupload .progress').text("upload failed");
+      console.log("Things failed", e, data);
     },
     done: function (e, data) {
       console.log('done with file upload', data);
-      $.data($('#url'), 'uploaded', true);
-      $('#fileupload .progress').text("uploaded");
+      $('#url').data('uploaded', true);
+      $('#fileupload .progress').text("uploaded \"" + data.files[0].name + "\"");
+      $('#fileupload').removeData('jqXHR');
+
     },
     progress: function (e, data) {
-      console.log("progress", data);
       var progressPercentage = parseInt(data.loaded / data.total * 100, 10);
       $('#fileupload .progress').text("uploading \"" + data.files[0].name + "\"... " + progressPercentage + "%");
     }

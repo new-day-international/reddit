@@ -299,7 +299,8 @@ class ApiController(RedditController, OAuth2ResourceController):
                             errors.SUBREDDIT_NOTALLOWED,
                             errors.SUBREDDIT_REQUIRED,
                             errors.NO_SELFS,
-                            errors.NO_LINKS)
+                            errors.NO_LINKS,
+                            errors.NO_FILES)
             or not sr):
             # checking to get the error set in the form, but we can't
             # check for rate-limiting if there's no subreddit
