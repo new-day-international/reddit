@@ -137,14 +137,12 @@ def list_user_uploads_bucket(username):
     for key in rs:
         print key.name, key.size
 
-def find_nonconflicting_filename(subreddit_name, filename, s3_bucket_factory=get_user_upload_bucket):
+def find_nonconflicting_filename(prefix, filename, s3_bucket_factory=get_user_upload_bucket):
     """
     If they've already uploaded a file named "file.txt" we don't
     want them to overwrite that file.  A second upload with the 
     same name should be "file.1.text"
     """
-    prefix = 'space/%s/' % (subreddit_name,)
-
     bucket = s3_bucket_factory()
     rs = bucket.list(prefix=prefix)
     filenames = [key.name[len(prefix):] for key in rs]
