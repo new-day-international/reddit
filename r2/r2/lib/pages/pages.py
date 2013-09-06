@@ -1619,7 +1619,10 @@ class WelcomeBar(InfoBar):
         if messages:
             message = random.choice(messages).split(" / ")
         else:
-            message = (_("Welcome to lightnet. The tech platform for a new civilization."))
+            # Note: Messages are two-parts. First part is the header,
+            # second part is the message text
+            message = (_("welcome to lightnet"),
+                       _("the tech platform for a new civilization"))
         InfoBar.__init__(self, message=message)
 
 class ClientInfoBar(InfoBar):

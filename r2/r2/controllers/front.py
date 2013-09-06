@@ -300,7 +300,7 @@ class FrontController(RedditController, OAuth2ResourceController):
 
         displayPane.append(LinkCommentSep())
 
-        # insert reply box only for logged in user
+        # insert reply box only for logged in users and approved commenters
         if c.user_is_loggedin and can_comment_link(article) and not is_api():
             #no comment box for permalinks
             display = False
