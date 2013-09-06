@@ -33,7 +33,7 @@
   if thing.default_sr:
     sr = "&#32;" + _a_buffered(thing.default_sr.name, href=thing.default_sr.path)
   else:
-    sr = _("reddit")
+    sr = _("lightnet")
 %>
 <h1>${unsafe(_("submit to %(sr)s") % dict(sr=sr))}</h1>
 
@@ -42,18 +42,27 @@
                     _class="submit content",
                     _id="newlink">
 
-%if thing.show_link and thing.show_self:
-${thing.formtabs_menu}
-%endif
+## These tabs are just confusing to new users.
+## %if thing.show_link and thing.show_self:
+## ${thing.formtabs_menu}
+## %endif
 
 <div class="formtabs-content">
 
 <div class="spacer">
+<%
+  if thing.default_link_tab:
+    link_style = ''
+    self_style = 'display: none'
+  else:
+    link_style = 'display: none'
+    self_style = ''
+%>
     %if thing.show_link:
-        <div id="link-desc" class="infobar">${strings.submit_link}</div>
+        <div id="link-desc" class="infobar" style="${link_style}">${strings.submit_link}</div>
     %endif
     %if thing.show_self:
-        <div id="text-desc" class="infobar">${strings.submit_text}</div>
+        <div id="text-desc" class="infobar" style="${self_style}">${strings.submit_text}</div>
     %endif
 </div>
 
@@ -67,8 +76,7 @@ ${thing.formtabs_menu}
 
 %if thing.show_link:
 <div class="spacer">
-  <%utils:round_field title="${_('url')}" id="url-field">
-    <input name="kind" value="link" type="hidden"/>
+  <%utils:round_field title="${_('url')}" id="url-field" style="${link_style}">
     <input id="url" name="url" type="url" value="${thing.url}" required>
     ${error_field("NO_URL", "url", "div")}
     ${error_field("BAD_URL", "url", "div")}
@@ -83,11 +91,21 @@ ${thing.formtabs_menu}
     </div>
   </%utils:round_field>
 </div>
+
+<div class="spacer">
+  <%utils:round_field title="${_('excerpt or summary')}" description="${_('(optional)')}" id="link-text-field" style="${link_style}">
+    <input name="kind" value="link" type="hidden"/>
+
+    ${UserText(None, text = thing.text, have_form = False, creating = True)}
+
+    ${error_field("NO_SELFS", "sr")}
+  </%utils:round_field>
+</div>
 %endif
 
 %if thing.show_self:
 <div class="spacer">
-  <%utils:round_field title="${_('text')}", description="${_('(optional)')}" id="text-field">
+  <%utils:round_field title="${_('text')}" description="${_('(optional)')}" id="text-field" style="${self_style}">
     <input name="kind" value="self" type="hidden"/>
 
     ${UserText(None, text = thing.text, have_form = False, creating = True)}
@@ -110,7 +128,6 @@ ${thing.formtabs_menu}
       <label for="sendreplies">
         ${_("send replies to my inbox")}
       </label>
-      &#32;<span class="little gray">(${_("beta")})</span>
     </%utils:round_field>
   </div>
 %endif

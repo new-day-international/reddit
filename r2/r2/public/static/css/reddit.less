@@ -3118,6 +3118,10 @@ form .spacer + .spacer {
     margin: 15px 0;
 }
 
+div.formtabs-content div.spacer {
+    margin: 15px 0;
+}
+
 form input[type=checkbox],
 form input[type=radio] {margin: 2px .5em 0 0; }
 
@@ -3489,17 +3493,27 @@ ul#image-preview-list .description pre {
 }
 
 .dropdown.srdrop .selected {
-    background: none no-repeat scroll center right;
-    background-image: url(../droparrowgray.gif); 
     display: inline-block;
     vertical-align: bottom;
-    padding-right: 21px;
     padding-left: 5px; /* have to use padding instead of margin cause of ie */
     color: black;
     font-weight: normal;
     margin-left: -5px; /* There's 5px margin intended for the SR list... */
-    margin-right: 10px;/* ...so we move it to the right side plus 5 more */
+    margin-right: 0px;/* ...so we move it to the right side plus 5 more */
  }
+
+
+div.dropdown.srdrop span.dropdown-arrow {
+    display: inline-block;
+    margin-top: 0px;
+    padding: 0px 0px 0px 0px;
+    height: 16px!important;
+    width: 21px!important;
+    background: none no-repeat transparent scroll center right;
+    background-image: url(../droparrowgray.gif);  /* SPRITE */
+    vertical-align: center;
+}
+
 
 .srdrop .choice {padding-top: 3px;}
 
@@ -7299,13 +7313,21 @@ div#RESSubredditGroupDropdown {
 		color: #2154a3;
 	}
 
-	#header-bottom-right:hover {
+/*
+    #header-bottom-right:hover {
 		background-color: #def0fe;
+        background-color: transparent;
 	}
 
 		#header-bottom-right:hover a,
 		#header-bottom-right:hover span {
 			text-shadow: 0 -1px 0 #dadada,0 1px 0 #fff;
+		}
+*/
+
+
+		#header-bottom-right a:hover {
+			text-decoration: underline;
 		}
 
 	#header-bottom-right .user,
@@ -7487,16 +7509,39 @@ ul.tabmenu {
 				color: #ff4500;
 			}
 
-/*
-.dropdown.tabdrop.neighbors .selected.title {
-    background-color: #acd9fc;
-    background-image: -webkit-linear-gradient(top,#acd9fc,#8ccbfc);
-    background-image: -moz-linear-gradient(top,#acd9fc,#8ccbfc);
-    background-image: linear-gradient(top,#acd9fc,#8ccbfc);
-    left: 0px;
-    top: -7px;
+
+div.dropdown.tabdrop.neighbors {
+    margin: 15px 10px -17px 16px;
+    height: 50px;
+	border: 0 none;
+    display: inline-block;
+    vertical-align: bottom;
 }
-*/
+
+div.dropdown.tabdrop.neighbors .selected.title {
+    display: inline-block;
+    height: 20px;
+    margin-top: 5px;
+    padding: 5px 2px 1px 5px;
+    background: none no-repeat;
+    background-color: transparent;
+    color: #2154a3;
+}
+
+div.dropdown.tabdrop.neighbors span.dropdown-arrow {
+    display: inline-block;
+    margin-top: 5px;
+    padding: 0px 0px 0px 0px;
+    height: 16px;
+    width: 21px;
+    background: none no-repeat transparent scroll center right;
+    background-image: url(../droparrowgray.gif);  /* SPRITE */
+    vertical-align: center;
+}
+
+div.drop-choices.tabdrop.neighbors {
+    margin-left: 12px;
+}
 
 div.footer-parent ul.tabmenu {
     margin: 0px 0px -17px -5px;

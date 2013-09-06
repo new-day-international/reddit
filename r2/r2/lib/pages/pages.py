@@ -2226,20 +2226,25 @@ class NewLink(Templated):
 
         tabs = []
         if c.default_sr or c.site.link_type != 'self':
-            tabs.append(('link', ('link-desc', 'url-field')))
+            tabs.append(('link', ('link-desc', 'url-field', 'link-text-field')))
             self.show_link = True
         if c.default_sr or c.site.link_type != 'link':
             tabs.append(('text', ('text-desc', 'text-field')))
             self.show_self = not never_show_self
 
+        # If we are showing both text and link fields then we need
+        # the tab menus and the javascript that will show and hide
+        # the relevant fields when the menu is selected.
         if self.show_self and self.show_link:
             all_fields = set(chain(*(parts for (tab, parts) in tabs)))
             buttons = []
             
             if selftext == 'true' or text != '':
                 self.default_tab = tabs[1][0]
+                self.default_link_tab = False
             else:
                 self.default_tab = tabs[0][0]
+                self.default_link_tab = True
 
             for tab_name, parts in tabs:
                 to_show = ','.join('#' + p for p in parts)
@@ -3444,7 +3449,7 @@ def make_link_child(item):
             link_child = MediaChild(item, media_embed, load = True)
 
     # if the item is_self, add a selftext child
-    elif item.is_self:
+    elif item.is_self or item.selftext != '':
         if not item.selftext: item.selftext = u''
 
         expand = getattr(item, 'expand_children', False)
