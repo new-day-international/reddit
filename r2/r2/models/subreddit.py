@@ -338,7 +338,7 @@ class Subreddit(Thing, Printable):
             return True
         elif self.is_banned(user):
             return False
-        elif self.type in ('public','restricted'):
+        elif self.type == 'public':
             return True
         elif self.is_moderator(user) or self.is_contributor(user):
             #private requires contributorship

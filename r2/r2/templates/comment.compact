@@ -83,7 +83,7 @@
             <%
                 is_author = (c.user_is_loggedin and thing.author and c.user.name == thing.author.name)
             %>
-            %if c.user_is_loggedin:
+            %if c.user_is_loggedin and c.site.can_comment(c.user):
                 ${icon_button("Reply", "reply-icon", onclick="return reply(this)", outer_class="reply-button")}
             %endif
             ${icon_button("Collapse", "collapse-icon", outer_class="collapse-button")}
