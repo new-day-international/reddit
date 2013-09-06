@@ -393,6 +393,8 @@ class ApiController(RedditController, OAuth2ResourceController):
         cleaned_title = re.sub(r'\s+', ' ', request.post.title, flags=re.UNICODE)
         cleaned_title = cleaned_title.strip()
 
+        if kind == 'file':
+            url = s3_helpers.rename_user_submitted_file_to_space(url, sr)
         # well, nothing left to do but submit it
         l = Link._submit(cleaned_title, url if kind in ('link', 'file',) else 'self',
                          c.user, sr, ip, spam=c.user._spam, sendreplies=sendreplies)

@@ -137,20 +137,32 @@ def list_user_uploads_bucket(username):
     for key in rs:
         print key.name, key.size
 
-def find_nonconflicting_filename(prefix, filename, s3_bucket_factory=get_user_upload_bucket):
+def find_nonconflicting_key(key_name):
     """
-    If they've already uploaded a file named "file.txt" we don't
+    If they've already uploaded a file named "u/User/file.txt" we don't
     want them to overwrite that file.  A second upload with the 
-    same name should be "file.1.text"
+    same name should be "u/User/file.1.text"
     """
-    bucket = s3_bucket_factory()
-    rs = bucket.list(prefix=prefix)
-    filenames = [key.name[len(prefix):] for key in rs]
+    base, ext = os.path.splitext(key_name)
+    rs = get_user_upload_bucket().list(prefix=base)
+    key_names = [key.name for key in rs]
 
-    base, ext = os.path.splitext(filename)
     counter = 0
-    while filename in filenames:
+    while key_name in key_names:
         counter += 1
-        filename = "%s.%s%s" % (base, counter, ext)
+        key_name = "%s.%s%s" % (base, counter, ext)
+    return key_name
 
-    return filename
+def rename_user_submitted_file_to_space(url, subreddit):
+    bucket = get_user_upload_bucket()
+    user_files_url = "http://%s/" % (g.s3_user_files_host,)
+    assert url.startswith(user_files_url)
+    key_name = url[len(user_files_url):]
+    base, filename = os.path.split(key_name)
+    new_key_name = find_nonconflicting_key("space/%s/%s" % (subreddit.name, filename,))
+    old_key = bucket.get_key(key_name)
+    old_key.copy(bucket, new_key_name)
+    old_key.delete()
+    new_key_url = "%s%s" % (user_files_url, new_key_name,)
+    return new_key_url
+

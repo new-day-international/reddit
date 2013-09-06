@@ -1,6 +1,7 @@
 from r2.tests import *
 import json
 import datetime
+from mock import Mock, patch, call
 
 class TestApiController(RedditTestCase):
     default_username = 'reddit_007'
@@ -42,14 +43,18 @@ class TestApiController(RedditTestCase):
         self.assert_no_errors(response)
         assert response['data'].has_key('url')
 
-    def test_POST_submit_happy_path_for_files(self):
+    @patch('r2.lib.s3_helpers.rename_user_submitted_file_to_space')
+    def test_POST_submit_happy_path_for_files(self, rename_mock):
+        timestamp = self.seconds_since_epoc()
+        url = "http://files.host/u/monkey/file%s.txt" % (timestamp,)
+        rename_mock.return_value = "http://files.host/space/TestSpace/file%s.txt" % (timestamp,)
         self.login()
         response = self.api_post('/api/submit', dict(
             uh=self.default_username,
             title="Test File Link",
             kind="file",
             thing_id="",
-            url="http://files.host/u/monkey/file%s.txt" % (self.seconds_since_epoc(),),
+            url=url,
             sr=self.default_subreddit,
             sendreplies="true",
             resubmit="",
@@ -58,16 +63,17 @@ class TestApiController(RedditTestCase):
         response = self.get_json_body(response)
         self.assert_no_errors(response)
         assert response['data'].has_key('url')
+        assert len(rename_mock.mock_calls) == 1
 
-    def test_submitting_files_two_times_in_a_row(self):
+    def test_submitting_link_two_times_in_a_row(self):
         self.login()
-        file_url = "http://files.host/u/monkey/file%s.txt" % (self.seconds_since_epoc(),)
+        url = 'http://slashdot.org/?timestampe=%s' % (self.seconds_since_epoc(),)
         response = self.api_post('/api/submit', dict(
             uh=self.default_username,
-            title="Test File Link",
-            kind="file",
+            title="Test Link",
+            kind="link",
             thing_id="",
-            url=file_url,
+            url=url,
             sr=self.default_subreddit,
             sendreplies="true",
             resubmit="",
@@ -78,10 +84,10 @@ class TestApiController(RedditTestCase):
         assert response['data'].has_key('url')
         response = self.api_post('/api/submit', dict(
             uh=self.default_username,
-            title="Test File Link",
-            kind="file",
+            title="Test Link",
+            kind="link",
             thing_id="",
-            url=file_url,
+            url=url,
             sr=self.default_subreddit,
             sendreplies="true",
             resubmit="",
@@ -98,7 +104,7 @@ class TestApiController(RedditTestCase):
         self.assert_equal(self.default_username, json_response['data']['name'])
 
     def assert_has_error(self, response, error):
-        assert len(response['errors']) == 1
+        assert len(response['errors']) == 1, response
         assert response['errors'][0][0] == error
 
     def assert_no_errors(self, response):
