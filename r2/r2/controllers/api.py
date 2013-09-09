@@ -316,8 +316,8 @@ class ApiController(RedditController, OAuth2ResourceController):
 
             return
 
-        should_ratelimit = sr.should_ratelimit(c.user, 'link')
         #remove the ratelimit error if the user's karma is high
+        should_ratelimit = sr.should_ratelimit(c.user, 'link')
         if not should_ratelimit:
             c.errors.remove((errors.RATELIMIT, 'ratelimit'))
 
@@ -395,7 +395,8 @@ class ApiController(RedditController, OAuth2ResourceController):
 
         if kind == 'file':
             url = s3_helpers.rename_user_submitted_file_to_space(url, sr)
-        # well, nothing left to do but submit it
+
+        # create a new link from the submission
         l = Link._submit(cleaned_title, url if kind in ('link', 'file',) else 'self',
                          c.user, sr, ip, spam=c.user._spam, sendreplies=sendreplies)
 

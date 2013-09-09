@@ -2225,42 +2225,12 @@ class NewLink(Templated):
     def __init__(self, captcha = None, url = '', title= '', text = '', selftext = '',
                  spaces = (), then = 'comments', resubmit=False, never_show_self=False):
 
-        self.show_link = self.show_self = False
-
-        tabs = []
-        if c.default_sr or c.site.link_type != 'self':
-            tabs.append(('link', ('link-desc', 'url-field', 'link-text-field')))
-            self.show_link = True
-        if c.default_sr or c.site.link_type != 'link':
-            tabs.append(('text', ('text-desc', 'text-field')))
-            self.show_self = not never_show_self
-
-        # If we are showing both text and link fields then we need
-        # the tab menus and the javascript that will show and hide
-        # the relevant fields when the menu is selected.
-        if self.show_self and self.show_link:
-            all_fields = set(chain(*(parts for (tab, parts) in tabs)))
-            buttons = []
-            
-            if selftext == 'true' or text != '':
-                self.default_tab = tabs[1][0]
-                self.default_link_tab = False
-            else:
-                self.default_tab = tabs[0][0]
-                self.default_link_tab = True
-
-            for tab_name, parts in tabs:
-                to_show = ','.join('#' + p for p in parts)
-                to_hide = ','.join('#' + p for p in all_fields if p not in parts)
-                onclick = "return select_form_tab(this, '%s', '%s');"
-                onclick = onclick % (to_show, to_hide)
-                if tab_name == self.default_tab:
-                    self.default_show = to_show
-                    self.default_hide = to_hide
-
-                buttons.append(JsButton(tab_name, onclick=onclick, css_class=tab_name + "-button"))
-
-            self.formtabs_menu = JsNavMenu(buttons, type = 'formtab')
+        if selftext == 'true' or (text != '' and url == ''):
+            self.kind = 'self'
+            self.url = None
+        else:
+            self.kind = 'link'
+            self.url = url
 
         self.sr_searches = simplejson.dumps(popular_searches(include_over_18=c.over18))
 
@@ -2280,28 +2250,8 @@ class NewFileLink(Templated):
     def __init__(self, captcha = None, url = '', title= '', 
                  spaces = (), then = 'comments', resubmit=False, never_show_self=False):
 
-        self.show_link = self.show_self = False
         self.sr_searches = simplejson.dumps(popular_searches(include_over_18=c.over18))
-
-        tabs = []
-        tabs.append(('file', ('file-desc', 'file-field')))
-        self.default_tab = tabs[0][0]
-        all_fields = set(chain(*(parts for (tab, parts) in tabs)))
-        buttons = []
-
-        for tab_name, parts in tabs:
-            to_show = ','.join('#' + p for p in parts)
-            to_hide = ','.join('#' + p for p in all_fields if p not in parts)
-            onclick = "return select_form_tab(this, '%s', '%s');"
-            onclick = onclick % (to_show, to_hide)
-            if tab_name == self.default_tab:
-                self.default_show = to_show
-                self.default_hide = to_hide
-
-            buttons.append(JsButton(tab_name, onclick=onclick, css_class=tab_name + "-button"))
-
         self.s3_user_upload_url = 'http://%s.s3.amazonaws.com' % (g.s3_user_files_bucket,)
-        self.formtabs_menu = JsNavMenu(buttons, type = 'formtab')
         self.resubmit = resubmit
         if c.default_sr:
             self.default_sr = None

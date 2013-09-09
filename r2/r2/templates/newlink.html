@@ -42,28 +42,19 @@
                     _class="submit content",
                     _id="newlink">
 
-## These tabs are just confusing to new users.
-## %if thing.show_link and thing.show_self:
-## ${thing.formtabs_menu}
-## %endif
-
 <div class="formtabs-content">
 
 <div class="spacer">
 <%
-  if thing.default_link_tab:
-    link_style = ''
-    self_style = 'display: none'
+  if thing.kind == 'link':
+    textarea_title = _('excerpt or summary')
+    infobar_text = strings.submit_link
   else:
-    link_style = 'display: none'
-    self_style = ''
+    textarea_title = _('text')
+    infobar_text = strings.submit_text
 %>
-    %if thing.show_link:
-        <div id="link-desc" class="infobar" style="${link_style}">${strings.submit_link}</div>
-    %endif
-    %if thing.show_self:
-        <div id="text-desc" class="infobar" style="${self_style}">${strings.submit_text}</div>
-    %endif
+  <div class="infobar">${infobar_text}</div>
+
 </div>
 
 <div class="spacer">
@@ -74,9 +65,9 @@
   </%utils:round_field>
 </div>
 
-%if thing.show_link:
+%if thing.kind == 'link':
 <div class="spacer">
-  <%utils:round_field title="${_('url')}" id="url-field" style="${link_style}">
+  <%utils:round_field title="${_('url')}"" id="url-field">
     <input id="url" name="url" type="url" value="${thing.url}" required>
     ${error_field("NO_URL", "url", "div")}
     ${error_field("BAD_URL", "url", "div")}
@@ -91,29 +82,15 @@
     </div>
   </%utils:round_field>
 </div>
+%endif
 
 <div class="spacer">
-  <%utils:round_field title="${_('excerpt or summary')}" description="${_('(optional)')}" id="link-text-field" style="${link_style}">
-    <input name="kind" value="link" type="hidden"/>
-
+  <input name="kind" value="${thing.kind}" type="hidden"/>
+  <%utils:round_field title="${textarea_title}" description="${_('(optional)')}">
     ${UserText(None, text = thing.text, have_form = False, creating = True)}
-
     ${error_field("NO_SELFS", "sr")}
   </%utils:round_field>
 </div>
-%endif
-
-%if thing.show_self:
-<div class="spacer">
-  <%utils:round_field title="${_('text')}" description="${_('(optional)')}" id="text-field" style="${self_style}">
-    <input name="kind" value="self" type="hidden"/>
-
-    ${UserText(None, text = thing.text, have_form = False, creating = True)}
-
-    ${error_field("NO_SELFS", "sr")}
-  </%utils:round_field>
-</div>
-%endif
 
 <div class="spacer">
   <%utils:round_field title="${_('choose a space')}" id="reddit-field">
@@ -157,15 +134,3 @@ ${thing.captcha}
   ${error_field("INVALID_OPTION", "sr")}
 </div>
 </%utils:submit_form>
-
-%if thing.show_self and thing.show_link:
-<script type="text/javascript">
-  $(function() {
-  var form = $("#newlink");
-  if(form.length) {
-    var default_menu = form.find(".${thing.default_tab}-button:first");
-    select_form_tab(default_menu, "${thing.default_show}", "${thing.default_hide}");
-    }
-  });
-</script>
-%endif
