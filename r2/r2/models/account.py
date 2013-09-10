@@ -76,7 +76,7 @@ class Account(Thing):
                      pref_content_langs = (g.lang,),
                      pref_over_18 = False,
                      pref_compress = False,
-                     pref_organic = True,
+                     pref_organic = False,
                      pref_no_profanity = True,
                      pref_label_nsfw = True,
                      pref_show_stylesheets = True,
