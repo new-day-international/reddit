@@ -110,7 +110,8 @@
     % endif
   %endif
 
-  %if thing.gold_remaining or thing.gold_creddit_message:
+## Removed the gold for now...
+  %if False and (thing.gold_remaining or thing.gold_creddit_message):
     <div class="rounded gold-accent gold-expiration-info">
       %if thing.gold_remaining:
         <div class="gold-remaining"
@@ -145,7 +146,8 @@
     </div>
   %endif
 
-%if getattr(thing, "goldlink", None):
+## Remove gold for now...
+%if False and getattr(thing, "goldlink", None):
   <div class="giftgold">
     <a href="${thing.goldlink}">
       ${thing.giftmsg}

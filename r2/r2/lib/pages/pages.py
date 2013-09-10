@@ -1513,13 +1513,15 @@ class ProfilePage(Reddit):
     def rightbox(self):
         rb = Reddit.rightbox(self)
 
-        tc = TrophyCase(self.user)
-        helplink = ( "/wiki/awards", _("what's this?") )
-        scb = SideContentBox(title=_("trophy case"),
-                 helplink=helplink, content=[tc],
-                 extra_class="trophy-area")
-
-        rb.push(scb)
+#        Remove Trophy Case for now...
+#
+#        tc = TrophyCase(self.user)
+#        helplink = ( "/wiki/awards", _("what's this?") )
+#        scb = SideContentBox(title=_("trophy case"),
+#                 helplink=helplink, content=[tc],
+#                 extra_class="trophy-area")
+#
+#        rb.push(scb)
 
         if c.user_is_admin:
             from admin_pages import AdminSidebar
@@ -1559,7 +1561,8 @@ class ProfileBar(Templated):
         running_out_of_gold = False
         self.gold_creddit_message = None
 
-        if c.user_is_loggedin:
+        # Remove gold for now...
+        if False and c.user_is_loggedin:
             if ((user._id == c.user._id or c.user_is_admin)
                 and getattr(user, "gold", None)):
                 self.gold_expiration = getattr(user, "gold_expiration", None)
