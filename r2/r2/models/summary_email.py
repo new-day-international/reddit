@@ -12,8 +12,14 @@ from r2.lib.template_helpers import JSPreload
 from r2.lib.db.operators import asc, desc, timeago
 from r2.lib.utils import fetch_things2, flatten
 from r2.lib import amqp
-
+from pylons.i18n import _
 from mako.template import Template
+
+from time import strftime
+
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 # useful for testing sending emails: paster run run.ini r2/models/summary_email.py -c 'reset_last_email_sent_at_for_all_accounts()'
 def test_send_summary_emails():
@@ -76,7 +82,6 @@ def should_send_activity_summary_email(account):
 
     return True
 
-
 def send_account_summary_email(account_thing_id, verbose=False):
     account = Account._byID(account_thing_id, data=True)
     if not should_send_activity_summary_email(account):
@@ -132,30 +137,31 @@ def send_account_summary_email(account_thing_id, verbose=False):
     if len(new_spaces) == 0 and len(active_links) == 0:
         return
 
+    # Get the date and time
+    date_string = strftime("%A %B %d, %Y")
+    time_string = strftime("%I:%M %p")
+
+    # Render the template
     html_email_template = g.mako_lookup.get_template('summary_email.html')
     html_body = html_email_template.render(
         last_email_sent_at=account.last_email_sent_at,
         new_spaces=new_spaces, 
-        active_links=active_links)
+        active_links=active_links,
+        date_string=date_string,
+        time_string=time_string)
+
     # with open('out.html', 'w') as ff:
     #     ff.write(html_body)
     if verbose:
         print "sending email to %s" % (account.email,)
-    send_email(account.email, html_body)
+    send_email(account.email, html_body, date_string)
 
     account.last_email_sent_at = datetime.datetime.now(pytz.utc)
     account._commit()
 
-
-
-
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-
-def send_email(address, html_body):
+def send_email(address, html_body,date_string):
     msg = MIMEMultipart('alternative')
-    msg['Subject'] = g.summary_email_subject
+    msg['Subject'] = _("Lightnet summary for %s") % date_string
     msg['From'] = '"%s" <%s>' % (g.summary_email_from_name, g.share_reply,)
     msg['To'] = address
 

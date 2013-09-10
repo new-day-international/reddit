@@ -4,6 +4,7 @@ from r2.lib.utils import timesince, truncate_html_words
 from r2.lib.filters import safemarkdown, unsafe
 import datetime
 from r2.models import Account, Frontpage, Subreddit, Thing, Link, Comment
+from pylons.i18n import _
 
 domain = get_domain(subreddit=False)
 
@@ -15,6 +16,7 @@ domain = get_domain(subreddit=False)
   <meta charset="utf-8"/>
 </head>
 <body class="listing-page active-page" style="margin: 0;padding: 0;font: normal x-small verdana, arial, helvetica, sans-serif;background-color: #f1f1f1;z-index: 1;position: relative;color: #333;font-weight: normal;font-style: normal;font-variant: normal;font-family: sans-serif;line-height: 1.4">
+  <h1 style="margin: 6px 0 0 6px;">${_("Lightnet summary for %s at %s") % (date_string, time_string)}</h1>
   <div class="content" role="main" style="margin: 7px 5px 0 5px;padding: 0;z-index: 1;border: 0 none;background-color: transparent;box-shadow: none">
 
 % if active_links:
