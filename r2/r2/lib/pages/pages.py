@@ -523,6 +523,7 @@ class Reddit(Templated):
                             NamedButton('new'),
                             NamedButton('hot'),
                             NamedButton('top'),
+                            NamedButton('files'),
                             ]
 
             if c.user_is_loggedin:

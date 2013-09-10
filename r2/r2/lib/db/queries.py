@@ -326,6 +326,16 @@ def get_deleted(user):
 def get_links(sr, sort, time):
     return _get_links(sr._id, sort, time)
 
+def get_files(sr, time='all'):
+    """Find only links for a subreddit."""
+    q = Link._query(Link.c.sr_id == sr._id,
+                    Link.c.kind == 'file',
+                    sort = db_sort('new'),
+                    data = True)
+    if time != 'all':
+        q._filter(db_times[time])
+    return q
+
 def _get_links(sr_id, sort, time):
     """General link query for a subreddit."""
     q = Link._query(Link.c.sr_id == sr_id,
@@ -809,7 +819,7 @@ def all_queries(fn, obj, *param_lists):
 
 ## The following functions should be called after their respective
 ## actions to update the correct listings.
-def new_link(link):
+def new_link(link, foreground=False):
     "Called on the submission and deletion of links"
     sr = Subreddit._byID(link.sr_id)
     author = Account._byID(link.author_id)
@@ -829,7 +839,7 @@ def new_link(link):
             m.insert(get_spam_links(sr), [link])
         m.insert(get_unmoderated_links(sr), [link])
 
-    add_queries(results, insert_items = link)
+    add_queries(results, insert_items = link, foreground=foreground)
     amqp.add_item('new_link', link._fullname)
 
 

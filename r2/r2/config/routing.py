@@ -186,7 +186,7 @@ def make_map():
     mc('/', controller='active', action='listing')
 
     mc('/:controller', action='listing',
-       requirements=dict(controller="hot|new|active|rising|randomrising|comments"))
+       requirements=dict(controller="hot|new|active|rising|randomrising|comments|files"))
     mc('/saved', controller='user', action='saved_redirect')
 
     mc('/by_id/:names', controller='byId', action='listing')

@@ -398,7 +398,7 @@ class ApiController(RedditController, OAuth2ResourceController):
 
         # create a new link from the submission
         l = Link._submit(cleaned_title, url if kind in ('link', 'file',) else 'self',
-                         c.user, sr, ip, spam=c.user._spam, sendreplies=sendreplies)
+                         c.user, sr, ip, spam=c.user._spam, sendreplies=sendreplies, kind=kind)
 
         if banmsg:
             g.stats.simple_event('spam.domainban.link_url')

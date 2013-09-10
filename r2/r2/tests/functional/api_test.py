@@ -131,7 +131,4 @@ class TestApiController(RedditTestCase):
         response = self.get_json_body(response)
         self.assert_no_errors(response)
         return response
-        
-    def seconds_since_epoc(self):
-        return datetime.datetime.now().strftime('%s.%f')
 

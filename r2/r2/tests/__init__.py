@@ -20,9 +20,7 @@
 # Inc. All Rights Reserved.
 ###############################################################################
 
-import os
-import sys
-from unittest import TestCase
+import os, sys, datetime, unittest
 
 import pkg_resources
 import paste.fixture
@@ -66,6 +64,8 @@ class TestCaseSnakeCaseMethods:
     """
     def assert_equal(self, *args, **kwargs):
         return self.assertEqual(*args, **kwargs)
+    def assert_true(self, *args, **kwargs):
+        return self.assertTrue(*args, **kwargs)
 
     def tearDown(self, *args, **kwargs):
         return self.tear_down(*args, **kwargs)
@@ -73,7 +73,18 @@ class TestCaseSnakeCaseMethods:
     def setUp(self, *args, **kwargs):
         return self.set_up(*args, **kwargs)
 
-class RedditTestCase(TestCase, TestCaseSnakeCaseMethods):
+class TestHelpers:
+    def seconds_since_epoc(self):
+        """
+        Useful to make links unique
+        """
+        return datetime.datetime.now().strftime('%s.%f')
+
+    def make_unique_url(self):
+        return "http://uniqueurls.com/?%s" % (self.seconds_since_epoc(),)
+
+
+class RedditTestCase(unittest.TestCase, TestCaseSnakeCaseMethods, TestHelpers):
     """Base Test Case for tests that require the app environment to run.
 
     App startup does take time, so try to use unittest.TestCase directly when
@@ -82,4 +93,4 @@ class RedditTestCase(TestCase, TestCaseSnakeCaseMethods):
     """
     def __init__(self, *args, **kwargs):
         self.app = stage_for_paste()
-        TestCase.__init__(self, *args, **kwargs)
+        unittest.TestCase.__init__(self, *args, **kwargs)

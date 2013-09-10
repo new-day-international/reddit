@@ -500,6 +500,10 @@ class Subreddit(Thing, Printable):
         from r2.lib.db import queries
         return queries.get_links(self, sort, time)
 
+    def get_files(self, time):
+        from r2.lib.db import queries
+        return queries.get_files(self, time)
+
     def get_spam(self, include_links=True, include_comments=True):
         from r2.lib.db import queries
         return queries.get_spam(self, user=c.user, include_links=include_links,

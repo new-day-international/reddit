@@ -450,6 +450,26 @@ class ActiveController(ListingController):
 
         return ListingController.GET_listing(self, **env)
 
+class FilesController(ListingController):
+    where = 'new'
+    title_text = _('newest files')
+    extra_page_classes = ListingController.extra_page_classes + ['files-page']
+
+    def query(self):
+        return c.site.get_files('all')
+
+    def POST_listing(self, **env):
+        # Redirect to GET mode in case of any legacy requests
+        return self.redirect(request.fullpath)
+
+    @require_oauth2_scope("read")
+    @listing_api_doc(uri='/files')
+    def GET_listing(self, **env):
+        if request.params.get('sort') == 'rising':
+            return self.redirect(add_sr('/rising'))
+
+        return ListingController.GET_listing(self, **env)
+
 class RisingController(NewController):
     where = 'rising'
     title_text = _('rising submissions')

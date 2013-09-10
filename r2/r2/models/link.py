@@ -56,7 +56,8 @@ class LinkExists(Exception): pass
 class Link(Thing, Printable):
     _data_int_props = Thing._data_int_props + (
         'num_comments', 'reported', 'comment_tree_id')
-    _defaults = dict(is_self=False,
+    _defaults = dict(kind='link',
+                     is_self=False,
                      over_18=False,
                      nsfw_str=False,
                      reported=0, num_comments=0,
@@ -144,7 +145,7 @@ class Link(Thing, Printable):
             return cls._defaults['comment_tree_version']
 
     @classmethod
-    def _submit(cls, title, url, author, sr, ip, spam=False, sendreplies=True):
+    def _submit(cls, title, url, author, sr, ip, spam=False, sendreplies=True, kind='link'):
         from r2.models import admintools
 
         l = cls(_ups=1,
@@ -156,7 +157,8 @@ class Link(Thing, Printable):
                 sr_id=sr._id,
                 lang=sr.lang,
                 ip=ip,
-                comment_tree_version=cls._choose_comment_tree_version())
+                comment_tree_version=cls._choose_comment_tree_version(),
+                kind=kind)
         l._commit()
         l.set_url_cache()
         LinksByAccount.add_link(author, l)
