@@ -676,23 +676,23 @@ def make_comment_gold_message(comment, user_gilded):
 
     if c.user_is_loggedin and comment.author_id == c.user._id:
         gilded_message = ungettext(
-            "a redditor gifted you a month of reddit gold for this comment.",
+            "a lightnet user gifted you a month of reddit gold for this comment.",
             "redditors have gifted you %(months)d months of reddit gold for "
             "this comment.",
             comment.gildings
         )
     elif user_gilded:
         gilded_message = ungettext(
-            "you have gifted reddit gold to %(recipient)s for this comment.",
-            "you and other redditors have gifted %(months)d months of "
-            "reddit gold to %(recipient)s for this comment.",
+            "you have gifted lightnet gold to %(recipient)s for this comment.",
+            "you and other lightnet users have gifted %(months)d months of "
+            "lightnet gold to %(recipient)s for this comment.",
             comment.gildings
         )
     else:
         gilded_message = ungettext(
-            "a redditor has gifted reddit gold to %(recipient)s for this "
+            "a lightnet user has gifted lightnet gold to %(recipient)s for this "
             "comment.",
-            "redditors have gifted %(months)d months of reddit gold to "
+            "lightnet users have gifted %(months)d months of lightnet gold to "
             "%(recipient)s for this comment.",
             comment.gildings
         )

@@ -228,7 +228,7 @@ def send_gift(buyer, recipient, months, days, signed, giftmessage, comment_id):
         md_sender = "[%s](/user/%s)" % (sender, sender)
     else:
         sender = "someone"
-        md_sender = "An anonymous redditor"
+        md_sender = "An anonymous lightnet user"
 
     create_gift_gold (buyer._id, recipient._id, days, c.start_time, signed)
 
