@@ -1444,9 +1444,9 @@ class SubredditsPage(Reddit):
         srs = Subreddit.user_subreddits(c.user, ids=False, limit=None)
         srs.sort(key=lambda sr: sr.name.lower())
         subscribe_box = SubscriptionBox(srs,
-                                        multi_text=strings.subscribed_multi)
+                                        multi_text="")
         num_reddits = len(subscribe_box.srs)
-        ps.append(SideContentBox(_("your front page spaces (%s)") %
+        ps.append(SideContentBox(_("your subscribed spaces (%s)") %
                                  num_reddits, [subscribe_box]))
         return ps
 
