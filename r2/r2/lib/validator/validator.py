@@ -1058,7 +1058,7 @@ class VPassword(Validator):
             self.param[1]: "the password again (for verification)",
         }
 
-user_rx = re.compile(r"\A[\w-]{3,20}\Z", re.UNICODE)
+user_rx = re.compile(r"\A[\w-]{3,45}\Z", re.UNICODE)
 
 def check_user(x):
     if x is None:
@@ -1095,7 +1095,7 @@ class VUname(VRequired):
         }
 
 # Full names can include spaces and dashes and dots for abbreviations.
-fullname_rx = re.compile(r"\A[\w\-\s\.]{3,40}\Z", re.UNICODE)
+fullname_rx = re.compile(r"\A[\w\-\s\.]{3,45}\Z", re.UNICODE)
 
 def check_fullname(x):
     if x is None:
