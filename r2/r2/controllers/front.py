@@ -779,8 +779,8 @@ class FrontController(RedditController, OAuth2ResourceController):
     @base_listing
     @validate(query=nop('q'))
     @api_doc(api_section.spaces, uri='/spaces/search', extensions=['json', 'xml'])
-    def GET_search_reddits(self, query, reverse, after, count, num):
-        """Search reddits by title and description."""
+    def GET_search_spaces(self, query, reverse, after, count, num):
+        """Search spaces by title and description."""
         q = SubredditSearchQuery(query)
 
         results, etime, spane = self._search(q, num=num, reverse=reverse,
