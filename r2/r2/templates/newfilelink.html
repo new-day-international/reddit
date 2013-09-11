@@ -26,7 +26,7 @@
    from r2.lib.template_helpers import add_sr
 %>
 
-<%namespace file="utils.html" import="error_field, submit_form, _a_buffered, reddit_selector, text_with_links"/>
+<%namespace file="utils.html" import="error_field, submit_form, _a_buffered, reddit_selector, text_with_links, md"/>
 <%namespace name="utils" file="utils.html"/>
 
 <%
@@ -40,7 +40,7 @@
 
 <div class="formtabs-content" style="margin-left: 20px; width=500px;">
   <div class="spacer">
-    <div id="file-desc" class="infobar" style="width=520px;">${strings.submit_file}</div>
+    <div id="file-desc" class="infobar" style="width=520px;">${md(strings.submit_file)}</div>
   </div>
 
   <div class="spacer">
