@@ -122,10 +122,16 @@ def encode_and_sign_upload_policy(policy, aws_secret_key):
 
 import threading
 
+def get_user_upload_s3_connection():
+    local_thread = threading.local()
+    if not hasattr(local_thread, 'user_upload_s3_connection'):
+        local_thread.user_upload_s3_connection = S3Connection(g.S3KEY_ID or None, g.S3SECRET_KEY or None)
+    return local_thread.user_upload_s3_connection
+
 def get_user_upload_bucket():
     local_thread = threading.local()
     if not hasattr(local_thread, 'user_upload_bucket'):
-        connection = S3Connection(g.S3KEY_ID or None, g.S3SECRET_KEY or None)
+        connection = get_user_upload_s3_connection()
         local_thread.user_upload_bucket = connection.get_bucket(g.s3_user_files_bucket, validate=True)
     return local_thread.user_upload_bucket
 
