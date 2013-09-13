@@ -3432,6 +3432,7 @@ class ApiController(RedditController, OAuth2ResourceController):
         ret['key'] = "u/%s/%s" % (c.user.name, filename,)
         ret['aws_access_key'] = s3_helpers.get_user_upload_s3_connection().aws_access_key_id
         ret['destination_url'] = "http://%s/%s" % (g.s3_user_files_host, ret['key'],)
+        ret['max_file_size'] = g.s3_user_max_file_size
 
         five_minutes_from_now = datetime.now(pytz.utc) + timedelta(minutes=5)
         ret['policy'], ret['signature'] = s3_helpers.encode_and_sign_upload_policy({

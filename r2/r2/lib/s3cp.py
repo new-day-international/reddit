@@ -25,6 +25,7 @@ import boto
 from boto.s3.connection import S3Connection
 from boto.s3.key import Key
 from pylons import g
+from r2.lib import s3_helpers
 
 KEY_ID = g.S3KEY_ID
 SECRET_KEY = g.S3SECRET_KEY

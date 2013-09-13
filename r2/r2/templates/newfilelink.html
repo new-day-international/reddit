@@ -56,6 +56,7 @@
         <span class="progress"></span>
         <button class="cancel" style="display: none">Cancel</button>
       </form>
+      <div class="error" style="display: none;">The selected file is too big to upload.</div>
     </%utils:round_field>
   </div>
 
@@ -178,6 +179,9 @@ $(function() {
       $.post('/api/user_upload_permission.json', {filename: data.files[0].name}, function (responseObj) {
           console.log("Got permissions, setting keys", responseObj);
 
+          if (data.files[0].size > responseObj.max_file_size) {
+            $('#fileupload').find('.error')
+          }
           $('#fileupload').attr('action', responseObj.upload_url);
           $('#fileupload').find('input[name=AWSAccessKeyId]').val(responseObj.aws_access_key);
           $('#fileupload').find('input[name=key]').val(responseObj.key);

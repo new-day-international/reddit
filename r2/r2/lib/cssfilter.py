@@ -412,5 +412,6 @@ def save_sr_image(sr, data, suffix = '.png'):
     try:
         return upload_media(data, file_type = suffix)
     except Exception as e:
+        g.log.exception("Error in upload media")
         raise BadImage(e)
 
