@@ -339,8 +339,8 @@ def set_subreddit():
                 c.site = srs[0]
             else:
                 c.site = MultiReddit(srs, sr_name)
-    elif '-' in sr_name:
-        sr_names = sr_name.split('-')
+    elif '!' in sr_name:
+        sr_names = sr_name.split('!')
         if not sr_names[0].lower() == All.name.lower():
             redirect_to("/spaces/search?q=%s" % sr_name)
         srs = Subreddit._by_name(sr_names[1:], stale=can_stale).values()
