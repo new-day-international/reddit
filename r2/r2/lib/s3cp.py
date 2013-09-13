@@ -57,5 +57,5 @@ def send_file(bucketname, filename, content, content_type='text/plain', never_ex
                                replace=replace,
                                reduced_redundancy=reduced_redundancy)
     except Exception as ee:
-        g.log("Error while uploading to %r / %r" % (bucketname, filename,))
+        g.log.error("Error while uploading to %r / %r" % (bucketname, filename,))
         raise
