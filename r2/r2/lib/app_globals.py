@@ -186,6 +186,7 @@ class Globals(object):
             'TRAFFIC_LOG_HOSTS',
             'exempt_login_user_agents',
             'timed_templates',
+            'initial_space_subscriptions',
         ],
 
         ConfigValue.str: [

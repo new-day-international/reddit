@@ -553,8 +553,12 @@ class ApiController(RedditController, OAuth2ResourceController):
                 except NotFound:
                     sr = None
 
-                if sr and sr.add_subscriber(a):
+                if sr and sr.add_subscriber(user):
                     sr._incr('_ups', 1)
+
+            # Clear the user's caches so the space bar at the top of the page
+            # comes up correct.
+            user.clear_cache()
 
             c.user = user
             self._login(responder, user, rem)
@@ -1826,17 +1830,22 @@ class ApiController(RedditController, OAuth2ResourceController):
             pass
         elif form.has_errors('comment_score_hide_mins', errors.BAD_NUMBER):
             pass
-        #creating a new reddit
+
+        # Creating a new space
         elif not sr:
-            #sending kw is ok because it was sanitized above
+            # Lowercase the name for consistency.
+            name = name.lowercase()
+
+            # Create the space (sending kw is ok because it was sanitized above).
             sr = Subreddit._new(name = name, author_id = c.user._id, ip = ip,
                                 **kw)
 
             update_wiki_text(sr)
             sr._commit()
 
+            # Make sure this user is subscribed, a moderator, and a contributor
+            # for the new space!
             Subreddit.subscribe_defaults(c.user)
-            # make sure this user is on the admin list of that site!
             if sr.add_subscriber(c.user):
                 sr._incr('_ups', 1)
             sr.add_moderator(c.user)
@@ -1847,6 +1856,7 @@ class ApiController(RedditController, OAuth2ResourceController):
                                      rate_ip = True,
                                      prefix = "create_reddit_")
 
+            # Make sure the query cache knows about this new space
             queries.new_subreddit(sr)
             changed(sr)
 
@@ -2486,7 +2496,6 @@ class ApiController(RedditController, OAuth2ResourceController):
     def _subscribe(cls, sr, sub):
         try:
             Subreddit.subscribe_defaults(c.user)
-
             if sub:
                 if sr.add_subscriber(c.user):
                     sr._incr('_ups', 1)
