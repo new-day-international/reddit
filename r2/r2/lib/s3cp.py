@@ -51,7 +51,11 @@ def send_file(bucketname, filename, content, content_type='text/plain', never_ex
     if never_expire:
         headers['Expires'] = NEVER
 
-    k.set_contents_from_string(content, policy='public-read',
+    try:
+        k.set_contents_from_string(content, policy='public-read',
                                headers=headers,
                                replace=replace,
                                reduced_redundancy=reduced_redundancy)
+    except Exception as ee:
+        g.log("Error while uploading to %r / %r" % (bucketname, filename,))
+        raise
