@@ -718,17 +718,13 @@ class Subreddit(Thing, Printable):
         # has_subscribed == False by default.
         if user and user.has_subscribed:
             sr_ids = Subreddit.reverse_subscriber_ids(user)
-            sr_ids = cls.random_reddits(user.name, sr_ids, limit)
 
             return sr_ids if ids else Subreddit._byID(sr_ids,
                                                       data=True,
                                                       return_dict=False,
                                                       stale=stale)
         else:
-            return cls.default_subreddits(ids = ids, over18=over18,
-                                          limit=g.num_default_reddits,
-                                          stale=stale)
-
+            return []
 
     # Used to pull all of the SRs a given user moderates or is a contributor
     # to (which one is controlled by query_param)

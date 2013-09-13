@@ -542,22 +542,27 @@ class ApiController(RedditController, OAuth2ResourceController):
                 user.pref_content_langs = tuple(langs)
 
             d = c.user._dirties.copy()
-            user._commit()
 
             amqp.add_item('new_account', user._fullname)
 
-            # subscribe the user to the initial spaces
-            for name in g.initial_space_subscriptions:
-                try:
-                    sr = Subreddit._by_name(name)
-                except NotFound:
-                    sr = None
+            # Subscribe the user to the initial spaces
+            if len(g.initial_space_subscriptions) > 0:
+                user.has_subscribed = True
+                for name in g.initial_space_subscriptions:
+                    try:
+                        sr = Subreddit._by_name(name)
+                    except NotFound:
+                        sr = None
 
-                if sr and sr.add_subscriber(user):
-                    sr._incr('_ups', 1)
+                    if sr and sr.add_subscriber(user):
+                        sr._incr('_ups', 1)
+
+            # Commit the user's changes.
+            user._commit()
 
             # Clear the user's caches so the space bar at the top of the page
             # comes up correct.
+
             user.clear_cache()
 
             c.user = user
