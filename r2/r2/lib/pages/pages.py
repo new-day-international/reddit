@@ -523,8 +523,9 @@ class Reddit(Templated):
                             NamedButton('new'),
                             NamedButton('hot'),
                             NamedButton('top'),
-                            NamedButton('files'),
                             ]
+            if c.site.__class__ is Subreddit:
+                main_buttons.append(NamedButton('files'))
 
             if c.user_is_loggedin:
                 main_buttons.append(NamedButton('saved', False))
