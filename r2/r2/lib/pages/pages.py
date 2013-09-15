@@ -394,6 +394,14 @@ class Reddit(Templated):
                                       sr_path=not fake_sub,
                                       show_cover=True))
 
+                if self.create_reddit_box:
+                    delta = datetime.datetime.now(g.tz) - c.user._date
+                    if delta.days >= g.min_membership_create_community:
+                        ps.append(SideBox(title=_('Create your own space'),
+                                          link='/spaces/create',
+                                          css_class='submit create-space',
+                                          show_cover = True, nocname=True))
+
         no_ads_yet = True
         show_adbox = (c.user.pref_show_adbox or not c.user.gold) and not g.disable_ads
         if isinstance(c.site, (MultiReddit, ModSR)) and c.user_is_loggedin:
@@ -433,14 +441,6 @@ class Reddit(Templated):
             no_ads_yet = False
         elif self.show_wiki_actions:
             ps.append(self.wiki_actions_menu())
-
-        if self.create_reddit_box and c.user_is_loggedin:
-            delta = datetime.datetime.now(g.tz) - c.user._date
-            if delta.days >= g.min_membership_create_community:
-                ps.append(SideBox(_('Create your own space'),
-                           '/spaces/create', 'create',
-                           subtitles = rand_strings.get("create_reddit", 2),
-                           show_cover = True, nocname=True))
 
         if not isinstance(c.site, FakeSubreddit) and not c.cname:
             moderators = self.sr_moderators()
