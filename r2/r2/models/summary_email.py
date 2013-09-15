@@ -72,12 +72,11 @@ def should_send_activity_summary_email(account):
     if not account.pref_send_activity_summary_email:
         return False
 
-    a_day_ago = datetime.datetime.now(pytz.utc) - datetime.timedelta(hours=24)
+    about_a_day_ago = datetime.datetime.now(pytz.utc) - datetime.timedelta(hours=23)
 
     start_of_epoc = pytz.utc.localize(datetime.datetime.utcfromtimestamp(0))
-    if getattr(account, 'last_email_sent_at', start_of_epoc) > a_day_ago:
-        return False
     if not getattr(account, 'email_verified', False):
+    if getattr(account, 'last_email_sent_at', start_of_epoc) > about_a_day_ago:
         return False
 
     return True
