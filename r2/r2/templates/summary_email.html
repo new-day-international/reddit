@@ -60,7 +60,7 @@ domain = get_domain(subreddit=False)
     comment_author_absolute_url = "http://%s/u/%s" % (domain, comment_author,)
     time_since_last_comment = timesince(link._active)
 
-  if link.is_self:
+  if link.selftext:
     self_text = unsafe(truncate_html_words(safemarkdown(link.selftext, wrap=False), 30))
 
 %>

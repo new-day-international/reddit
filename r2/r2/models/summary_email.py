@@ -21,7 +21,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-# useful for testing sending emails: paster run run.ini r2/models/summary_email.py -c 'reset_last_email_sent_at_for_all_accounts()'
+# useful for testing sending emails: paster run run.ini r2/models/summary_email.py -c 'test_send_summary_emails()'
 def test_send_summary_emails():
     accounts = fetch_things2(Account._query(Account.c.email != None, sort=asc('_date')))
     for account in accounts:
