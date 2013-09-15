@@ -1839,7 +1839,7 @@ class ApiController(RedditController, OAuth2ResourceController):
         # Creating a new space
         elif not sr:
             # Lowercase the name for consistency.
-            name = name.lowercase()
+            name = name.lower()
 
             # Create the space (sending kw is ok because it was sanitized above).
             sr = Subreddit._new(name = name, author_id = c.user._id, ip = ip,

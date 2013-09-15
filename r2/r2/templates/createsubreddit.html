@@ -346,21 +346,21 @@
   <input type="hidden" name="sr" value="${thing.site._fullname}"/> 
     <%utils:line_field title="${_('look and feel')}">
       <ul class="upload">
-        <li>
+        <li style="display: none">
         ${plain_link(_("edit the stylesheet"),
                       "/about/stylesheet",
                       _sr_path = True)}
         &#32;
         <span class="gray">(${_("leaves this page")})</span>
         </li>
-        <li>
+        <li style="display: none">
           <label for="header-title">header mouseover text:</label>
           <input type="text" name="header-title" id="header-title"
                  value="${thing.site.header_title}"
                  />
         </li>
         <li>
-          <%utils:image_upload post_target="/api/upload_sr_img" 
+          <%utils:image_upload post_target="/api/upload_sr_img"
                                current_image="${thing.site.header}"
                                label="${_('upload header image')}"
                                ask_type="${True}">
