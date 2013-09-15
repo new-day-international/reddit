@@ -1627,7 +1627,7 @@ class WelcomeBar(InfoBar):
             # Note: Messages are two-parts. First part is the header,
             # second part is the message text
             message = (_("welcome to lightnet"),
-                       _("the tech platform for a new civilization"))
+                       _("the nervous system for the new civilization"))
         InfoBar.__init__(self, message=message)
 
 class ClientInfoBar(InfoBar):
