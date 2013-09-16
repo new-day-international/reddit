@@ -470,12 +470,6 @@ class Link(Thing, Printable):
                 item.hide_score = True
             elif user == item.author:
                 item.hide_score = False
-#   TODO: uncomment to let gold users see the score of upcoming links
-#           elif user.gold:
-#               item.hide_score = False
-
-            elif item._date > timeago("2 hours"):
-                item.hide_score = True
             else:
                 item.hide_score = False
 
