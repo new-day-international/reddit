@@ -1835,7 +1835,7 @@ class AllInfoBar(Templated):
             sr_ids = Subreddit.user_subreddits(user)
             srs = Subreddit._byID(sr_ids, data=True, return_dict=False)
             if srs:
-                self.allminus_url = '/space/all-' + '-'.join([sr.name for sr in srs])
+                self.allminus_url = '/space/all!' + '!'.join([sr.name for sr in srs])
 
         self.gilding_listing = False
         if request.path.startswith("/comments/gilded"):
