@@ -1167,12 +1167,10 @@ class ApiController(RedditController, OAuth2ResourceController):
             not form.has_errors("thing_id", errors.NOT_AUTHOR)):
 
             if isinstance(item, Comment):
-                kind = 'comment'
+                item_kind = 'comment'
                 item.body = text
             elif isinstance(item, Link):
-                kind = 'link'
-                if not getattr(item, "is_self", False):
-                    return abort(403, "forbidden")
+                item_kind = 'link'
                 item.selftext = text
             else:
                 g.log.warning("%s tried to edit usertext on %r", c.user, item)
@@ -1193,7 +1191,7 @@ class ApiController(RedditController, OAuth2ResourceController):
 
             amqp.add_item('usertext_edited', item._fullname)
 
-            if kind in ('link', 'file',):
+            if item_kind == 'link':
                 set_last_modified(item, 'comments')
                 LastModified.touch(item._fullname, 'Comments')
 
