@@ -53,6 +53,7 @@ def queue_summary_emails():
             # using _add_item over add_item as that skips using a daemon thread to talk
             # to the amqp server that might not finish it's job before the process exits
             amqp._add_item('summary_email_q', str(account._id))
+            print "Queued summary email for %r" % (account.email,)
     end = datetime.datetime.now()
     print "Time to scan accounts to queue emails: %s" % (end - start)
 
