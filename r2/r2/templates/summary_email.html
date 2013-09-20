@@ -88,7 +88,7 @@ domain = get_domain(subreddit=False)
               <a class="comments" href="${comments_absolute_url}" style="text-decoration: none;color: #789AC4;font-weight: bold;padding: 0 1px">${comment_label} in the last ${timesince_text}</a>
             </li>
           </ul>
-        % if link.is_self:
+        % if link.selftext:
           <p>${self_text}</p>
         % endif
         </div>
