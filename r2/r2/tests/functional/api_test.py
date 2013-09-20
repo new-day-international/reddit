@@ -4,7 +4,7 @@ import datetime
 from mock import Mock, patch, call
 
 class TestApiController(RedditTestCase):
-    default_username = 'reddit_007'
+    default_username = 'reddit_1'
     default_password = 'password'
     default_subreddit = 'reddit_test0'
 

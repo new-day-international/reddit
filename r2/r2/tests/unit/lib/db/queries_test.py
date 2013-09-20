@@ -7,7 +7,7 @@ class QueriesTest(RedditTestCase, TestCaseSnakeCaseMethods):
         from r2.lib.db import queries
         from r2.models import Subreddit, Account, Link, Thing
 
-        account = Account._by_name('reddit_007')
+        account = Account._byID(1, data=True)
         sr = Subreddit._by_name('reddit_test0')
         link_url = self.make_unique_url()
 
@@ -22,7 +22,7 @@ class QueriesTest(RedditTestCase, TestCaseSnakeCaseMethods):
         from r2.lib.db import queries
         from r2.models import Subreddit, Account, Link, Thing
 
-        account = Account._by_name('reddit_007')
+        account = Account._byID(1, data=True)
         sr = Subreddit._by_name('reddit_test0')
         link_url = self.make_unique_url()
 

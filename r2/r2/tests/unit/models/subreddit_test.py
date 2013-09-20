@@ -22,7 +22,7 @@
 ###############################################################################
 
 import unittest
-
+from r2.tests import TestHelpers
 from r2.lib.permissions import PermissionSet
 
 from r2.models.account import Account
@@ -32,11 +32,12 @@ class TestPermissionSet(PermissionSet):
     info = dict(x={}, y={})
 
 
-class SRMemberTest(unittest.TestCase):
+class SRMemberTest(unittest.TestCase, TestHelpers):
     def setUp(self):
         a = Account()
         a._commit()
-        sr = Subreddit()
+        sr = Subreddit(name = 'subreddit_name_%s' % (self.seconds_since_epoc(),),
+                       title = 'subreddit_title_%s' % (self.seconds_since_epoc(),),)
         sr._commit()
         self.rel = SRMember(sr, a, 'test')
 
