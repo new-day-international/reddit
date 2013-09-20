@@ -2,7 +2,6 @@
 __author__ = 'myers'
 
 import pprint, os, datetime, pytz
-# monkey
 import sqlalchemy as sa
 from r2.lib.db import tdb_sql
 from pylons import g, c, request
@@ -82,7 +81,23 @@ def should_send_activity_summary_email(account):
 
     return True
 
-def send_account_summary_email(account_thing_id, verbose=False):
+def send_email(address, html_body, date_string):
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = _("Lightnet summary for %s") % date_string
+    msg['From'] = '"%s" <%s>' % (g.summary_email_from_name, g.share_reply,)
+    msg['To'] = address
+
+    html_part = MIMEText(html_body.encode('utf-8'), 'html', 'utf-8')
+    msg.attach(html_part)
+
+    server = smtplib.SMTP(g.smtp_server)
+    server.starttls()
+    server.login(g.smtp_username, g.smtp_password)
+    server.sendmail(g.share_reply, address, msg.as_string())
+    server.quit()
+
+
+def send_account_summary_email(account_thing_id, verbose=False, send_email=send_email):
     account = Account._byID(account_thing_id, data=True)
     if not should_send_activity_summary_email(account):
         return
@@ -92,20 +107,7 @@ def send_account_summary_email(account_thing_id, verbose=False):
     if getattr(account, 'last_email_sent_at', None) is None:
         account.last_email_sent_at = a_day_ago
 
-    #controller = ActiveController()
-
-    # set globals that are needed to render this page.  I figured out what needed to be set by trial and error
-    #c.site = Frontpage
     c.content_langs = 'en-US'
-    #c.js_preload = JSPreload()
-    #c.render_style = "email"
-    # request.get = {}
-    # request.fullpath = '/'
-    # request.environ['pylons.routes_dict'] = {'action': 'mailing_list'}
-    # controller.render_params['loginbox'] = False
-    # controller.render_params['enable_login_cover'] = False
-
-    # page = controller.build_listing(10, None, False, 5)
 
     # Find all the "active" links for this user.  Frontpage uses the c.user global
     # to find the right subreddits for the current user
@@ -121,12 +123,6 @@ def send_account_summary_email(account_thing_id, verbose=False):
     for ll in active_links:
         idx += 1
         ll.num = idx 
-    # for ll in active_links:
-    #     # pprint.pprint(dir(ll))
-    #     #print ll.author_slow.name
-    #     pprint.pprint(dir(ll.author_slow))
-    #     #raise 'hell'
-
 
     # Find all new spaces created since we last sent the user an email
     new_spaces = list(fetch_things2(Subreddit._query(
@@ -138,8 +134,9 @@ def send_account_summary_email(account_thing_id, verbose=False):
         return
 
     # Get the date and time
-    date_string = strftime("%A %B %d, %Y")
-    time_string = strftime("%I:%M %p")
+    now = datetime.datetime.now(pytz.timezone('US/Eastern'))
+    date_string = now.strftime("%A %B %d, %Y")
+    time_string = now.strftime("%I:%M %p")
 
     # Render the template
     html_email_template = g.mako_lookup.get_template('summary_email.html')
@@ -158,19 +155,4 @@ def send_account_summary_email(account_thing_id, verbose=False):
 
     account.last_email_sent_at = datetime.datetime.now(pytz.utc)
     account._commit()
-
-def send_email(address, html_body,date_string):
-    msg = MIMEMultipart('alternative')
-    msg['Subject'] = _("Lightnet summary for %s") % date_string
-    msg['From'] = '"%s" <%s>' % (g.summary_email_from_name, g.share_reply,)
-    msg['To'] = address
-
-    html_part = MIMEText(html_body.encode('utf-8'), 'html', 'utf-8')
-    msg.attach(html_part)
-
-    server = smtplib.SMTP(g.smtp_server)
-    server.starttls()
-    server.login(g.smtp_username, g.smtp_password)
-    server.sendmail(g.share_reply, address, msg.as_string())
-    server.quit()
 

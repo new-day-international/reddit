@@ -33,6 +33,7 @@ domain = get_domain(subreddit=False)
 
   author_absolute_url = "http://%s/u/%s" % (domain, link.author_slow.name,)
   comments_absolute_url = "http://%s%s" % (domain, link.make_permalink_slow(),)
+
   space_absolute_url = "http://%s/space/%s" % (domain, link.subreddit_slow.name,)
 
   comments = Comment._query(
