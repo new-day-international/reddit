@@ -1,7 +1,7 @@
 from r2.tests import *
 import json
 import datetime
-from mock import Mock, patch, call
+from mock import Mock, patch
 
 class TestApiController(RedditTestCase):
     default_username = 'reddit_1'
