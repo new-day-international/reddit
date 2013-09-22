@@ -18,7 +18,11 @@ class TestApiController(RedditTestCase):
         # assert len(response['errors']) == 1
         # assert response['errors'][0][0] == 'USER_REQUIRED'
 
-    def test_user_upload_permission_happy_path(self):
+    @patch('r2.lib.s3_helpers.get_aws_access_key_id')
+    @patch('r2.lib.s3_helpers.get_aws_secret_access_key')
+    def test_user_upload_permission_happy_path(self, get_aws_access_key_mock, get_aws_secret_key_mock):
+        get_aws_access_key_mock.return_value = 'access'
+        get_aws_secret_key_mock.return_value = 'secret'
         self.login()
         response = self.api_post('/api/user_upload_permission.json', dict(filename='foobar.txt'))
         self.assert_equal('Foobar [TXT]', response['suggested_link_title'])

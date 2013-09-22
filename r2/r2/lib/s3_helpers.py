@@ -172,3 +172,8 @@ def rename_user_submitted_file_to_space(url, subreddit):
     new_key_url = "%s%s" % (user_files_url, new_key_name,)
     return new_key_url
 
+def get_aws_access_key_id():
+    return get_user_upload_s3_connection().aws_access_key_id
+
+def get_aws_secret_access_key():
+    return get_user_upload_s3_connection().aws_secret_access_key

@@ -3428,7 +3428,7 @@ class ApiController(RedditController, OAuth2ResourceController):
         ret['content_type'] = mimetypes.guess_type(filename)[0]
         ret['upload_url'] = 'http://%s.s3.amazonaws.com' % (g.s3_user_files_bucket,)
         ret['key'] = "u/%s/%s" % (c.user.name, filename,)
-        ret['aws_access_key'] = s3_helpers.get_user_upload_s3_connection().aws_access_key_id
+        ret['aws_access_key'] = s3_helpers.get_aws_access_key_id()
         ret['destination_url'] = "http://%s/%s" % (g.s3_user_files_host, ret['key'],)
         ret['max_file_size'] = g.s3_user_max_file_size
 
@@ -3443,7 +3443,7 @@ class ApiController(RedditController, OAuth2ResourceController):
                 ['content-length-range', 0, g.s3_user_max_file_size],
                 #['starts-with', '$success_action_redirect', ''],
             ]
-        }, s3_helpers.get_user_upload_s3_connection().aws_secret_access_key)
+        }, s3_helpers.get_aws_secret_access_key())
         return ret
     
 
