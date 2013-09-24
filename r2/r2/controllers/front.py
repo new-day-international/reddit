@@ -1068,7 +1068,7 @@ class FrontController(RedditController, OAuth2ResourceController):
         return AccountActivityPage().render()
 
     def GET_rules(self):
-        return BoringPage(_("rules of reddit"), show_sidebar=False,
+        return BoringPage(_("rules of lightnet"), show_sidebar=False,
                           content=RulesPage(), page_classes=["rulespage-body"]
                           ).render()
 
