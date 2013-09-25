@@ -25,6 +25,7 @@ from r2.lib.db.operators import desc
 from r2.lib import count
 from r2.lib.utils import fetch_things2, flatten
 from r2.lib.memoize import memoize
+import datetime
 
 # the length of the stored per-language list
 limit = 2500
@@ -87,8 +88,12 @@ def cache_lists():
         SubredditPopularityByLanguage._set_values(lang, {over18: sr_tuples})
 
 def run():
+    start = datetime.datetime.now()
     set_downs()
     cache_lists()
+    end = datetime.datetime.now()
+    print "Time to update subreddit ranking: %s" % (end - start)
+
 
 # this relies on c.content_langs being sorted to increase cache hit rate
 @memoize('sr_pops.pop_reddits', time=3600, stale=True)
