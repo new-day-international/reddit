@@ -3971,6 +3971,9 @@ ul.tabmenu.formtab {
     margin: 0;
     border: 1px solid gray;
 }
+.linefield input[type=checkbox] {
+    font-size: smaller;
+}
 
 .linefield select { margin: 0; }
 
@@ -3980,7 +3983,8 @@ ul.tabmenu.formtab {
     margin-bottom: 10px;
 }
 .linefield label { font-size: smaller; padding-right: 2px;  }
-.linefield span{ font-size: smaller; }
+.linefield span { font-size: smaller; }
+.linefield select { font-size: smaller; }
 
 .linefield input[type="text"].small-text { 
     font-size: smaller;
@@ -6832,7 +6836,8 @@ span.reply {
 	}
 
 	.md p {
-		margin: 10px 0;
+		margin: 12px 0;
+        line-height: 1.4em;
 	}
 
 hr {
@@ -7216,7 +7221,7 @@ div#RESShortcutsEditContainer {
 }
 
 #sr-more-link {
-	background-color: #f9f9f7;
+	background-color: #FFFFFF;
 	color: #333;
 }
 
