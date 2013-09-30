@@ -475,7 +475,7 @@ class ApiController(RedditController, OAuth2ResourceController):
             responder._send_data(cookie  = user.make_cookie())
 
     @validatedForm(VLoggedOut(),
-                   user = VThrottledLogin(['user', 'passwd']),
+                   user = VThrottledLogin(['email', 'passwd']),
                    rem = VBoolean('rem'))
     def _handle_login(self, form, responder, user, rem):
         exempt_ua = (request.user_agent and

@@ -290,7 +290,8 @@ class Account(Thing):
     @classmethod
     def _by_name(cls, name, allow_deleted = False, _update = False):
         #lower name here so there is only one cache
-        uid = cls._by_name_cache(name.lower(), allow_deleted, _update = _update)
+        if name:
+            uid = cls._by_name_cache(name.lower(), allow_deleted, _update = _update)
         if uid:
             return cls._byID(uid, True)
         else:
@@ -777,14 +778,18 @@ def valid_login(name, email, password):
 
     # Then try the name
     if not a:
-        try:
-            a = Account._by_name(name)
-        except NotFound:
+        if name:
+            try:
+                a = Account._by_name(name)
+            except NotFound:
+                return False
+        else:
             return False
 
     if not a._loaded: a._load()
     if a._banned:
         return False
+
     return valid_password(a, password)
 
 def valid_password(a, password):

@@ -1166,6 +1166,7 @@ class VLogin(VRequired):
         user_name = check_user(login_string)
         email = check_email(login_string)
         user = None
+
         if user_name or email:
             try:
                 str(password)
@@ -1176,6 +1177,7 @@ class VLogin(VRequired):
         if not user:
             self.error()
             return False
+
         return user
 
 class VThrottledLogin(VLogin):
