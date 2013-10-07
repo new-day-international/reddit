@@ -386,6 +386,7 @@ class Reddit(Templated):
                                       link="/submit?selftext=true",
                                       sr_path=not fake_sub,
                                       show_cover=True))
+                # Add button for submitting files
                 if c.site.allow_user_uploads:
                     ps.append(SideBox(title=c.site.submit_file_label or
                                             strings.submit_file_label,
@@ -524,7 +525,8 @@ class Reddit(Templated):
                             NamedButton('hot'),
                             NamedButton('top'),
                             ]
-            if c.site.__class__ is Subreddit:
+            # files only available if in a space and uploads are turned on                
+            if c.site.__class__ is Subreddit and c.site.allow_user_uploads:
                 main_buttons.append(NamedButton('files'))
 
             if c.user_is_loggedin:
