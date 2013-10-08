@@ -511,6 +511,8 @@ class Link(Thing, Printable):
             # make the domain link
             if not item.is_self:
                 item.domain_link_text = _("Go to link at %s") % item.domain
+            if item.kind == 'file':
+                item.domain_link_text = _("Go to file")
 
             # show the toolbar if the preference is set and the link
             # is neither a promoted link nor a self post
