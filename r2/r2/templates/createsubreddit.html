@@ -156,7 +156,7 @@
         <li>
           <input class="nomargin" type="checkbox"
                  name="allow_user_uploads" id="allow_user_uploads"
-                 %if thing.site and thing.site.allow_user_uploads:
+                 %if (thing.site and thing.site.allow_user_uploads) or (thing.site is None):
                    checked="checked"
                  %endif
           >
