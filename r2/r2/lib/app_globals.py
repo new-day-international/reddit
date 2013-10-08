@@ -127,6 +127,7 @@ class Globals(object):
             'wiki_max_page_length_bytes',
             'wiki_max_page_name_length',
             'wiki_max_page_separators',
+            's3_user_max_file_size',
         ],
 
         ConfigValue.float: [
