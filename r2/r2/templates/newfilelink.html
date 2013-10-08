@@ -179,8 +179,11 @@ $(function() {
       $.post('/api/user_upload_permission.json', {filename: data.files[0].name}, function (responseObj) {
           console.log("Got permissions, setting keys", responseObj);
 
-          if (data.files[0].size > responseObj.max_file_size) {
-            $('#fileupload').find('.error')
+          console.log(data.files[0].size, ">", parseInt(responseObj.max_file_size));
+          if (data.files[0].size > parseInt(responseObj.max_file_size)) {
+            console.log("File too big");
+            
+            return;
           }
           $('#fileupload').attr('action', responseObj.upload_url);
           $('#fileupload').find('input[name=AWSAccessKeyId]').val(responseObj.aws_access_key);
@@ -207,7 +210,14 @@ $(function() {
         }, 'json');
     },
     fail: function(e, data) {
-      $('#fileupload .progress').text("upload failed");
+      var alert = "Upload Failed: ";
+      var code = $(data.jqXHR.responseXML).find("Code").first().text();
+      if( code.length > 0 ) {
+        if( code == "EntityTooLarge") {
+          console.log("Entity too large");
+      	  $('#fileupload .progress').text(alert + " " + code);
+        }
+      }
       console.log("Things failed", e, data);
     },
     done: function (e, data) {
