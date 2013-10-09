@@ -564,7 +564,7 @@ class Reddit(Templated):
         # Add the page title item in the first position
         if isinstance(c.site, DefaultSR):
             if c.user_is_loggedin:
-                front_page_title = _("my subscribed spaces")
+                front_page_title = _("casey my subscribed spaces")
             else:
                 front_page_title = _("popular spaces")
             toolbar.insert(0, PageNameNav('nomenu', title=front_page_title))
