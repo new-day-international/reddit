@@ -88,13 +88,13 @@
     </%utils:round_field>
   </div>
 
-    <div class="spacer">
-    <%
-      textarea_title = _('excerpt or summary')
-    %>
-      <div class="infobar">${infobar_text}</div>
-
-    </div>
+  <div class="spacer">
+    <input name="kind" value="${thing.kind}" type="hidden"/>
+    <%utils:round_field title="${_('excerpt or summary')}" description="${_('(optional)')}">
+      ${UserText(None, text = thing.text, have_form = False, creating = True)}
+      ${error_field("NO_SELFS", "sr")}
+    </%utils:round_field>
+  </div>
 
   <div class="spacer">
     <%utils:round_field title="${_('choose a space')}" id="reddit-field">
