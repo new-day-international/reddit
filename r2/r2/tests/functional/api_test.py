@@ -130,7 +130,7 @@ class TestApiController(RedditTestCase):
         username = username or self.default_username
         password = password or self.default_password
         response = self.api_post('/api/login', dict(
-          user=username, 
+          email=username, 
           passwd=password))
         response = self.get_json_body(response)
         self.assert_no_errors(response)
