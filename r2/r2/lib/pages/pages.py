@@ -2254,8 +2254,10 @@ class NewLink(Templated):
 
 class NewFileLink(Templated):
     """Render the file link submission form"""
-    def __init__(self, captcha = None, url = '', title= '', 
+    def __init__(self, captcha = None, url = '', title= '', text = '', selftext = '',
                  spaces = (), then = 'comments', resubmit=False, never_show_self=False):
+
+        self.kind = 'file'
 
         self.sr_searches = simplejson.dumps(popular_searches(include_over_18=c.over18))
         self.s3_user_upload_url = 'http://%s.s3.amazonaws.com' % (g.s3_user_files_bucket,)
@@ -2266,7 +2268,7 @@ class NewFileLink(Templated):
             self.default_sr = c.site
 
         Templated.__init__(self, captcha = captcha, url = url,
-                         title = title, spaces = spaces,
+                         title = title, text = text, spaces = spaces,
                          then = then)
 
 class ShareLink(CachedTemplate):
