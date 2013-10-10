@@ -3415,8 +3415,9 @@ class ApiController(RedditController, OAuth2ResourceController):
         ))
 
     @json_validate(VUser(),
-                   filename=VPrintable('filename', max_length=100),)
-    def POST_user_upload_permission(self, responder, filename):
+                   filename=VPrintable('filename', max_length=100),
+                   use_xhr=VPrintable('use_xhr', max_length=100))
+    def POST_user_upload_permission(self, responder, filename, use_xhr):
         # TODO: make sure there isn't a file with the same name as the one the user is suggesting.  If so change the key name.
         # TODO: use s3 api to count how many files this user has previously uploaded
         ret = {}
@@ -3432,18 +3433,22 @@ class ApiController(RedditController, OAuth2ResourceController):
         ret['destination_url'] = "http://%s/%s" % (g.s3_user_files_host, ret['key'],)
         ret['max_file_size'] = g.s3_user_max_file_size
 
+
         five_minutes_from_now = datetime.now(pytz.utc) + timedelta(minutes=5)
-        ret['policy'], ret['signature'] = s3_helpers.encode_and_sign_upload_policy({
+        policy = {
             'expiration': five_minutes_from_now.strftime('%Y-%m-%dT%H:%M:%S.000Z'),
             'conditions': [ 
                 {'Content-Type': ret['content_type']},
                 {'bucket': g.s3_user_files_bucket}, 
                 {'key': ret['key']},
                 {'acl': 'public-read'},
-                ['content-length-range', 0, g.s3_user_max_file_size],
-                #['starts-with', '$success_action_redirect', ''],
+                ['content-length-range', 0, g.s3_user_max_file_size],    
             ]
-        }, s3_helpers.get_aws_secret_access_key())
+        }
+        if use_xhr == 'false':
+            policy['conditions'].append(['starts-with', '$success_action_redirect', ''])
+
+        ret['policy'], ret['signature'] = s3_helpers.encode_and_sign_upload_policy(policy, s3_helpers.get_aws_secret_access_key())
         return ret
     
 

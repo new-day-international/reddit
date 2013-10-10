@@ -164,15 +164,22 @@ $(function() {
   });
 
   $('#fileupload').fileupload({
-    /* redirectParamName: 'success_action_redirect',
-       redirect: urlPrefix + '/static/vendor/jQuery-File-Upload-8.8.2/cors/result.html', */
+    redirectParamName: 'success_action_redirect',
+    redirect: urlPrefix + '/static/vendor/jQuery-File-Upload-8.8.2/cors/result.html', 
     add: function(e, data) {
+      var options = $('#fileupload').fileupload('option');
+      var use_xhr = !options.forceIframeTransport &&
+            ((!options.multipart && $.support.xhrFileUpload) ||
+            $.support.xhrFormDataFileUpload);
+
+
       $('#fileupload .progress').text("preparing upload...");
-      $.post('/api/user_upload_permission.json', {filename: data.files[0].name}, function (responseObj) {
+      $.post('/api/user_upload_permission.json', {filename: data.files[0].name, use_xhr: use_xhr}, function (responseObj) {
           if (data.files[0].size > responseObj.max_file_size) {
             $('#fileupload .progress').text("The file is too large.");
             return false;
           }
+
           $('#fileupload').attr('action', responseObj.upload_url);
           $('#fileupload').find('input[name=AWSAccessKeyId]').val(responseObj.aws_access_key);
           $('#fileupload').find('input[name=key]').val(responseObj.key);
@@ -184,6 +191,8 @@ $(function() {
           }
           $('#url').val(responseObj.destination_url);
           $('#url').data('uploaded', false);
+          $('#fileupload .progress').html("uploading... <img src='/static/throbber.gif' />");
+
           var xhr = data.submit();
           $('#fileupload').data('jqXHR', xhr);
           $('#fileupload input[name=file]').hide();
