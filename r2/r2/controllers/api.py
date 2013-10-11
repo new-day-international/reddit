@@ -2495,9 +2495,9 @@ class ApiController(RedditController, OAuth2ResourceController):
                 sr = VSubscribeSR('sr', 'sr_name'))
     @api_doc(api_section.spaces)
     def POST_subscribe(self, action, sr):
-        # only users who can make edits are allowed to subscribe.
+        # Only users who can read posts are allowed to subscribe.
         # Anyone can leave.
-        if sr and (action != 'sub' or sr.can_comment(c.user)):
+        if sr and (action != 'sub' or sr.can_read_posts(c.user)):
             self._subscribe(sr, action == 'sub')
 
     @classmethod

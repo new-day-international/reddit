@@ -338,6 +338,19 @@ class Subreddit(Thing, Printable):
         else:
             return super(Subreddit, self).is_contributor(user)
 
+    def can_read_posts(self, user):
+        if c.user_is_admin:
+            return True
+        elif self.is_banned(user):
+            return False
+        elif self.type == 'public' or self.type == 'restricted':
+            return True
+        elif self.is_moderator(user) or self.is_contributor(user):
+            #private requires contributorship
+            return True
+        else:
+            return False
+
     def can_comment(self, user):
         if c.user_is_admin:
             return True
