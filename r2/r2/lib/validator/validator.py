@@ -2206,3 +2206,19 @@ class VPermissions(Validator):
             self.set_error(errors.INVALID_PERMISSIONS, field=self.param[1])
             return (None, None)
         return type, perm_set
+
+class VHouse(Validator):
+    def run(self, house):
+        try:
+            space = Subreddit._by_name(house)
+        except NotFound:
+            space = None
+        if space and space.space_is_house:
+            return house
+        else:
+            return None
+
+    def param_docs(self):
+        return {
+            self.param: 'a valid house',
+        }

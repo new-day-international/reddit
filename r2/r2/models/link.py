@@ -599,6 +599,10 @@ class Link(Thing, Printable):
 
             item.taglinetext = taglinetext
 
+            # add the house color and description
+            item.house_color = item.subreddit.get_house_color()
+            item.house_description = item.subreddit.get_house_description()
+
         if user_is_loggedin:
             incr_counts(wrapped)
 

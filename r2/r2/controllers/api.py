@@ -1701,6 +1701,10 @@ class ApiController(RedditController, OAuth2ResourceController):
                    public_description = VMarkdown("public_description", max_length = 500),
                    prev_public_description_id = VLength('prev_public_description_id', max_length = 36),
                    description = VMarkdown("description", max_length = 5120),
+                   space_is_house = VBoolean('space_is_house'),
+                   use_rules_from_space = VHouse('use_rules_from_space'),
+                   house_rules = VMarkdown("house_rules", max_length = 500),
+                   house_color = VLength("house_color", max_length = 7),
                    prev_description_id = VLength('prev_description_id', max_length = 36),
                    lang = VLang("lang"),
                    over_18 = VBoolean('over_18'),
@@ -1763,7 +1767,8 @@ class ApiController(RedditController, OAuth2ResourceController):
                            'submit_text_label', 'lang', 'css_on_cname',
                            'header_title', 'over_18', 'wikimode', 'wiki_edit_karma',
                            'wiki_edit_age', 'allow_top', 'public_description',
-                           'nearest_neighbors'))
+                           'space_is_house', 'use_rules_from_space', 'house_rules',
+                           'house_color', 'nearest_neighbors'))
 
         public_description = kw.pop('public_description')
         description = kw.pop('description')
@@ -1794,6 +1799,7 @@ class ApiController(RedditController, OAuth2ResourceController):
                                      'public_description',
                                      _("Description was not saved")):
                 error = True
+
             return not error
 
         
@@ -1878,8 +1884,7 @@ class ApiController(RedditController, OAuth2ResourceController):
                 del kw['css_on_cname']
             for k, v in kw.iteritems():
                 if getattr(sr, k, None) != v:
-                    ModAction.create(sr, c.user, action='editsettings', 
-                                     details=k)
+                    ModAction.create(sr, c.user, action='editsettings', details=k)
                 setattr(sr, k, v)
             sr._commit()
 

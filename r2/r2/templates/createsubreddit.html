@@ -24,6 +24,7 @@
    from r2.lib.filters import keep_space
    from r2.lib.pages import UserText
    from r2.lib.strings import strings
+   from r2.models.subreddit import Subreddit
 %>
 <%namespace file="utils.html" import="error_field, language_tool, plain_link"/>
 <%namespace file="utils.html" import="image_upload"/>
@@ -92,8 +93,90 @@
     </div>
     ${error_field("CONFLICT", "description")}
   </%utils:line_field>
-  
-  
+
+  <%
+     if thing.site:
+        if thing.site.space_is_house:
+            display_rules = True
+        else:
+            display_rules = False
+  %>
+
+  <%utils:line_field title="${_('house rules')}" css_class="usertext"
+                     description="${_('define the norms and expectations for your space')}">
+    <div class="delete-field">
+      <ul>
+        <li>
+          <input class="nomargin" type="checkbox"
+                 name="space_is_house" id="space_is_house"
+          %if thing.site and thing.site.space_is_house:
+                 checked="checked"
+          %endif
+          >
+          <label for="space_is_house">
+            ${_("space is a house (with its own house rules)")}
+          </label>
+        </li>
+        <li>
+          <div id="use_rules_from_space_div"
+               ${"style='display:none'" if thing.site and thing.site.space_is_house else ""}>
+            <label for="use_rules_from_space">
+              ${_("space uses house rules from space:")}&nbsp;
+            </label>
+            <select name="use_rules_from_space"
+                    id="use_rules_from_space">
+                %for space, rules in Subreddit.houses_list():
+                  %if not thing.site or space != thing.site.name:
+                    %if (not thing.site and space == 'lightnet') or \
+                        (thing.site and thing.site.use_rules_from_space and \
+                          space == thing.site.use_rules_from_space):
+                      <option selected>${space}</option>
+                    %else:
+                      <option>${space}</option>
+                    %endif
+                  %endif
+                %endfor
+            </select>
+          </div>
+        </li>
+        <li>
+          <div id="house_color_div"
+               ${"" if thing.site and thing.site.space_is_house else "style='display:none'"}>
+            <label for="house_color">
+              ${_("house color:")}&nbsp;
+            </label>
+            <input type="text" name="house_color" id='house_color'
+                   value=${thing.site.house_color if thing.site else "#FFFFFF"} />
+          </div>
+        </li>
+      </ul>
+      ## Rules for space - if space is its own house.
+      ${UserText( None,
+                  display=True,
+                  text=thing.site.house_rules if thing.site and thing.site.house_rules else "",
+                  editable=True,
+                  creating=True,
+                  name="house_rules",
+                  have_form=False)}
+
+      ## House rules for all houses - in case space isn't its own house.
+      %for space, rules in Subreddit.houses_list():
+        %if not thing.site or space != thing.site.name:
+          ${UserText( None,
+                      display=True,
+                      text=rules,
+                      editable=False,
+                      creating=False,
+                      name=space + "_house_rules",
+                      have_form=False,
+                      extra_css="rules" )}
+        %endif
+      %endfor
+
+    </div>
+
+  </%utils:line_field>
+
   %if thing.site:
         <input type="hidden" name="prev_public_description_id" value="${thing.site.prev_public_description_id}"/>
         <input type="hidden" name="prev_description_id" value="${thing.site.prev_description_id}"/>
@@ -409,3 +492,61 @@
 </div>
 </div>
 
+<script type="text/javascript">
+function showSpaceRules(space) {
+    var rules_id = '#' + space + '_house_rules';
+    $('div.rules').not(rules_id).hide();
+    $(rules_id).show();
+}
+
+function hideAllSpaceRules() {
+    $('div.rules').hide();
+}
+
+function spaceIsAHouse() {
+
+    $("#house_color_div").show();
+    $("#house_rules").show();
+    $("#use_rules_from_space_div").hide();
+    hideAllSpaceRules();
+}
+
+function spaceIsNotAHouse() {
+
+    $("#house_color_div").hide();
+    $("#house_rules").hide();
+    $("#use_rules_from_space_div").show();
+    var space = $("#use_rules_from_space").val();
+    showSpaceRules( space );
+}
+
+$('#space_is_house').change(function() {
+  if ( $(this).is(':checked') )
+    spaceIsAHouse();
+  else
+    spaceIsNotAHouse();
+});
+
+$('#use_rules_from_space').change(function() {
+    var space = $(this).val();
+    showSpaceRules( space );
+});
+
+$( document ).ready(function() {
+
+  if ( $("#space_is_house").is(':checked') )
+    spaceIsAHouse();
+  else
+    spaceIsNotAHouse();
+});
+</script>
+
+
+<script src="/static/js/spectrum.js"></script>
+<link rel='stylesheet' href='/static/css/spectrum.css' />
+<script type="text/javascript">
+  $("#house_color").spectrum({
+    showInput: true,
+    clickoutFiresChange: true
+  });
+</script>

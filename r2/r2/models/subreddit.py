@@ -40,6 +40,7 @@ from r2.lib.memoize import memoize
 from r2.lib.permissions import ModeratorPermissionSet
 from r2.lib.utils import tup, interleave_lists, last_modified_multi, flatten
 from r2.lib.utils import timeago, summarize_markdown
+from r2.lib.utils import fetch_things2
 from r2.lib.cache import sgm
 from r2.lib.strings import strings, Score
 from r2.lib.filters import _force_unicode
@@ -105,9 +106,13 @@ class Subreddit(Thing, Printable):
                      public_description = "",
                      prev_description_id = "",
                      prev_public_description_id = "",
+                     space_is_house = False,
+                     house_rules = "",
+                     house_color = "#FFFFFF",
+                     use_rules_from_space = "lightnet",
                      allow_comment_gilding=True,
                      )
-    _essentials = ('type', 'name', 'lang')
+    _essentials = ('type', 'name', 'lang','use_rules_from_space')
     _data_int_props = Thing._data_int_props + ('mod_actions', 'reported',
                                                'wiki_edit_karma', 'wiki_edit_age')
 
@@ -571,15 +576,29 @@ class Subreddit(Thing, Printable):
 
             #will seem less horrible when add_props is in pages.py
             from r2.lib.pages import UserText
-            item.description_usertext = UserText(item, item.description, target=target)
+            item.description_usertext = UserText(item,
+                                                 item.description,
+                                                 have_form=False,
+                                                 target=target,
+                                                 extra_css = 'sidebar_description')
             if item.public_description or item.description:
                 text = (item.public_description or
                         summarize_markdown(item.description))
                 item.public_description_usertext = UserText(item,
                                                             text,
+                                                            have_form=False,
                                                             target=target)
             else:
                 item.public_description_usertext = None
+
+            house_rules = '#### [](#h4-green)\n> ## [House Rules](#icon-information)\n'
+            if not item.space_is_house:
+                house_rules += '> (using house rules from **'
+                house_rules += item.use_rules_from_space if item.use_rules_from_space else ""
+                house_rules += '**)\n\n>&nbsp;\n\n>'
+            house_rules += item.get_house_rules().replace('\n','\n\n>')
+
+            item.house_rules_usertext = UserText(item, house_rules, target=target)
 
 
         Printable.add_props(user, wrapped)
@@ -887,6 +906,44 @@ class Subreddit(Thing, Printable):
             rel.update_permissions(**kwargs)
             rel._commit()
 
+    @classmethod
+    def houses_list(cls):
+        # Get all the non-private subreddits that are houses...
+        query = cls._query( cls.c.type != 'private',
+                            cls.c.space_is_house == True,
+                            sort = '_date',
+                            data = True )
+        houses = []
+        for space in fetch_things2(query):
+            houses.append( (space.name, space.house_rules) );
+
+        # Sort and return them
+        houses.sort()
+        return houses
+
+    def get_house_color(self):
+        if self.space_is_house:
+            return self.house_color
+        else:
+            house_space = Subreddit._by_name(self.use_rules_from_space)
+            return house_space.house_color
+
+    def get_house_description(self):
+        if self.space_is_house:
+            house_name = self.name
+        else:
+            house_space = Subreddit._by_name(self.use_rules_from_space)
+            house_name = house_space.name
+        house_description = "house of %s" % house_name
+        return house_description
+
+    def get_house_rules(self):
+        if self.space_is_house:
+            house_rules = self.house_rules
+        else:
+            house_space = Subreddit._by_name(self.use_rules_from_space)
+            house_rules = house_space.house_rules
+        return house_rules
 
 class FakeSubreddit(Subreddit):
     over_18 = False

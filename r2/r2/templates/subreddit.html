@@ -30,6 +30,13 @@
 <%namespace file="printablebuttons.html" import="toggle_button"/>
 <%namespace file="utils.html" import="plain_link"/>
 
+<%def name="house_color_column()">
+##  <span class="house_color" style=${"width:5px; background-color:" + thing.house_color + ";"}>
+  <span class="house_color" style=${"width:5px; background-color: #00FF00;"}>
+    &nbsp;
+  </span>
+</%def>
+
 <%def name="numcol()">
 </%def>
 

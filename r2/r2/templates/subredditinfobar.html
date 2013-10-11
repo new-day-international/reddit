@@ -35,10 +35,6 @@
   </h1>
 
   ${addremove_button(thing.sr)}
-  <span class="subscribers">${unsafe(Score.readers(thing.subscribers))}</span>
-  <p class="users-online ${'fuzzed' if thing.accounts_active_fuzzed else ''}" title="${_('logged-in users viewing this space in the past 15 minutes')}">
-      ${unsafe(Score.users_here_now(thing.accounts_active, prepend='~' if thing.accounts_active_fuzzed else ''))}
-  </p>
 
   %if thing.sr.moderator:
     <div class="leavemoderator">
@@ -65,6 +61,8 @@
   %if thing.flair_prefs:
     ${thing.flair_prefs}
   %endif
+
+  ${thing.sr.house_rules_usertext}
 
   %if thing.sr.description:
     ${thing.sr.description_usertext}
