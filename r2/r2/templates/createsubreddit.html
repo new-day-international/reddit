@@ -283,28 +283,29 @@
       </table>
       ${error_field("INVALID_OPTION", "wikimode")}
     </div>
-    <div class="usertext-edit">
-    <div class="delete-field">
-    <label for="wiki_edit_karma">${_('Space karma required to edit and create wiki pages:')}</label>
-        %if thing.site:
-            <input id="wiki_edit_karma" type="text" name="wiki_edit_karma" 
-                   value = "${thing.site.wiki_edit_karma}"/>
-        %else:
-            <input id="wiki_edit_karma" type="text" name="wiki_edit_karma" value="0" />
-        %endif
-        ${error_field("BAD_NUMBER", "wiki_edit_karma")}
-    </div>
-    <div class="delete-field">
-    <label for="wiki_edit_age">${_('Account age (days) required to edit and create wiki pages:')}</label>
-        %if thing.site:
-            <input id="wiki_edit_age" type="text" name="wiki_edit_age" 
-                   value = "${thing.site.wiki_edit_age}"/>
-        %else:
-            <input id="wiki_edit_age" type="text" name="wiki_edit_age" value="0" />
-        %endif
-        ${error_field("BAD_NUMBER", "wiki_edit_age")}
-    </div>
-    </div>
+##    <div class="usertext-edit">
+##    <div class="delete-field">
+##
+##    <label for="wiki_edit_karma">${_('Space karma required to edit and create wiki pages:')}</label>
+##        %if thing.site:
+##            <input id="wiki_edit_karma" type="text" name="wiki_edit_karma"
+##                   value = "${thing.site.wiki_edit_karma}"/>
+##        %else:
+##            <input id="wiki_edit_karma" type="text" name="wiki_edit_karma" value="0" />
+##        %endif
+##        ${error_field("BAD_NUMBER", "wiki_edit_karma")}
+##    </div>
+##    <div class="delete-field">
+##    <label for="wiki_edit_age">${_('Account age (days) required to edit and create wiki pages:')}</label>
+##        %if thing.site:
+##            <input id="wiki_edit_age" type="text" name="wiki_edit_age"
+##                   value = "${thing.site.wiki_edit_age}"/>
+##        %else:
+##            <input id="wiki_edit_age" type="text" name="wiki_edit_age" value="0" />
+##        %endif
+##        ${error_field("BAD_NUMBER", "wiki_edit_age")}
+##    </div>
+##    </div>
   </%utils:line_field>
   <%utils:line_field title="${_('nearest neighbors')}">
     <div class="usertext-edit">
@@ -333,53 +334,53 @@
             ${_("viewers must be over eighteen years old")}
           </label>
         </li>
-        <li>
-          <input class="nomargin" type="checkbox"
-                 name="allow_top" id="allow_top"
-                 %if not thing.site or thing.site.allow_top:
-                   checked="checked"
-                 %endif
-          >
-          <label for="allow_top">
-            ${_("allow this space to be shown in the default set")}
-          </label>
-        </li>
-        <li>
-          <input class="nomargin" type="checkbox"
-                 name="show_media" id="show_media"
-                 %if thing.site and thing.site.show_media:
-                   checked="checked"
-                 %endif
-          >
-          <label for="show_media">
-            ${_("show thumbnail images of content")}
-          </label>
-        </li>
-        <li>
-          <input class="nomargin" type="checkbox"
-                 name="exclude_banned_modqueue" id="exclude_banned_modqueue"
-                 %if thing.site and thing.site.exclude_banned_modqueue:
-                   checked="checked"
-                 %endif
-          >
-          <label for="exclude_banned_modqueue">
-            ${_("exclude posts by site-wide banned users from modqueue")}
-          </label>
-        </li>
+##        <li>
+##          <input class="nomargin" type="checkbox"
+##                 name="allow_top" id="allow_top"
+##                 %if not thing.site or thing.site.allow_top:
+##                   checked="checked"
+##                 %endif
+##          >
+##          <label for="allow_top">
+##            ${_("allow this space to be shown in the default set")}
+##          </label>
+##        </li>
+##        <li>
+##          <input class="nomargin" type="checkbox"
+##                 name="show_media" id="show_media"
+##                 %if thing.site and thing.site.show_media:
+##                   checked="checked"
+##                 %endif
+##          >
+##          <label for="show_media">
+##            ${_("show thumbnail images of content")}
+##          </label>
+##        </li>
+##        <li>
+##          <input class="nomargin" type="checkbox"
+##                 name="exclude_banned_modqueue" id="exclude_banned_modqueue"
+##                 %if thing.site and thing.site.exclude_banned_modqueue:
+##                   checked="checked"
+##                 %endif
+##          >
+##          <label for="exclude_banned_modqueue">
+##            ${_("exclude posts by site-wide banned users from modqueue")}
+##          </label>
+##        </li>
       </ul>
     </div>
-    <div class="usertext-edit">
-      <div class="delete-field">
-        <label for="comment_score_hide_mins">${_('Minutes to hide comment scores:')}</label>
-            %if thing.site:
-                <input id="comment_score_hide_mins" type="text" name="comment_score_hide_mins" placeholder="0" 
-                       value = "${thing.site.comment_score_hide_mins}" />
-            %else:
-                <input id="comment_score_hide_mins" type="text" name="comment_score_hide_mins" value="0" placeholder="0" />
-            %endif
-            ${error_field("BAD_NUMBER", "comment_score_hide_mins")}
-      </div>
-    </div>
+##    <div class="usertext-edit">
+##      <div class="delete-field">
+##        <label for="comment_score_hide_mins">${_('Minutes to hide comment scores:')}</label>
+##            %if thing.site:
+##                <input id="comment_score_hide_mins" type="text" name="comment_score_hide_mins" placeholder="0"
+##                       value = "${thing.site.comment_score_hide_mins}" />
+##            %else:
+##                <input id="comment_score_hide_mins" type="text" name="comment_score_hide_mins" value="0" placeholder="0" />
+##            %endif
+##            ${error_field("BAD_NUMBER", "comment_score_hide_mins")}
+##      </div>
+##    </div>
   </%utils:line_field>
 
 % if thing.site and thing.site.domain != thing.site._defaults['domain']:
