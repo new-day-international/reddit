@@ -598,7 +598,11 @@ class Subreddit(Thing, Printable):
                 house_rules += '**)\n\n>&nbsp;\n\n>'
             house_rules += item.get_house_rules().replace('\n','\n\n>')
 
-            item.house_rules_usertext = UserText(item, house_rules, target=target)
+            item.house_rules_usertext = UserText(   item,
+                                                    house_rules,
+                                                    have_form=False,
+                                                    target=target,
+                                                    extra_css = 'sidebar_description')
 
 
         Printable.add_props(user, wrapped)
