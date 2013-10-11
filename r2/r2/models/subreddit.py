@@ -929,15 +929,27 @@ class Subreddit(Thing, Printable):
         if self.space_is_house:
             return self.house_color
         else:
-            house_space = Subreddit._by_name(self.use_rules_from_space)
-            return house_space.house_color
+            try:
+                house_space = Subreddit._by_name(self.use_rules_from_space)
+            except NotFound:
+                house_space = None
+            if house_space:
+                return house_space.house_color
+            else:
+                return "#FFFFFF"
 
     def get_house_description(self):
         if self.space_is_house:
             house_name = self.name
         else:
-            house_space = Subreddit._by_name(self.use_rules_from_space)
-            house_name = house_space.name
+            try:
+                house_space = Subreddit._by_name(self.use_rules_from_space)
+            except NotFound:
+                house_space = None
+            if house_space:
+                house_name = house_space.name
+            else:
+                house_name = "unknown"
         house_description = "house of %s" % house_name
         return house_description
 
@@ -945,8 +957,14 @@ class Subreddit(Thing, Printable):
         if self.space_is_house:
             house_rules = self.house_rules
         else:
-            house_space = Subreddit._by_name(self.use_rules_from_space)
-            house_rules = house_space.house_rules
+            try:
+                house_space = Subreddit._by_name(self.use_rules_from_space)
+            except NotFound:
+                house_space = None
+            if house_space:
+                house_rules = house_space.house_rules
+            else:
+                house_rules = ""
         return house_rules
 
 class FakeSubreddit(Subreddit):
