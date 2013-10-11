@@ -254,7 +254,8 @@ class LinkFields(FieldsBase):
     def bodytext(self):
         if self.comment:
             return self.comment.body
-        elif self.link.is_self and self.link.selftext:
+        elif self.link.selftext:    
+            # Any item might have text, including links
             return self.link.selftext
         else:
             return None
