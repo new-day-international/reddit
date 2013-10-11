@@ -2,6 +2,7 @@ from r2.tests import *
 import json
 import datetime
 from mock import Mock, patch, call
+from pylons import c
 
 from r2.models import summary_email
 from r2.models import Account, Link, Subreddit
@@ -14,6 +15,7 @@ class SummaryEmailTest(RedditTestCase):
         if not account.email:
             account.email = 'test@example.com'
             account._commit()
+        c.content_langs = ['en']
         Subreddit.subscribe_defaults(account)
         return account
 
