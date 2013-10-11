@@ -930,7 +930,10 @@ class Subreddit(Thing, Printable):
             return self.house_color
         else:
             try:
-                house_space = Subreddit._by_name(self.use_rules_from_space)
+                if self.use_rules_from_space:
+                    house_space = Subreddit._by_name(self.use_rules_from_space)
+                else:
+                    house_space = None
             except NotFound:
                 house_space = None
             if house_space:
@@ -943,7 +946,10 @@ class Subreddit(Thing, Printable):
             house_name = self.name
         else:
             try:
-                house_space = Subreddit._by_name(self.use_rules_from_space)
+                if self.use_rules_from_space:
+                    house_space = Subreddit._by_name(self.use_rules_from_space)
+                else:
+                    house_space = None
             except NotFound:
                 house_space = None
             if house_space:
@@ -958,7 +964,10 @@ class Subreddit(Thing, Printable):
             house_rules = self.house_rules
         else:
             try:
-                house_space = Subreddit._by_name(self.use_rules_from_space)
+                if self.use_rules_from_space:
+                    house_space = Subreddit._by_name(self.use_rules_from_space)
+                else:
+                    house_space = None
             except NotFound:
                 house_space = None
             if house_space:
