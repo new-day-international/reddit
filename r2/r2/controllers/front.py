@@ -1236,7 +1236,7 @@ class FormsController(RedditController):
         infotext = None
         if not location or location == 'options':
             content = PrefOptions(done=request.get.get('done'))
-        elif location == 'friends':
+        elif location == 'follow':
             content = PaneStack()
             infotext = strings.friends % Friends.path
             content.append(FriendList())

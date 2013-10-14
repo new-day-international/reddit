@@ -361,6 +361,13 @@ class Reddit(Templated):
             else:
                 fake_sub = isinstance(c.site, FakeSubreddit)
 
+                # Add Edit Follow List
+                if c.site == Friends:
+                    ps.append(SideBox(title=strings.manage_follow_label,
+                                      css_class="submit manage-follow",
+                                      link="/prefs/follow",
+                                      sr_path=None,
+                                      show_cover=True))
                 # Add a button for managing subscriptions
                 if fake_sub and c.site.name.strip() == g.default_sr:
                     ps.append(SideBox(title=strings.manage_subscriptions_label,
@@ -368,40 +375,40 @@ class Reddit(Templated):
                                       link="/spaces",
                                       sr_path=None,
                                       show_cover=True))
+                if c.site != Friends: 
+                    # Add button for submitting links
+                    if c.site.link_type != 'self':
+                        ps.append(SideBox(title=c.site.submit_link_label or
+                                                strings.submit_link_label,
+                                          css_class="submit submit-link",
+                                          link="/submit",
+                                          sr_path=not fake_sub,
+                                          show_cover=True))
 
-                # Add button for submitting links
-                if c.site.link_type != 'self':
-                    ps.append(SideBox(title=c.site.submit_link_label or
-                                            strings.submit_link_label,
-                                      css_class="submit submit-link",
-                                      link="/submit",
-                                      sr_path=not fake_sub,
-                                      show_cover=True))
+                    # Add button for submitting text items
+                    if c.site.link_type != 'link':
+                        ps.append(SideBox(title=c.site.submit_text_label or
+                                                strings.submit_text_label,
+                                          css_class="submit submit-text",
+                                          link="/submit?selftext=true",
+                                          sr_path=not fake_sub,
+                                          show_cover=True))
+                    # Add button for submitting files
+                    if c.site.allow_user_uploads:
+                        ps.append(SideBox(title=c.site.submit_file_label or
+                                                strings.submit_file_label,
+                                          css_class="submit submit-file",
+                                          link="/submit/file",
+                                          sr_path=not fake_sub,
+                                          show_cover=True))
 
-                # Add button for submitting text items
-                if c.site.link_type != 'link':
-                    ps.append(SideBox(title=c.site.submit_text_label or
-                                            strings.submit_text_label,
-                                      css_class="submit submit-text",
-                                      link="/submit?selftext=true",
-                                      sr_path=not fake_sub,
-                                      show_cover=True))
-                # Add button for submitting files
-                if c.site.allow_user_uploads:
-                    ps.append(SideBox(title=c.site.submit_file_label or
-                                            strings.submit_file_label,
-                                      css_class="submit submit-file",
-                                      link="/submit/file",
-                                      sr_path=not fake_sub,
-                                      show_cover=True))
-
-                if self.create_reddit_box:
-                    delta = datetime.datetime.now(g.tz) - c.user._date
-                    if delta.days >= g.min_membership_create_community:
-                        ps.append(SideBox(title=_('Create your own space'),
-                                          link='/spaces/create',
-                                          css_class='submit create-space',
-                                          show_cover = True, nocname=True))
+                    if self.create_reddit_box:
+                        delta = datetime.datetime.now(g.tz) - c.user._date
+                        if delta.days >= g.min_membership_create_community:
+                            ps.append(SideBox(title=_('Create your own space'),
+                                              link='/spaces/create',
+                                              css_class='submit create-space',
+                                              show_cover = True, nocname=True))
 
         no_ads_yet = True
         show_adbox = (c.user.pref_show_adbox or not c.user.gold) and not g.disable_ads
@@ -766,7 +773,7 @@ class PrefsPage(Reddit):
         if c.user.pref_private_feeds:
             buttons.append(NamedButton('feeds'))
 
-        buttons.extend([NamedButton('friends'),
+        buttons.extend([NamedButton('friends', dest='follow'),
                         NamedButton('update')])
 
         if c.user_is_loggedin and c.user.name in g.admins:
@@ -1565,47 +1572,48 @@ class ProfileBar(Templated):
         running_out_of_gold = False
         self.gold_creddit_message = None
 
-        # Remove gold for now...
-        if False and c.user_is_loggedin:
-            if ((user._id == c.user._id or c.user_is_admin)
-                and getattr(user, "gold", None)):
-                self.gold_expiration = getattr(user, "gold_expiration", None)
-                if self.gold_expiration is None:
-                    self.gold_remaining = _("an unknown amount")
-                else:
-                    gold_days_left = (self.gold_expiration -
-                                      datetime.datetime.now(g.tz)).days
-                    if gold_days_left < 7:
-                        running_out_of_gold = True
+        if c.user_is_loggedin:
+            # Remove gold for now...
+            # if ((user._id == c.user._id or c.user_is_admin)
+            #     and getattr(user, "gold", None)):
+            #     self.gold_expiration = getattr(user, "gold_expiration", None)
+            #     if self.gold_expiration is None:
+            #         self.gold_remaining = _("an unknown amount")
+            #     else:
+            #         gold_days_left = (self.gold_expiration -
+            #                           datetime.datetime.now(g.tz)).days
+            #         if gold_days_left < 7:
+            #             running_out_of_gold = True
 
-                    if gold_days_left < 1:
-                        self.gold_remaining = _("less than a day")
-                    else:
-                        # "X months, Y days" if less than 2 months left, otherwise "X months"
-                        precision = 60 * 60 * 24 * 30 if gold_days_left > 60 else 60 * 60 * 24 
-                        self.gold_remaining = timeuntil(self.gold_expiration, precision)
+            #         if gold_days_left < 1:
+            #             self.gold_remaining = _("less than a day")
+            #         else:
+            #             # "X months, Y days" if less than 2 months left, otherwise "X months"
+            #             precision = 60 * 60 * 24 * 30 if gold_days_left > 60 else 60 * 60 * 24 
+            #             self.gold_remaining = timeuntil(self.gold_expiration, precision)
 
-                if hasattr(user, "gold_subscr_id"):
-                    self.gold_subscr_id = user.gold_subscr_id
+            #     if hasattr(user, "gold_subscr_id"):
+            #         self.gold_subscr_id = user.gold_subscr_id
 
-                if user.gold_creddits > 0:
-                    msg = ungettext("%(creddits)s gold creddit to give",
-                                    "%(creddits)s gold creddits to give",
-                                    user.gold_creddits)
-                    msg = msg % dict(creddits=user.gold_creddits)
-                    self.gold_creddit_message = msg
+            #     if user.gold_creddits > 0:
+            #         msg = ungettext("%(creddits)s gold creddit to give",
+            #                         "%(creddits)s gold creddits to give",
+            #                         user.gold_creddits)
+            #         msg = msg % dict(creddits=user.gold_creddits)
+            #         self.gold_creddit_message = msg
 
-            if user._id != c.user._id:
-                self.goldlink = "/gold?goldtype=gift&recipient=" + user.name
-                self.giftmsg = _("give reddit gold to %(user)s to show "
-                                 "your appreciation") % {'user': user.name}
-            elif running_out_of_gold:
-                self.goldlink = "/gold/about"
-                self.giftmsg = _("renew your reddit gold")
-            elif not c.user.gold:
-                self.goldlink = "/gold/about"
-                self.giftmsg = _("get extra features and help support reddit "
-                                 "with a reddit gold subscription")
+            # if user._id != c.user._id:
+            #     self.goldlink = "/gold?goldtype=gift&recipient=" + user.name
+            #     self.giftmsg = _("give reddit gold to %(user)s to show "
+            #                      "your appreciation") % {'user': user.name}
+            # elif running_out_of_gold:
+            #     self.goldlink = "/gold/about"
+            #     self.giftmsg = _("renew your reddit gold")
+            # elif not c.user.gold:
+            #     self.goldlink = "/gold/about"
+            #     self.giftmsg = _("get extra features and help support reddit "
+            #                      "with a reddit gold subscription")
+            # end Remove gold for now...
 
             self.my_fullname = c.user._fullname
             self.is_friend = self.user._id in c.user.friends
@@ -1753,8 +1761,7 @@ class SubredditTopBar(CachedTemplate):
         if c.user_is_loggedin:
             #if c.user.gold:
             #    reddits.append(RandomSubscription)
-            if c.user.friends:
-                reddits.append(Friends)
+            reddits.append(Friends)
             if c.show_mod_mail:
                 reddits.append(Mod)
         return NavMenu([SubredditButton(sr, css_class=css_classes.get(sr))
@@ -2940,17 +2947,17 @@ class FriendList(UserList):
             self.friend_rels = c.user.friend_rels()
             self.cells = ('user', 'sendmessage', 'note', 'age', 'remove')
             self._class = "gold-accent rounded"
-            self.table_headers = (_('user'), '', _('note'), _('friendship'), '')
+            self.table_headers = (_('user'), '', _('note'), _('following'), '')
 
         UserList.__init__(self)
 
     @property
     def form_title(self):
-        return _('add a friend')
+        return _('follow someone')
 
     @property
     def table_title(self):
-        return _('your friends')
+        return _('you are following')
 
     def user_ids(self):
         return c.user.friends

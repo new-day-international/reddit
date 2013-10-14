@@ -1035,8 +1035,8 @@ class FakeSubreddit(Subreddit):
         return False
 
 class FriendsSR(FakeSubreddit):
-    name = 'friends'
-    title = 'friends'
+    name = 'follow'
+    title = 'follow'
 
     @classmethod
     @memoize("get_important_friends", 5*60)
@@ -1415,7 +1415,7 @@ Random = RandomReddit()
 RandomNSFW = RandomNSFWReddit()
 RandomSubscription = RandomSubscriptionReddit()
 
-Subreddit._specials.update(dict(friends = Friends,
+Subreddit._specials.update(dict(follow = Friends,
                                 randnsfw = RandomNSFW,
                                 myrandom = RandomSubscription,
                                 random = Random,

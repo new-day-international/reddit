@@ -82,7 +82,7 @@ string_dict = dict(
 
     legal = _("I understand and agree that registration on or use of this site constitutes agreement to its %(user_agreement)s and %(privacy_policy)s."),
 
-    friends = _('to view lightnet with only submissions from your friends, use [lightnetb.org/space/friends](%s)'),
+    friends = _('to view lightnet with only submissions from those you are Following, use [/space/follow](%s)'),
 
     sr_created = _('your space has been created'),
 
@@ -120,6 +120,7 @@ string_dict = dict(
     comments_panel_text = _("""The following is a sample of what Reddit users had to say about this page. The full discussion is available [here](%(fd_link)s); you can also get there by clicking the link's title (in the middle of the toolbar, to the right of the comments button)."""),
 
     manage_subscriptions_label = _("Manage my subscriptions"),
+    manage_follow_label = _("Manage Follow List"),
     submit_link = _("""You are adding a link. The key to a successful link is interesting content and a descriptive title."""),
     submit_text = _("""You are adding a text-based post. Speak your mind. A title is required, expanding further in the text field is desired but optional."""),
     submit_file = _("""You are adding a file post. A title is required.  For videos you will want to post to [YouTube](https://youtube.com/) or [Viemo](https://vimeo.com/) and add the [video as a link](/submit)."""),
@@ -193,7 +194,7 @@ Note: there are a couple of places outside of your space where someone can click
     r_all_minus_description = _("Displaying content from /space/all of lightnet, except the following spaces:"),
     all_minus_gold_only = _('Filtering /space/all is a feature only available to [lightnet gold](/gold/about) subscribers. Displaying unfiltered results from /space/all.'),
 
-    r_friends_description = _("/space/friends displays content from all your lightnet friends."),
+    r_friends_description = _("####Displays content from Lightnet users who you are **Following**. \n \n \n * You can Follow users by clicking on a username and then click the user's **Follow** Button. \n\n * Or Click **Manage Follow List** button above"), 
 
     missing_credit_name = _("missing name"),
     bad_credit_number = _("invalid credit card number"),
