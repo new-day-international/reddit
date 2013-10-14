@@ -17,3 +17,8 @@ we have checked into our development github project.
 The fork comes from the primary codebase that powers [reddit.com](http://www.reddit.com).
 
 The github project for Reddit is at [https://github.com/reddit/reddit](https://github.com/reddit/reddit).
+
+### Notes to ponder
+
+ * If you are making changes to a consumer upstart job, you will need to restart it to see the code changes.  You have been lulled to sleep by the beauty of the webserver's automatic reloading.
+ 
