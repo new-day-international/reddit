@@ -29,6 +29,7 @@ class BrowserStackInternetExplorerTest(RedditTestCase):
         self.assert_equal('recently active comments : lightnet', driver.title)
 
     def test_register_user(self):
+        driver = self.driver
         driver.get(self.base_url + "/")
         driver.find_element_by_link_text("register").click()
         driver.find_element_by_id("user_reg").clear()
