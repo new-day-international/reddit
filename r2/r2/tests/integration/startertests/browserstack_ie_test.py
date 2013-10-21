@@ -11,7 +11,7 @@ class BrowserStackInternetExplorerTest(RedditTestCase):
     bs_key = str(os.environ.get('BROWSERSTACKKEY'))
     bs_api = "http://" + bs_username + ":" + bs_key + "@hub.browserstack.com/wd/hub"
 
-    url = str(os.environ.get('BROWSERSTACKURL'))
+    base_url = str(os.environ.get('BROWSERSTACKURL'))
 
     def setUp(self):
         caps = {}
@@ -25,18 +25,21 @@ class BrowserStackInternetExplorerTest(RedditTestCase):
 
     def test_browser_stack(self):
         driver = self.driver
-        driver.get(self.url)
+        driver.get(self.base_url)
         self.assert_equal('recently active comments : lightnet', driver.title)
 
     def test_register_user(self):
-        driver = self.driver
-        driver.open(self.url)
-        driver.click("link=register")
-        driver.type("id=user_reg", "Test User")
-        driver.type("id=email_reg", "tester@lightnetb.org")
-        driver.type("id=passwd_reg", "password")
-        driver.type("id=passwd2_reg", "password")
-        driver.click("css=button.button")
+        driver.get(self.base_url + "/")
+        driver.find_element_by_link_text("register").click()
+        driver.find_element_by_id("user_reg").clear()
+        driver.find_element_by_id("user_reg").send_keys("Test User")
+        driver.find_element_by_id("email_reg").clear()
+        driver.find_element_by_id("email_reg").send_keys("tester@lightnetb.org")
+        driver.find_element_by_id("passwd_reg").clear()
+        driver.find_element_by_id("passwd_reg").send_keys("password")
+        driver.find_element_by_id("passwd2_reg").clear()
+        driver.find_element_by_id("passwd2_reg").send_keys("password")
+        driver.find_element_by_css_selector("button.button").click()
         self.assert_equal('Test_User_1', driver.find_element_by_css_selector("#header .user a"))
 
     def tearDown(self):
