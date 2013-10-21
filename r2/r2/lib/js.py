@@ -444,6 +444,12 @@ module["less"] = Module('less.js',
     should_compile=False,
 )
 
+# Is this the right way of adding some more js files? Not sure.
+module["namepicker"] = Module("namepicker.js",
+    'lib/textext.core.js',
+    'lib/textext.plugin.autocomplete.js'
+)
+
 def use(*names):
     return "\n".join(module[name].use() for name in names)
 

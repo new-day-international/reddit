@@ -35,7 +35,7 @@
     <input type="hidden" name="action" value="add">
     <input type="hidden" name="container" value="${container_name}">
     <input type="hidden" name="type" value="${add_type}">
-    <input type="text" name="name" id="name">
+    <input type="text" name="name" id="name" class="namepicker">
     %if add_type == "moderator_invite":
       ${ModeratorPermissions(None, 'moderator',
                              ModeratorPermissionSet(all=True),
@@ -52,6 +52,9 @@
       ${caller.body()}
     %endif
   </form>
+  <link rel="stylesheet" type="text/css" href="/static/css/textext-core-autocomplete.css" />
+  <script src="/api/namepicker" async="async"></script>
+  <script src="/static/js/lib/namepicker.js"></script>
 </%def>
 
 <%def name="userlist(title, row_type, rows, headers=None)">
