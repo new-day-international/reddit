@@ -41,9 +41,9 @@ class BrowserStackInternetExplorerTest(RedditTestCase):
         driver.find_element_by_id("passwd2_reg").clear()
         driver.find_element_by_id("passwd2_reg").send_keys("password")
         driver.find_element_by_css_selector("button.button").click()
-        print driver.find_element_by_css_selector("#header .user a").text
-        self.assert_equal("Test_User_1", driver.find_element_by_css_selector("#header .user a").text)
-
+        username = driver.find_element_by_css_selector("#header .user a").text
+        self.assert_equal("Test_User_1", username)
+                
     def tearDown(self):
         self.driver.quit()
 
