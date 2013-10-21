@@ -22,7 +22,7 @@ class BrowserStackTest(RedditTestCase):
 
     def test_browser_stack(self):
         driver = self.driver
-        driver.get("http://selenium-target.lightnetb.org")
+        driver.get(str(os.environ.get('BROWSERSTACKURL')))
         self.assert_equal('recently active comments : lightnet', driver.title)
 
     def tearDown(self):
