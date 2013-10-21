@@ -5,6 +5,9 @@ from r2.tests import *
 # pip install -U selenium
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 class BrowserStackInternetExplorerTest(RedditTestCase):
     bs_username = str(os.environ.get('BROWSERSTACKUSERNAME'))
@@ -32,15 +35,15 @@ class BrowserStackInternetExplorerTest(RedditTestCase):
         driver = self.driver
         driver.get(self.base_url + "/")
         driver.find_element_by_link_text("register").click()
-        driver.find_element_by_id("user_reg").clear()
         driver.find_element_by_id("user_reg").send_keys("Test User")
-        driver.find_element_by_id("email_reg").clear()
         driver.find_element_by_id("email_reg").send_keys("tester@lightnetb.org")
-        driver.find_element_by_id("passwd_reg").clear()
         driver.find_element_by_id("passwd_reg").send_keys("password")
-        driver.find_element_by_id("passwd2_reg").clear()
         driver.find_element_by_id("passwd2_reg").send_keys("password")
         driver.find_element_by_id("passwd2_reg").submit()
+        try:
+            WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.class, "userkarma")))
+        finally:
+            print "timeout"
         username = driver.find_element_by_css_selector("#header .user a").text
         #self.assert_equal("Test_User_1", username)
                 
