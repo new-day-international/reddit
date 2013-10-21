@@ -443,6 +443,11 @@ def make_app(global_conf, full_stack=True, **app_conf):
     app = ExtensionMiddleware(app)
     app = DomainMiddleware(app)
 
+    if g.config.has_key('sentry_dsn'):
+        from raven.middleware import Sentry
+        from raven import Client
+        app = Sentry(app, Client(g.config['sentry_dsn']))
+
     if asbool(full_stack):
         # Handle Python exceptions
         app = ErrorHandler(app, global_conf, **config['pylons.errorware'])
