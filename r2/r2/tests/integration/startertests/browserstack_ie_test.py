@@ -41,10 +41,10 @@ class BrowserStackInternetExplorerTest(RedditTestCase):
         driver.find_element_by_id("passwd2_reg").send_keys("password")
         driver.find_element_by_id("passwd2_reg").submit()
         try:
-            WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.class_name, "userkarma")))
+            WebDriverWait(driver, 30).until(EC.presence_of_element_located(By.CLASS_NAME, "userkarma"))
         finally:
             username = driver.find_element_by_css_selector("#header .user a").text
-        #self.assert_equal("Test_User_1", username)
+        self.assert_equal("Test_User_1", username)
                 
     def tearDown(self):
         self.driver.quit()
