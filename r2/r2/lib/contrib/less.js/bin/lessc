@@ -1,5 +1,4 @@
-#!/usr/bin/env node
-// Note: modified slightly to hobble along on Ubuntu Natty's ancient Node.
+#!/usr/bin/env nodejs
 
 var path = require('path'),
     fs = require('fs'),
