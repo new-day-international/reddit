@@ -234,7 +234,7 @@ def safemarkdown(text, nofollow=False, wrap=True, **kwargs):
     if "target" not in kwargs and c.cname:
         target = "_top"
 
-    text = snudown.markdown(_force_utf8(text), nofollow, target)
+    text = snudown.markdown(_force_utf8(text), nofollow, target, g.domain )
 
     if wrap:
         return SC_OFF + MD_START + text + MD_END + SC_ON
@@ -257,7 +257,7 @@ def wikimarkdown(text, include_toc=True, target=None):
     
     nofollow = True
     
-    text = snudown.markdown(_force_utf8(text), nofollow, target,
+    text = snudown.markdown(_force_utf8(text), nofollow, target, g.domain,
                             renderer=snudown.RENDERER_WIKI)
     
     # TODO: We should test how much of a load this adds to the app
