@@ -53,7 +53,7 @@ function admincheck(elem) {
 <div class="spacer">
   <%utils:round_field title="${_('to')}", 
                       description="${_('(username, or /space/name for that space\'s mods)')}">
-    <input type="text" name="to" id="to_fld" class="namepicker" value="${thing.to or ''}"
+    <input type="text" name="to" value="${thing.to or ''}"
            onchange="admincheck(this)"/>
     ${error_field("NO_USER", "to")}
     ${error_field("USER_DOESNT_EXIST", "to")}
@@ -147,8 +147,3 @@ function admincheck(elem) {
 <span class="status"></span>
 
 </%utils:submit_form>
-
-<link rel="stylesheet" type="text/css" href="/static/css/textext-core-autocomplete.css" />
-<script src="/api/namepicker" async="async"></script>
-<script src="/static/js/lib/namepicker.js"></script>
-
