@@ -1,0 +1,7 @@
+# this is not a complete list of the requirements, just those not in debian
+# packages
+mock==1.0.1
+nosexcover==1.0.8
+pylint==1.0.0
+raven==3.5.0
+selenium==2.37.2
