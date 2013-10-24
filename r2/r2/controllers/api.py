@@ -24,7 +24,7 @@ from reddit_base import RedditController, MinimalController, set_user_cookie
 from reddit_base import cross_domain, paginated_listing
 
 from pylons.i18n import _
-from pylons import c, request, response
+from pylons import c, g, request, response
 
 from r2.lib.validator import *
 
@@ -32,7 +32,7 @@ from r2.models import *
 
 from r2.lib import amqp
 
-from r2.lib.utils import get_title, sanitize_url, timeuntil, set_last_modified
+from r2.lib.utils import get_title, sanitize_url, timeuntil, set_last_modified, http_date_str
 from r2.lib.utils import query_string, timefromnow, randstr
 from r2.lib.utils import timeago, tup, filter_links, filename_to_link_title
 from r2.lib.pages import (EnemyList, FriendList, ContributorList, ModList,
@@ -68,18 +68,24 @@ from r2.lib.system_messages import notify_user_added
 from r2.controllers.ipn import generate_blob
 from r2.lib.lock import TimeoutExpired
 
-from r2.models import wiki
+from r2.models import wiki, Account
 from r2.lib.merge import ConflictException
+
+from r2.lib.base import abort
+from r2.lib.errors import reddit_http_error
 
 import mimetypes
 import pytz
 import csv
 from collections import defaultdict
 from datetime import datetime, timedelta
+import time
 import hashlib
 import re
 import urllib
 import urllib2
+
+from r2.lib.memoize import memoize
 
 def reject_vote(thing):
     voteword = request.params.get('dir')
@@ -229,7 +235,7 @@ class ApiController(RedditController, OAuth2ResourceController):
 
             m, inbox_rel = Message._new(c.user, to, subject, body, ip)
             form.set_html(".status", _("your message has been delivered"))
-            form.set_inputs(to = "", subject = "", text = "", captcha="")
+            form.set_inputs(to = "", subject = "", text = "", captcha = "", to_fld = "")
 
             amqp.add_item('new_message', m._fullname)
 
@@ -486,8 +492,6 @@ class ApiController(RedditController, OAuth2ResourceController):
                 # Allow funky clients to re-login as the current user.
                 c.errors.remove((errors.LOGGED_IN, None))
             else:
-                from r2.lib.base import abort
-                from r2.lib.errors import reddit_http_error
                 abort(reddit_http_error(409, errors.LOGGED_IN))
 
         if not (responder.has_errors("vdelay", errors.RATELIMIT) or
@@ -3455,7 +3459,27 @@ class ApiController(RedditController, OAuth2ResourceController):
 
         ret['policy'], ret['signature'] = s3_helpers.encode_and_sign_upload_policy(policy, s3_helpers.get_aws_secret_access_key())
         return ret
-    
 
+    #@memoize('namepicker', time=3600)
+    def GET_namepicker(self,**keywords):
+        # Return a json array of usernames for a name picker
+        c.allow_loggedin_cache = True
+        timehour = int(int(time.time())/3600)
+        new_etag = hashlib.md5(str(timehour)).hexdigest()
+        had_etag = request.headers.get("If-None-Match")
+        response.headers['etag'] = new_etag
+        if had_etag and had_etag == new_etag:
+            # If they got this within the last hour, pretend it hasn't changed
+            return abort(304, 'not modified')
 
+        names = []
+        result = Account._query(Account.c.name!='')
+        for row in result: 
+            names.append(row.name)
+            
+        response.headers['cache-control'] = 'max-age: 3600'
+        expire_time = datetime.fromtimestamp(int(time.time())+60, g.tz)
+        response.headers['expires'] = http_date_str(expire_time)
+        response.headers['content-type'] = 'application/javascript'
+        return "var usernames = " + json.dumps(sorted(names)) + ";" 
 
