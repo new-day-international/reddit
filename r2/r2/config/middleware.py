@@ -264,6 +264,19 @@ class ExtensionMiddleware(object):
 
         return self.app(environ, start_response)
 
+# the Reddit supplyed GzipMiddleware breaks the rules, and because of that
+# the supplyed Sentry Middleware will not work.
+from raven.middleware import Sentry
+
+class DumbSentryMiddleware(Sentry):
+    def __call__(self, environ, start_response):
+        try:
+            return self.application(environ, start_response)
+        except Exception:
+            self.handle_exception(environ)
+            raise
+
+
 class RewriteMiddleware(object):
     def __init__(self, app):
         self.app = app
@@ -444,9 +457,8 @@ def make_app(global_conf, full_stack=True, **app_conf):
     app = DomainMiddleware(app)
 
     if g.config.has_key('sentry_dsn'):
-        from raven.middleware import Sentry
         from raven import Client
-        app = Sentry(app, Client(g.config['sentry_dsn']))
+        app = DumbSentryMiddleware(app, Client(g.config['sentry_dsn']))
 
     if asbool(full_stack):
         # Handle Python exceptions
