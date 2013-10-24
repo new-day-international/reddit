@@ -257,8 +257,7 @@ def wikimarkdown(text, include_toc=True, target=None):
     
     nofollow = True
     
-    text = snudown.markdown(_force_utf8(text), nofollow, target, g.domain,
-                            renderer=snudown.RENDERER_WIKI)
+    text = snudown.markdown(_force_utf8(text), nofollow, target, g.domain )
     
     # TODO: We should test how much of a load this adds to the app
     soup = BeautifulSoup(text.decode('utf-8'))
