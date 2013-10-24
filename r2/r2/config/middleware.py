@@ -264,7 +264,7 @@ class ExtensionMiddleware(object):
 
         return self.app(environ, start_response)
 
-# the Reddit supplyed GzipMiddleware breaks the rules, and because of that
+# the Reddit supplied GzipMiddleware breaks the rules, and because of that
 # the supplyed Sentry Middleware will not work.
 from raven.middleware import Sentry
 
