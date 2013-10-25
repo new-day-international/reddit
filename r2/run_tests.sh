@@ -27,4 +27,5 @@ fi
 paster run test.ini r2/models/populatedb.py -c 'populate(num_srs = 1, num_users = 1, num_links = 1, num_comments = 1, num_votes = 1)'
 paster run test.ini -c 'from r2.lib import sr_pops; sr_pops.run()'
 
-nosetests
+nosetests --with-xcoverage --with-xunit --cover-package=r2 --cover-erase
+pylint -f parseable r2/ | tee pylint.out
