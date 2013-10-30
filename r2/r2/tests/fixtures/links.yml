@@ -1,0 +1,44 @@
+democracy3:
+    url: http://www.positech.co.uk/democracy3/index.php
+    title: Democracy 3 - Take Control of your Country!
+    lang: en
+    selftext: |
+        I haven't bought this game yet, but I think I will soon.  I think a simulation of new ideas in this same vein might help folks see how something big like a [Jubilee](https://en.wikipedia.org/wiki/Debt_relief) could play out.
+    author: John_Smith_1
+    sr: links
+    ip: 127.0.0.1
+    comments:
+        - 
+            author: Jane_Doe_1
+            ip: 127.0.0.1
+            body: |
+                Wow, this is a great idea.
+            comments:
+                -
+                    author: Joe_Sixpack_1
+                    ip: 127.0.0.1
+                    body: |
+                        No this is dumb idea.  Who in their right mind plays video games?  Who has time to?
+        - 
+            author: Murry_Moderator_1
+            ip: 127.0.0.1
+            body: |
+                This has been done before.
+
+Rolling Jubilee:
+    url: http://www.theguardian.com/world/2012/nov/15/occupy-rolling-jubilee-debt-forgiveness
+    title: "Occupy launches 'Rolling Jubilee' debt forgiveness programme [2012]"
+    lang: en
+    selftext: |
+        > Rolling Jubilee, an offshoot of the street protests that saw thousands demonstrate across the world in 2011, will 'forgive' people of their debt once it is purchased.
+    author: Jane_Doe_1
+    sr: links
+    ip: 127.0.0.1
+
+Lightnet Link:
+    url: http://lightnet.is/
+    title: "Production site"
+    lang: en
+    author: Alice_Admin_1
+    sr: lightnet
+    ip: 127.0.0.1
