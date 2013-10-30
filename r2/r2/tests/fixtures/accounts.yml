@@ -1,0 +1,35 @@
+lightnet:
+    password: password
+    registration_ip: 127.0.0.1
+    registration_fullname: lightnet system user
+
+John_Smith_1: &default_template
+    password: password
+    registration_ip: 127.0.0.1
+    registration_fullname: John Smith
+    has_subscribed: true
+    pref_lang: en-us
+    email: john.smith@example.com
+    last_visit: 1382646620
+    cache_prefix: 2
+    pref_content_langs: ['en', 'en-us']
+
+Jane_Doe_1: 
+    <<: *default_template
+    registration_fullname: Jane Doe
+    email: jane.doe@example.com
+
+Joe_Sixpack_1: 
+    <<: *default_template
+    registration_fullname: Joe Sixpack
+    email: joe.sixpack@example.com
+
+Murry_Moderator_1:
+    <<: *default_template
+    registration_fullname: Murry Moderator
+    email: murry.moderator@example.com
+
+Alice_Admin_1: 
+    <<: *default_template
+    registration_fullname: Alice Admin
+    email: alice.admin@example.com

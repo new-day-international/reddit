@@ -1,0 +1,87 @@
+lightnet: &house
+    author: lightnet
+    space_is_house: true
+    nearest_neighbors: 
+    header_title:
+    ip: 127.0.0.1
+    css_on_cname: 
+    submit_link_label:
+    submit_text_label:
+    wikimode:
+    title: Lightnet
+    prev_public_description_id:
+    public_description:
+    allow_top: false
+    allow_user_uploads: true
+    type: restricted
+    header:
+    header_size:
+    last_mod_action:
+    mod_actions:
+    house_color: '#93cefc'
+    use_rules_from_space:
+    house_rules:
+    prev_description_id:
+    description:
+    moderators:
+        - Alice_Admin_1
+    subscribers:
+        - John_Smith_1
+        - Jane_Doe_1
+        - Joe_Sixpack_1
+
+welcome: &normal_space
+    title: Welcome
+    space_is_house: false
+    use_rules_from_space: lightnet
+    author: Murry_Moderator_1
+    lang: en
+    nearest_neighbors: 
+    header_title:
+    ip: 127.0.0.1
+    css_on_cname: 
+    submit_link_label:
+    submit_text_label:
+    author_id:
+    wikimode:
+    title:
+    prev_public_description_id:
+    public_description:
+    allow_top: false
+    allow_user_uploads: true
+    type: public
+    header:
+    header_size:
+    last_mod_action:
+    mod_actions:
+    use_rules_from_space:
+    prev_description_id:
+    description:
+    subscribers:
+        - John_Smith_1
+        - Jane_Doe_1
+        - Joe_Sixpack_1
+    moderators:
+        - Murry_Moderator_1
+
+connector:
+    <<: *normal_space
+    title: Connector
+newspaces: 
+    <<: *normal_space
+    title: Lightnet Welcome
+feedback:
+    <<: *normal_space
+    title: Feedback
+"lightnet.help":
+    <<: *normal_space
+    title: Lightnet Help
+"lightnet.news":
+    <<: *normal_space
+    title: Lightnet News
+"lightnet.bugs":
+    <<: *normal_space
+    title: Lightnet Bugs
+links:
+    <<: *normal_space
+    title: Links
