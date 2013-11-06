@@ -12,6 +12,7 @@
 		saveCrop, setAreaSelect, setImages, setLoading, setOriginalSize, settings;
 
     settings = {
+      max_original_width: 400,
       width: 100,
       height: 100,
       debug: false
@@ -52,21 +53,41 @@
     }
     $progressBar = div().addClass('progress progress-striped active hide').append(div().addClass('bar').css('width', '100%'));
     $container.append($progressBar);
+
+    // Result images are shown in the container *after* the image has been cropped.
     $resultImage = image().addClass('cropped-image');
     $resultImageMedium = image().addClass('cropped-image-medium');
 	$resultImageSmall = image().addClass('cropped-image-small');
 	$container.append($resultImage);
     $container.append($resultImageMedium);
 	$container.append($resultImageSmall);
+
+    // The source image will be the one selected by the user.
 	$sourceIm = image();
+
     $applyButton = a('Apply').addClass('btn yes btn-primary');
     $cancelButton = a('Cancel').addClass('btn').attr({
       'data-dismiss': "modal",
       'aria-hidden': "true"
     });
-    $imagesContainer = div().append(div().addClass('modal-dialog').append(div().addClass('modal-content').append(div().addClass('modal-body').append(div().addClass('col-md-9').append($sourceIm)).append(div().addClass('col-md-3').append($cropSandbox)), div().addClass('modal-footer').append(div().addClass('btn-group').append($cancelButton).append($applyButton))))).append().addClass('modal').attr({
+    $imagesContainer = div().append(
+        div().addClass('modal-dialog').append(
+        div().addClass('modal-content').append(
+            div().addClass('modal-body').append(
+                div().addClass('col-md-9')
+                .append($sourceIm)
+            ).append(
+                div().addClass('col-md-3')
+                .append($cropSandbox)
+            ),
+            div().addClass('modal-footer').append(
+                div().addClass('btn-group').append($cancelButton).append($applyButton)
+            )
+        ))
+    ).append().addClass('modal').attr({
       role: 'dialog'
     });
+
     $container.append($imagesContainer);
     removeAreaSelect = function(image) {
       return image.imgAreaSelect({
@@ -130,23 +151,32 @@
       return context.drawImage(img.get(0), sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
     };
     setAreaSelect = function(image) {
-      var viewPort, x2, y2,
-        _this = this;
-      viewPort = $(window).height() - 150;
-      if ($sourceIm.height() > viewPort) {
+      var viewPort, x2, y2, height_adjust, _this = this;
+
+      if ($sourceIm.width() > settings.max_original_width) {
+        $sourceIm.css({
+          width: settings.max_original_width + "px"
+        });
+      }
+      viewPortHeight = $(window).height() - 150;
+      if ($sourceIm.height() > viewPortHeight) {
         $sourceIm.css({
           height: viewPort + "px"
         });
       }
       log(image.width(), image.height());
+
+      // If the image is wider than it is tall...
       if (image.width() / settings.width >= image.height() / settings.height) {
         y2 = image.height();
         x2 = Math.round(settings.width * (image.height() / settings.height));
+
+      // the image is taller than it is wide...
       } else {
         x2 = image.width();
         y2 = Math.round(settings.height * (image.width() / settings.width));
       }
-      log(x2, y2, image.width(), image.height());
+      log("x2, y2, width, height", x2, y2, image.width(), image.height());
       drawImage($sourceIm, 0, 0, x2 - 1, y2 - 1);
       return image.imgAreaSelect({
 	    show: true,

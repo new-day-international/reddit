@@ -12,6 +12,8 @@
  * to make it easier to include bootstrap parts piecemeal until we get time to
  * remove the conflicts with the normal reddit CSS. */
 div.bootstrap {
+	
+  margin: 2px;
 
 article,
 aside,
@@ -5993,26 +5995,6 @@ button.close {
   background-clip: padding-box;
 }
 
-.modal-backdrop {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 1030;
-  background-color: #000000;
-}
-
-.modal-backdrop.fade {
-  opacity: 0;
-  filter: alpha(opacity=0);
-}
-
-.modal-backdrop.in {
-  opacity: 0.5;
-  filter: alpha(opacity=50);
-}
-
 .modal-header {
   min-height: 16.428571429px;
   padding: 15px;
@@ -7064,4 +7046,25 @@ td.visible-print {
 }
 
 /* bootstrap' div selector - See note at top of file */
+}
+
+/* These need to be outside the bootstrap <div> since bootstrap appends the elements to the <body> */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1030;
+  background-color: #000000;
+}
+
+.modal-backdrop.fade {
+  opacity: 0;
+  filter: alpha(opacity=0);
+}
+
+.modal-backdrop.in {
+  opacity: 0.5;
+  filter: alpha(opacity=50);
 }
