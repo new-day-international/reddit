@@ -87,6 +87,15 @@
   %endif
 <table class="content preftable">
   <tr>
+    <th>${_("profile picture")}</th>
+    <td class="prefright">
+      <div class="bootstrap">
+      <input id="profile_picture" type="hidden" name="test[image]">
+      <br/>
+      </div>
+    </td>
+  </tr>
+  <tr>
     <th>${_("interface language")}</th>
     <td class="prefright">
       ${language_tool(allow_blank = False, show_regions = True,
@@ -306,8 +315,8 @@
   <tr>
     <th>${_("email options")}</th>
     <td class="prefright">
-        ${checkbox(_("send an email summary of recent activity every day"), "send_activity_summary_email")}
-        <br/>
+      ${checkbox(_("send an email summary of recent activity every day"), "send_activity_summary_email")}
+      <br/>
     </td>
   </tr>
   <tr>
@@ -318,3 +327,18 @@
 </table>
 
 </form>
+
+<script src="/static/bootstrap/js/bootstrap.js"></script>
+<script src="/static/imgareaselect/scripts/jquery.imgareaselect.js"></script>
+<script src="/static/js/lib/jquery.awesome-cropper.js"></script>
+
+<script>
+$(document).ready(function () {
+    $('#profile_picture').awesomeCropper(
+    { max_original_width: 350,
+      width: 100,
+      height: 100,
+      debug: false }
+    );
+});
+</script>
