@@ -791,6 +791,7 @@ class PrefsPage(Reddit):
 class PrefOptions(Templated):
     """Preference form for updating language and display options"""
     def __init__(self, done = False):
+        self.profile_photo_base_url = "http://%s" % (g.s3_user_files_host,)
         Templated.__init__(self, done = done)
 
 class PrefFeeds(Templated):

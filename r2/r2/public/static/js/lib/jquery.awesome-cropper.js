@@ -73,8 +73,11 @@ function dataURLtoBlob(dataURL) {
 
     // Result images are shown in the container *after* the image has been cropped.
     $resultImage = image().addClass('cropped-image');
-    $resultImageMedium = image().addClass('cropped-image-medium');
-	$resultImageSmall = image().addClass('cropped-image-small');
+    $resultImageMedium = image().addClass('cropped-image-medium image-space-h');
+	$resultImageSmall = image().addClass('cropped-image-small image-space-h');
+    $resultImage.attr('src', settings.image_source);
+	$resultImageMedium.attr('src', settings.image_source);
+	$resultImageSmall.attr('src', settings.image_source);
 	$container.append($resultImage);
     $container.append($resultImageMedium);
 	$container.append($resultImageSmall);
@@ -89,19 +92,22 @@ function dataURLtoBlob(dataURL) {
     });
 
     $imagesContainer = div().append(
-        div().addClass('modal-dialog').append(
+      div().addClass('modal-dialog').append(
         div().addClass('modal-content').append(
-            div().addClass('modal-body').append(
-                div().addClass('col-md-9')
-                .append($sourceIm)
+          div().addClass('modal-body').append(
+            div().addClass('col-md-9')
+              .append($sourceIm)
             ).append(
-                div().addClass('col-md-3')
-                .append($cropSandbox)
-            ),
-            div().addClass('modal-footer').append(
-                div().addClass('btn-group').append($cancelButton).append($applyButton)
-            )
-        ))
+            div().addClass('col-md-3')
+              .append($cropSandbox)
+          ),
+          div().addClass('modal-footer').append(
+            div().addClass('btn-group')
+              .append($cancelButton)
+              .append($applyButton)
+          )
+        )
+      )
     ).append().addClass('modal').attr({
       role: 'dialog'
     });
@@ -126,6 +132,9 @@ function dataURLtoBlob(dataURL) {
     };
 
     removeLoading = function() {
+      $cropSandbox.on('shown', function() {
+        return setAreaSelect($sourceIm);
+      });
       $imagesContainer.modal().on('shown', function() {
         return setAreaSelect($sourceIm);
       }).on('hidden', function() {
@@ -176,7 +185,7 @@ function dataURLtoBlob(dataURL) {
     };
 
     setAreaSelect = function(image) {
-      var viewPort, x2, y2, height_adjust, _this = this;
+      var viewPort, x2, y2, height_adjust, context, _this = this;
 
       if ($sourceIm.width() > settings.max_original_width) {
         $sourceIm.css({
@@ -202,6 +211,8 @@ function dataURLtoBlob(dataURL) {
         y2 = Math.round(settings.height * (image.width() / settings.width));
       }
       log("x2, y2, width, height", x2, y2, image.width(), image.height());
+      context = $cropSandbox.get(0).getContext('2d');
+      context.clearRect(0, 0, settings.width - 1 , settings.height - 1);
       drawImage($sourceIm, 0, 0, x2 - 1, y2 - 1);
       return image.imgAreaSelect({
 	    show: true,
@@ -308,6 +319,7 @@ function dataURLtoBlob(dataURL) {
       return cleanImages();
     });
     return $applyButton.on('click', function() {
+      $cropSandbox.trigger("shown");
       saveCrop();
       return $imagesContainer.modal('hide');
     });
