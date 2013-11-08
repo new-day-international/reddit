@@ -335,10 +335,32 @@
 <script>
 $(document).ready(function () {
     $('#profile_picture').awesomeCropper(
-    { max_original_width: 350,
-      width: 100,
-      height: 100,
-      debug: false }
+      { max_original_width: 350,
+        width: 100,
+        height: 100,
+        debug: false,
+        onsave: function(fileBlob) {
+
+          alert("saving");
+
+          $.post('/api/user_upload_permission.json', {filename: 'profile_photo.jpg', use_xhr: true,}, function (responseObj) {
+            var xhr = new XMLHttpRequest(),
+                fd = new FormData();
+
+            alert("uploading to S3");
+
+            fd.append('AWSAccessKeyId', responseObj.aws_access_key);
+            fd.append('acl', 'public-read');
+            fd.append('key', responseObj.key);
+            fd.append('policy', responseObj.policy);
+            fd.append('signature',responseObj.signature);
+            fd.append('Content-Type', responseObj.content_type);
+            fd.append('file', fileBlob);
+            xhr.open('POST', responseObj.upload_url, true);
+            xhr.send(fd);
+          });
+        },
+      }
     );
 });
 </script>
