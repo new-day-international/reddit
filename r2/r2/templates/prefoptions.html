@@ -332,10 +332,18 @@
 <script src="/static/imgareaselect/scripts/jquery.imgareaselect.js"></script>
 <script src="/static/js/lib/jquery.awesome-cropper.js"></script>
 
+<%
+  if c.user_is_loggedin:
+    image_source = "http://%s/u/%s/profile_photo.jpg" % (g.s3_user_files_host, c.user.name,)
+  else:
+    image_source = ""
+  endif
+%>
+
 <script>
 $(document).ready(function () {
   $('#profile_picture').awesomeCropper({
-    image_source: "${"%s/u/%s/profile_photo.jpg" % (thing.profile_photo_base_url, c.user.name,)}",
+    image_source: "${image_source}",
     max_original_width: 350,
     width: 100,
     height: 100,
