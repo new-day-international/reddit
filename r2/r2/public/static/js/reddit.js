@@ -373,6 +373,15 @@ function complete_reject_promo(elem) {
         .find(".reject_promo").remove();
 }
 
+function space_email_click(elem, post_or_comment, sr_name) {
+    var want = $(elem).attr('checked');
+    $.request("space_email", {post_or_comment:post_or_comment, sr:sr_name, want:want});
+}
+function thread_email_click(elem, link_id) {
+    var want = $(elem).attr('checked');
+    $.request("thread_email", {link_id:link_id, want:want});
+}
+
 /* Comment generation */
 function helpon(elem) {
     $(elem).parents(".usertext-edit:first").children(".markhelp:first").show();

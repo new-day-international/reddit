@@ -84,6 +84,7 @@ def declare_queues(g):
         "log_q": MessageQueue(bind_to_self=True),
         "update_promos_q": MessageQueue(bind_to_self=True),
         "summary_email_q": MessageQueue(bind_to_self=True),
+        "realtime_email_q": MessageQueue(),
     })
 
     if g.shard_link_vote_queues:
@@ -99,4 +100,5 @@ def declare_queues(g):
     queues.commentstree_q << "new_comment"
     queues.commentstree_fastlane_q << "new_fastlane_comment"
     queues.cloudsearch_changes_q << "new_search_change"
+    queues.realtime_email_q << ("new_link", "new_comment")
     return queues

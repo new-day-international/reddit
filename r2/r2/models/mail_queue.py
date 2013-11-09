@@ -303,6 +303,7 @@ class Email(object):
                 "NEW_PROMO",
                 "NERDMAIL",
                 "GOLDMAIL",
+                "REALTIME_POST", "REALTIME_COMMENT", "REALTIME_NOTIFICATION"
                 )
 
     subjects = {
@@ -321,7 +322,10 @@ class Email(object):
         Kind.FINISHED_PROMO : _("[%(domain)s] your promotion has finished"),
         Kind.NEW_PROMO : _("[%(domain)s] your promotion has been created"),
         Kind.NERDMAIL : _("[%(domain)s] hey, nerd!"),
-        Kind.GOLDMAIL : _("[%(domain)s] %(domain)s gold activation link")
+        Kind.GOLDMAIL : _("[%(domain)s] %(domain)s gold activation link"),
+        Kind.REALTIME_POST : _("[%(domain)s] a new post"),
+        Kind.REALTIME_COMMENT : _("[%(domain)s] a new comment"),
+        Kind.REALTIME_NOTIFICATION : _("[%(domain)s] a new notification")
         }
 
     def __init__(self, user, thing, email, from_name, date, ip, banned_ip,
