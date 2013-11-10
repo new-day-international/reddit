@@ -1086,8 +1086,8 @@ class Comment(Thing, Printable):
                 item.score_hidden = False
 
             # Get the name for the item's photo column
-            if item.comment_author.profile_photo_uploaded:
-                item.photo_name = item.comment_author.name
+            if item.author.profile_photo_uploaded:
+                item.photo_name = item.author.name
             else:
                 item.photo_name = "default_user"
 
