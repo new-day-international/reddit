@@ -130,6 +130,23 @@ def share(link, emails, from_name = "", reply_to = "", body = ""):
                                body = body, reply_to = reply_to,
                                thing = link)
 
+def open_smtp_session():
+    try:
+        # Open the session
+        session = smtplib.SMTP(g.smtp_server)
+
+        # Login
+        if g.smtp_username:
+            session.starttls()
+            session.login(g.smtp_username, g.smtp_password)
+    except:
+        print( "Error opening SMTP session for server: %s, user: %s, password %s" % (g.smtp_server, g.smtp_username, g.smtp_password))
+        import sys
+        sys.stdout.flush()
+        session = None
+
+    return session
+
 def send_queued_mail(test = False):
     """sends mail from the mail queue to smtplib for delivery.  Also,
     on successes, empties the mail queue and adds all emails to the
@@ -141,11 +158,7 @@ def send_queued_mail(test = False):
 
     clear = False
     if not test:
-        session = smtplib.SMTP(g.smtp_server)
-
-        if g.smtp_username:
-            session.starttls()
-            session.login(g.smtp_username, g.smtp_password)
+        session = open_smtp_session()
 
     def sendmail(email):
         try:
@@ -254,20 +267,30 @@ def live_promo(thing):
 def finished_promo(thing):
     return _promo_email(thing, Email.Kind.FINISHED_PROMO)
 
-
-def send_html_email(to_addr, from_addr, subject, html, subtype="html"):
+def send_html_email(to_addr, from_addr, subject, html, subtype="html", session=None):
     from r2.lib.filters import _force_utf8
+
+    # Open a session if we don't already have one.
+    if not session:
+        session = open_smtp_session()
+        close_session = True
+    else:
+        close_session = False
+
+    # Compose the message headers.
     msg = MIMEText(_force_utf8(html), subtype)
     msg["Subject"] = subject
     msg["From"] = from_addr
     msg["To"] = to_addr
 
-    session = smtplib.SMTP(g.smtp_server)
+    # Send the mail.
     session.sendmail(from_addr, to_addr, msg.as_string())
-    session.quit()
 
+    # Close down the session if we opened it.
+    if close_session:
+        session.quit()
 
-def run_realtime_email_queue(limit=1000):
+def run_realtime_email_queue(limit=1000, debug=False):
     # Email new posts, comments or messages to whoever's set to get them
     # Called from reddit_consumer-realtime_email_q long running job
     
@@ -282,9 +305,16 @@ def run_realtime_email_queue(limit=1000):
     
     @g.stats.amqp_processor('realtime_email_q')
     def _run_realtime_email_queue(msgs, chan):
+
+        # Open the SMTP session
+        if g.email_debug:
+            print 'Opening SMTP session'
+        session = open_smtp_session()
+
         if time.time() - run_realtime_email_queue.last_got_accounts > 600:
             #-- Pick up a fresh list of accounts, if we havenn't done so recently, in case settings change
-            print 'Getting accounts'
+            if g.email_debug:
+                print 'Getting accounts'
             run_realtime_email_queue.accounts = Account._query(Account.c.email != None, sort = asc('_date'), data=True)
             run_realtime_email_queue.last_got_accounts = time.time()
         
@@ -293,11 +323,13 @@ def run_realtime_email_queue(limit=1000):
             fullname = str(msg.body)
             fullname_type = fullname[0:2]
             id36 = fullname[3:]
-            print 'msg: ' + fullname
+            if g.email_debug:
+                print 'msg: ' + fullname
             howold = (datetime.datetime.now() - msg.timestamp).total_seconds() 
             if  howold < 120:
                 # Wait until this item is 2 minutes old, to allow time for corrections
-                print 'waiting for a moment'
+                if g.email_debug:
+                    print 'waiting for a moment'
                 time.sleep(120 - howold)
 
             is_com = is_post = False
@@ -306,7 +338,8 @@ def run_realtime_email_queue(limit=1000):
                 # a comment
                 is_com = True
                 comment = Comment._byID36(id36)
-                print 'comment: ' + comment.body
+                if g.email_debug:
+                    print 'comment: ' + comment.body
                 thing = comment
                 author = Account._byID(comment.author_id, True)
                 kind = Email.Kind.REALTIME_COMMENT
@@ -319,7 +352,8 @@ def run_realtime_email_queue(limit=1000):
                 # a post/link
                 is_post = True
                 link = Link._byID36(id36)
-                print 'post: ' + link.title
+                if g.email_debug:
+                    print 'post: ' + link.title
                 thing = link
                 author = Account._byID(link.author_id, True)
                 kind = Email.Kind.REALTIME_POST
@@ -340,19 +374,22 @@ def run_realtime_email_queue(limit=1000):
                 
                 if is_com: 
                     if hasattr(sub,'email_comments') and sub.email_comments:
-                        print '  account ' + account.name + ': we should send this comment, because of the space setting'
+                        if g.email_debug:
+                            print '  account ' + account.name + ': we should send this comment, because of the space setting'
                         whysend = 'space'
                     else:
                         email_thread = Link._somethinged(SaveHide, account, link, 'email')[account,link,'email']
                         if email_thread:
-                            print '  account ' + account.name + ': we should send this comment, because of the thread setting'
+                            if g.email_debug:
+                                print '  account ' + account.name + ': we should send this comment, because of the thread setting'
                             whysend = 'thread'
                         else:    
                             continue
                     
                 elif is_post:
                     if hasattr(sub,'email_posts') and sub.email_posts:
-                        print '  account ' + account.name + ': we should send this post'
+                        if g.email_debug:
+                            print '  account ' + account.name + ': we should send this post'
                         whysend = 'space'
                     else:
                         continue
@@ -363,11 +400,15 @@ def run_realtime_email_queue(limit=1000):
                 html_email_template = g.mako_lookup.get_template(template)
                 html_body = html_email_template.render(link=link, comment=comment, thing=thing, account=account, sub=sub, whysend=whysend)
             
-                send_html_email(account.email, g.share_reply, subject, html_body)
-                print '    sent to ' + account.name + ' at ' + account.email
-             
-                    
-        print 'Done running queue'
+                send_html_email(account.email, g.share_reply, subject, html_body, session=session)
+                if g.email_debug:
+                    print '    sent to ' + account.name + ' at ' + account.email
+
+        if g.email_debug:
+            print 'Done running queue'
+
+        # Close the session.
+        session.quit()
 
     amqp.handle_items('realtime_email_q', _run_realtime_email_queue, limit = limit)
     
