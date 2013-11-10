@@ -333,10 +333,10 @@
 <script src="/static/js/lib/jquery.awesome-cropper.js"></script>
 
 <%
-  if c.user_is_loggedin:
+  if c.user_is_loggedin and c.user.profile_photo_uploaded:
     image_source = "http://%s/u/%s/profile_photo.jpg" % (g.s3_user_files_host, c.user.name,)
   else:
-    image_source = ""
+    image_source = "http://%s/u/default_user/profile_photo.jpg" % (g.s3_user_files_host,)
   endif
 %>
 
@@ -363,6 +363,8 @@ $(document).ready(function () {
         fd.append('file', fileBlob);
         xhr.open('POST', responseObj.upload_url, true);
         xhr.send(fd);
+
+        $.post('/api/profile_photo_uploaded.json', {}, function (responseObj) { } );
       });
     },
   });

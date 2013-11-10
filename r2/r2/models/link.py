@@ -574,7 +574,10 @@ class Link(Thing, Printable):
                 item.comment_author = item.author
 
             # Get the name for the item's photo column
-            item.photo_name = item.comment_author.name
+            if item.comment_author.profile_photo_uploaded:
+                item.photo_name = item.comment_author.name
+            else:
+                item.photo_name = "default_user"
 
             # generate the appropriate tagline text
             taglinetext = ''
@@ -1083,7 +1086,10 @@ class Comment(Thing, Printable):
                 item.score_hidden = False
 
             # Get the name for the item's photo column
-            item.photo_name = item.author.name
+            if item.comment_author.profile_photo_uploaded:
+                item.photo_name = item.comment_author.name
+            else:
+                item.photo_name = "default_user"
 
             #will seem less horrible when add_props is in pages.py
             from r2.lib.pages import UserText
