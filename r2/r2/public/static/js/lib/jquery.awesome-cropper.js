@@ -298,7 +298,7 @@ function dataURLtoBlob(dataURL) {
     saveCrop = function() {
       var dataURL, imageBlob;
 
-      dataURL = $cropSandbox.get(0).toDataURL();
+      dataURL = $cropSandbox.get(0).toDataURL("image/jpeg");
       $resultImage.attr('src', dataURL);
       $resultImageMedium.attr('src', dataURL);
 	  $resultImageSmall.attr('src', dataURL);
