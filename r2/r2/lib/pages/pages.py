@@ -1079,6 +1079,15 @@ class CommentVisitsBox(Templated):
             self.visits.append(pretty)
         Templated.__init__(self, *a, **kw)
 
+class CommentEmailCheck(Templated):
+    """Checkbox for choosing to receive new comments in email
+    """
+    def __init__(self, article, *a, **kw):
+        from r2.models import SaveHide
+        self.article = article
+        self.email_thread = Link._somethinged(SaveHide, c.user, article, 'email')[c.user,article,'email'] if c.user_is_loggedin and c.user else False
+        Templated.__init__(self, *a, **kw)
+
 class LinkInfoPage(Reddit):
     """Renders the varied /info pages for a link.  The Link object is
     passed via the link argument and the content passed to this class

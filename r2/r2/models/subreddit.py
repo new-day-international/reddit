@@ -567,7 +567,12 @@ class Subreddit(Thing, Printable):
             if not user or not user.has_subscribed:
                 item.subscriber = item._id in defaults
             else:
-                item.subscriber = bool(rels.get((item, user, 'subscriber')))
+                r = rels.get((item, user, 'subscriber'))
+                item.subscriber = bool(r)
+                if item.subscriber:
+                    item.email_posts = True if hasattr(r,'email_posts') and r.email_posts else False
+                    item.email_comments = True if hasattr(r,'email_comments') and r.email_comments else False
+                
             item.moderator = bool(rels.get((item, user, 'moderator')))
             item.contributor = bool(item.type != 'public' and
                                     (item.moderator or

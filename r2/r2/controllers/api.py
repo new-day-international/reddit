@@ -855,6 +855,34 @@ class ApiController(RedditController, OAuth2ResourceController):
         notify_user_added("accept_moderator_invite", c.user, c.user, c.site)
         jquery.refresh()
 
+    @noresponse(VUser(),
+                VModhash(),
+                post_or_comment = VOneOf('post_or_comment', ('posts', 'comments'),
+                                 default='posts'),
+                sr = VSubscribeSR('sr', 'sr_name'),                 
+                want = VBoolean('want'))
+    def POST_space_email(self, post_or_comment, sr, want):
+        # User checks or unchecks whether he wants to get emails of new posts or comments for that space
+        r = sr.get_subscriber(c.user)
+        if post_or_comment == 'posts':
+            r.email_posts = want
+        elif post_or_comment == 'comments':
+            r.email_comments = want
+        r._commit()     
+        
+    @noresponse(VUser(),
+                VModhash(),
+                link_id = nop('link_id'),                 
+                want = VBoolean('want'))        
+    def POST_thread_email(self, link_id, want):
+        # User checks or unchecks whether he wants to get emails of new comments in a particular thread
+        link = Link._byID(int(link_id))
+        ebef = Link._somethinged(SaveHide, c.user, link, 'email')
+        if want:
+            link._something(SaveHide, c.user, ebef, 'email')
+        else:
+            ebef[c.user, link, 'email']._delete()            
+
     @validatedForm(VUser('curpass', default=''),
                    VModhash(),
                    password=VPassword(
