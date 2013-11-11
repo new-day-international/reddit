@@ -252,7 +252,7 @@
       %endif
       %if c.user.pref_show_promote is not None:
         <br/>
-        ${checkbox(_("show promote tab on front page"), 
+        ${checkbox(_("show promote tab on front page"),
           "show_promote")}
       %endif
     </td>
@@ -265,7 +265,7 @@
       <br/>
         ${checkbox(_("label posts that are not safe for work (NSFW)"), "label_nsfw", disabled = c.user.pref_no_profanity, disabled_text = "(requires not 'safer for work' mode)")}
       <br/>
-        ${checkbox(_("enable private RSS feeds"), "private_feeds")} 
+        ${checkbox(_("enable private RSS feeds"), "private_feeds")}
        &#32;<span class="little gray">
         ${_("(available from the 'RSS feed' tab in prefs)")}</span>
     </td>
@@ -348,11 +348,10 @@ $(document).ready(function () {
     width: 100,
     height: 100,
     debug: false,
-    onsave: function(fileBlob) {
+    on_save: function(fileBlob) {
 
       $.post('/api/user_upload_permission.json', {filename: 'profile_photo.jpg', use_xhr: true,}, function (responseObj) {
-        var xhr = new XMLHttpRequest(),
-            fd = new FormData();
+        var fd = new FormData();
 
         fd.append('AWSAccessKeyId', responseObj.aws_access_key);
         fd.append('acl', 'public-read');
@@ -361,12 +360,23 @@ $(document).ready(function () {
         fd.append('signature',responseObj.signature);
         fd.append('Content-Type', responseObj.content_type);
         fd.append('file', fileBlob);
-        xhr.open('POST', responseObj.upload_url, true);
-        xhr.send(fd);
 
-        $.post('/api/profile_photo_uploaded.json', {}, function (responseObj) { } );
+        $.ajax({
+          url: responseObj.upload_url,
+          type: "POST",
+          data: fd,
+          processData: false,
+          contentType: false,
+          success: function(data, textStatus, jqXHR) {
+            $.post('/api/profile_photo_uploaded.json', {}, function (responseObj) { } );
+          },
+          error: function(jqXHR, textStatus, errorMessage) {
+               console.log(errorMessage);
+          }
+        });
+
       });
-    },
+    }
   });
 });
 </script>

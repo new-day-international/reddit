@@ -14,7 +14,7 @@ function dataURLtoBlob(dataURL) {
   $ = jQuery;
 
   $.awesomeCropper = function(inputAttachTo, options) {
-    var $applyButton, $cancelButton, $closeButton, $container, $cropSandbox, $fileSelect, $imagesContainer,
+    var $saveButton, $cancelButton, $closeButton, $container, $cropSandbox, $fileSelect, $imagesContainer,
  		$inputAttachTo, $progressBar, $resultImage, $resultImageSmall, $resultImageSmall, $sourceIm, 
         $urlSelect, $urlSelectButton, a, cleanImages, div, drawImage, fileAllowed, handleDragOver, 
 		handleDropFileSelect, handleFileSelect, image, input, log, readFile, removeAreaSelect, removeLoading, 
@@ -95,7 +95,7 @@ function dataURLtoBlob(dataURL) {
     // The source image will be the one selected by the user.
 	$sourceIm = image();
 
-    $applyButton = a('Apply').addClass('btn yes btn-primary');
+    $saveButton = a('Save').addClass('btn yes btn-primary');
     $cancelButton = a('Cancel').addClass('btn').attr({
       'data-dismiss': "modal",
       'aria-hidden': "true"
@@ -110,16 +110,14 @@ function dataURLtoBlob(dataURL) {
               modalTitle()
               ),
             div().addClass('modal-body').append(
-              div().addClass('col-md-9')
-                .append($sourceIm)
-              ).append(
-              div().addClass('col-md-3')
-                .append($cropSandbox)
+              div().addClass('row').append(
+                div().addClass('col-md-9').append($sourceIm),
+                div().addClass('col-md-3').append($cropSandbox)
+                )
               ),
             div().addClass('modal-footer').append(
               div().addClass('btn-group')
-                .append($cancelButton)
-                .append($applyButton)
+                .append($cancelButton, $saveButton)
             )
           )
         )
@@ -306,8 +304,8 @@ function dataURLtoBlob(dataURL) {
 	  $resultImageSmall.attr('src', dataURL);
 
 	  imageBlob = dataURLtoBlob(dataURL);
-      if (settings.onsave) {
-        settings.onsave(imageBlob);
+      if (settings.on_save) {
+        settings.on_save(imageBlob);
       }
       return cleanImages();
     };
@@ -342,7 +340,7 @@ function dataURLtoBlob(dataURL) {
     $closeButton.on('click', function() {
       return cleanImages();
     });
-    return $applyButton.on('click', function() {
+    return $saveButton.on('click', function() {
       if (!imageWasCropped){
           $cropSandbox.trigger("shown");
       }
