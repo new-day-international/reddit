@@ -70,7 +70,7 @@ function dataURLtoBlob(dataURL) {
       height: settings.height
     });
     $container.append($cropSandbox);
-    $fileSelect = input('file');
+    $fileSelect = input('file').addClass('file-to-crop');
     $container.append($fileSelect);
     if (settings.proxy_path !== void 0) {
       $urlSelect = input('text');
@@ -86,11 +86,13 @@ function dataURLtoBlob(dataURL) {
     $resultImageMedium = image().addClass('cropped-image-medium image-space-h');
 	$resultImageSmall = image().addClass('cropped-image-small image-space-h');
     $resultImage.attr('src', settings.image_source);
+	$container.append($resultImage);
+    /*
 	$resultImageMedium.attr('src', settings.image_source);
 	$resultImageSmall.attr('src', settings.image_source);
-	$container.append($resultImage);
     $container.append($resultImageMedium);
 	$container.append($resultImageSmall);
+	*/
 
     // The source image will be the one selected by the user.
 	$sourceIm = image();
@@ -300,8 +302,10 @@ function dataURLtoBlob(dataURL) {
 
       dataURL = $cropSandbox.get(0).toDataURL("image/jpeg");
       $resultImage.attr('src', dataURL);
+      /*
       $resultImageMedium.attr('src', dataURL);
 	  $resultImageSmall.attr('src', dataURL);
+      */
 
 	  imageBlob = dataURLtoBlob(dataURL);
       if (settings.on_save) {
