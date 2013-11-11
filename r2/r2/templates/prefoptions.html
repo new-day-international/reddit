@@ -87,6 +87,15 @@
   %endif
 <table class="content preftable">
   <tr>
+    <th>${_("profile picture")}</th>
+    <td class="prefright">
+      <div class="bootstrap">
+      <input id="profile_picture" type="hidden" name="test[image]">
+      <br/>
+      </div>
+    </td>
+  </tr>
+  <tr>
     <th>${_("interface language")}</th>
     <td class="prefright">
       ${language_tool(allow_blank = False, show_regions = True,
@@ -243,7 +252,7 @@
       %endif
       %if c.user.pref_show_promote is not None:
         <br/>
-        ${checkbox(_("show promote tab on front page"), 
+        ${checkbox(_("show promote tab on front page"),
           "show_promote")}
       %endif
     </td>
@@ -256,7 +265,7 @@
       <br/>
         ${checkbox(_("label posts that are not safe for work (NSFW)"), "label_nsfw", disabled = c.user.pref_no_profanity, disabled_text = "(requires not 'safer for work' mode)")}
       <br/>
-        ${checkbox(_("enable private RSS feeds"), "private_feeds")} 
+        ${checkbox(_("enable private RSS feeds"), "private_feeds")}
        &#32;<span class="little gray">
         ${_("(available from the 'RSS feed' tab in prefs)")}</span>
     </td>
@@ -306,8 +315,8 @@
   <tr>
     <th>${_("email options")}</th>
     <td class="prefright">
-        ${checkbox(_("send an email summary of recent activity every day"), "send_activity_summary_email")}
-        <br/>
+      ${checkbox(_("send an email summary of recent activity every day"), "send_activity_summary_email")}
+      <br/>
     </td>
   </tr>
   <tr>
@@ -318,3 +327,56 @@
 </table>
 
 </form>
+
+<script src="/static/bootstrap/js/bootstrap.js"></script>
+<script src="/static/imgareaselect/scripts/jquery.imgareaselect.js"></script>
+<script src="/static/js/lib/jquery.awesome-cropper.js"></script>
+
+<%
+  if c.user_is_loggedin and c.user.profile_photo_uploaded:
+    image_source = "http://%s/u/%s/profile_photo.jpg" % (g.s3_user_files_host, c.user.name,)
+  else:
+    image_source = "http://%s/u/default_user/profile_photo.jpg" % (g.s3_user_files_host,)
+  endif
+%>
+
+<script>
+$(document).ready(function () {
+  $('#profile_picture').awesomeCropper({
+    image_source: "${image_source}",
+    max_original_width: 350,
+    width: 100,
+    height: 100,
+    debug: false,
+    on_save: function(fileBlob) {
+
+      $.post('/api/user_upload_permission.json', {filename: 'profile_photo.jpg', use_xhr: true,}, function (responseObj) {
+        var fd = new FormData();
+
+        fd.append('AWSAccessKeyId', responseObj.aws_access_key);
+        fd.append('acl', 'public-read');
+        fd.append('key', responseObj.key);
+        fd.append('policy', responseObj.policy);
+        fd.append('signature',responseObj.signature);
+        fd.append('Content-Type', responseObj.content_type);
+        fd.append('file', fileBlob);
+
+        $.ajax({
+          url: responseObj.upload_url,
+          type: "POST",
+          data: fd,
+          processData: false,
+          contentType: false,
+          success: function(data, textStatus, jqXHR) {
+            $.post('/api/profile_photo_uploaded.json', {}, function (responseObj) { } );
+          },
+          error: function(jqXHR, textStatus, errorMessage) {
+            console.log(errorMessage);
+          }
+        });
+
+      });
+    }
+  });
+});
+</script>

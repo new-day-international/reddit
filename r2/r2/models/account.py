@@ -116,6 +116,7 @@ class Account(Thing):
                      otp_secret=None,
                      state=0,
                      cache_prefix=0,
+                     profile_photo_uploaded=False,
                      )
 
     def __eq__(self, other):

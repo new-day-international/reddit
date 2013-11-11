@@ -27,11 +27,19 @@
 
 <%def name="less_stylesheet(*names)">
   %for name in names:
-    <% name = name[:name.rfind('.less')] %>
-    %if g.uncompressedJS:
-      <link rel="stylesheet/less" type="text/css" href="${static(name+'.less')}" />
+    <%
+       less_offset = name.rfind('.less')
+       name_minus_suffix = name[:less_offset]
+    %>
+    %if less_offset > 0:
+      %if g.uncompressedJS:
+        <link rel="stylesheet/less" type="text/css" href="${static(name_minus_suffix+'.less')}" />
+      %else:
+        <link rel="stylesheet" type="text/css" href="${static(name_minus_suffix+'.css')}" />
+      %endif
     %else:
-      <link rel="stylesheet" type="text/css" href="${static(name+'.css')}" />
+      <% name_minus_suffix = name[:name.rfind('.css')] %>
+      <link rel="stylesheet" type="text/css" href="${static(name_minus_suffix+'.css')}" />
     %endif
   %endfor
 </%def>

@@ -3483,7 +3483,9 @@ class ApiController(RedditController, OAuth2ResourceController):
 
         ret['policy'], ret['signature'] = s3_helpers.encode_and_sign_upload_policy(policy, s3_helpers.get_aws_secret_access_key())
         return ret
-    
 
-
-
+    @json_validate(VUser())
+    def POST_profile_photo_uploaded(self, responder):
+        c.user.profile_photo_uploaded = True
+        c.user._commit()
+        return {}

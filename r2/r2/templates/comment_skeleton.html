@@ -55,12 +55,12 @@ ${self.tagline(True)}
   ${self.collapsed()}
 </div>
 <div class="noncollapsed" ${(collapse and "style='display:none'" or "")}>
-  <p class="tagline">
+  <div class="tagline">
     ${self.tagline()}
 %if not getattr(thing, "votable", True):
     <div class="unvotable-message">${strings.unvotable_message}</div>
 %endif
-  </p>
+  </div>
   ${self.commentBody()}
   <ul class="flat-list buttons">
     ${self.buttons()}

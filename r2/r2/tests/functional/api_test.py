@@ -27,7 +27,6 @@ class TestApiController(RedditTestCase):
         response = self.api_post('/api/user_upload_permission.json', dict(filename='foobar.txt'))
         self.assert_equal('Foobar [TXT]', response['suggested_link_title'])
         self.assert_equal('text/plain', response['content_type'])
-        self.assert_equal('text/plain', response['content_type'])
         self.assert_equal('u/%s/foobar.txt' % (self.default_username,), response['key'])
 
     def test_POST_submit_happy_path_for_self(self):

@@ -100,12 +100,18 @@ ${parent.collapsed()}
   %endif
 
   %if show:
-     %if thing.deleted:
-       <em>${_("deleted comment from")}</em>&#32;
-     %endif
-     ${WrappedUser(thing.author, thing.attribs, thing,
-                   gray = collapse).render()}
-     &#32;
+<%
+    photo_url = "http://%s/u/%s/profile_photo.jpg" % (g.s3_user_files_host, thing.photo_name,)
+%>
+%if not collapse:
+    <img class="cropped-image-small comment_photo" src="${photo_url}">
+%endif
+    %if thing.deleted:
+      <em>${_("deleted comment from")}</em>&#32;
+    %endif
+      ${WrappedUser(thing.author, thing.attribs, thing,
+                    gray = collapse).render()}
+    &#32;
   %else:
      <em>${_("[deleted]")}</em>&#32;
   %endif
