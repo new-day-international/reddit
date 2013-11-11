@@ -319,7 +319,6 @@ function dataURLtoBlob(dataURL) {
       return cleanImages();
     });
     return $applyButton.on('click', function() {
-      $cropSandbox.trigger("shown");
       saveCrop();
       return $imagesContainer.modal('hide');
     });
