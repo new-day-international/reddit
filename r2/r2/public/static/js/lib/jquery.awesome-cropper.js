@@ -14,11 +14,11 @@ function dataURLtoBlob(dataURL) {
   $ = jQuery;
 
   $.awesomeCropper = function(inputAttachTo, options) {
-    var $applyButton, $cancelButton, $container, $cropSandbox, $fileSelect, $imagesContainer,
+    var $applyButton, $cancelButton, $closeButton, $container, $cropSandbox, $fileSelect, $imagesContainer,
  		$inputAttachTo, $progressBar, $resultImage, $resultImageSmall, $resultImageSmall, $sourceIm, 
         $urlSelect, $urlSelectButton, a, cleanImages, div, drawImage, fileAllowed, handleDragOver, 
 		handleDropFileSelect, handleFileSelect, image, input, log, readFile, removeAreaSelect, removeLoading, 
-		saveCrop, setAreaSelect, setImages, setLoading, setOriginalSize, settings;
+		saveCrop, setAreaSelect, setImages, setLoading, setOriginalSize, settings, imageWasCropped;
 
     settings = {
       max_original_width: 400,
@@ -29,6 +29,8 @@ function dataURLtoBlob(dataURL) {
     };
 
     settings = $.extend(settings, options);
+
+    imageWasCropped = false;
 
     log = function() {
       if (settings.debug) {
@@ -43,6 +45,14 @@ function dataURLtoBlob(dataURL) {
 
     div = function() {
       return $("<div/>");
+    };
+
+    dismissButton = function() {
+      return $('<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>');
+    };
+
+    modalTitle = function() {
+      return $('<h4 class="modal-title">Crop profile photo to desired size</h4>');
     };
 
     a = function(text) {
@@ -90,24 +100,29 @@ function dataURLtoBlob(dataURL) {
       'data-dismiss': "modal",
       'aria-hidden': "true"
     });
+    $closeButton = dismissButton();
 
     $imagesContainer = div().append(
       div().addClass('modal-dialog').append(
-        div().addClass('modal-content').append(
-          div().addClass('modal-body').append(
-            div().addClass('col-md-9')
-              .append($sourceIm)
-            ).append(
-            div().addClass('col-md-3')
-              .append($cropSandbox)
-          ),
-          div().addClass('modal-footer').append(
-            div().addClass('btn-group')
-              .append($cancelButton)
-              .append($applyButton)
+          div().addClass('modal-content').append(
+            div().addClass('modal-header').append(
+              $closeButton,
+              modalTitle()
+              ),
+            div().addClass('modal-body').append(
+              div().addClass('col-md-9')
+                .append($sourceIm)
+              ).append(
+              div().addClass('col-md-3')
+                .append($cropSandbox)
+              ),
+            div().addClass('modal-footer').append(
+              div().addClass('btn-group')
+                .append($cancelButton)
+                .append($applyButton)
+            )
           )
         )
-      )
     ).append().addClass('modal').attr({
       role: 'dialog'
     });
@@ -222,7 +237,13 @@ function dataURLtoBlob(dataURL) {
         y1: 0,
         x2: x2,
         y2: y2,
+
+        onInit: function(img, selection) {
+          return drawImage($sourceIm, selection.x1, selection.y1, selection.width - 1, selection.height - 1);
+        },
+
         onSelectEnd: function(img, selection) {
+          imageWasCropped = true;
           return drawImage($sourceIm, selection.x1, selection.y1, selection.width - 1, selection.height - 1);
         }
       });
@@ -318,7 +339,13 @@ function dataURLtoBlob(dataURL) {
     $cancelButton.on('click', function() {
       return cleanImages();
     });
+    $closeButton.on('click', function() {
+      return cleanImages();
+    });
     return $applyButton.on('click', function() {
+      if (!imageWasCropped){
+          $cropSandbox.trigger("shown");
+      }
       saveCrop();
       return $imagesContainer.modal('hide');
     });
