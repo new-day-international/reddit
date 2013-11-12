@@ -2,7 +2,7 @@
 from r2.lib.template_helpers import get_domain
 from r2.lib.utils import timesince, truncate_html_words
 from r2.lib.filters import safemarkdown, unsafe
-import datetime
+import datetime, pytz
 from r2.models import Account, Frontpage, Subreddit, Thing, Link, Comment
 from pylons.i18n import _
 
@@ -67,6 +67,8 @@ domain = get_domain(subreddit=False)
 % if whysend == 'space':
 <div style="padding: 2px 0 2px 7px">You're set to receive all new posts in this space by email. Change your setting <a href="${space_absolute_url}">here</a></div>
 % endif
-  
+
+<div style="padding: 5px 0 0 7px;background-color:#fff;">Sent at ${datetime.datetime.now(pytz.timezone('US/Eastern')).strftime("%I:%M %p on %A, %B %d %Z")}</div>
+ 
 </body>
 </html>
