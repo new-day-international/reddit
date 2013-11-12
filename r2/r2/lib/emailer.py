@@ -267,7 +267,7 @@ def live_promo(thing):
 def finished_promo(thing):
     return _promo_email(thing, Email.Kind.FINISHED_PROMO)
 
-def send_html_email(to_addr, from_addr, subject, html, subtype="html", session=None):
+def send_html_email(to_addr, from_addr, subject, html, subtype="html", from_full='', session=None):
     from r2.lib.filters import _force_utf8
 
     # Open a session if we don't already have one.
@@ -277,10 +277,13 @@ def send_html_email(to_addr, from_addr, subject, html, subtype="html", session=N
     else:
         close_session = False
 
+    if from_full == '':
+        from_full = from_addr
+
     # Compose the message headers.
     msg = MIMEText(_force_utf8(html), subtype)
     msg["Subject"] = subject
-    msg["From"] = from_addr
+    msg["From"] = from_full
     msg["To"] = to_addr
 
     # Send the mail.
@@ -400,7 +403,8 @@ def run_realtime_email_queue(limit=1000, debug=False):
                 html_email_template = g.mako_lookup.get_template(template)
                 html_body = html_email_template.render(link=link, comment=comment, thing=thing, account=account, sub=sub, whysend=whysend)
             
-                send_html_email(account.email, g.share_reply, subject, html_body, session=session)
+                from_email = '"%s" <%s>' % (g.realtime_email_from_name, g.share_reply,)
+                send_html_email(account.email, g.share_reply, subject, html_body, from_full=from_email, session=session)
                 if g.email_debug:
                     print '    sent to ' + account.name + ' at ' + account.email
 

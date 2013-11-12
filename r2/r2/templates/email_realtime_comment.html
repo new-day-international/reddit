@@ -89,6 +89,8 @@ domain = get_domain(subreddit=False)
 % elif whysend == 'thread':
 <div style="padding: 2px 0 2px 7px">You're set to receive new comments in this thread by email. Change your setting <a href="${link_absolute_url}">here</a></div>
 % endif
+
+<div style="padding: 5px 0 0 7px;background-color:#fff;">Sent at ${datetime.datetime.now().strftime("%c")}</div>
   
 </body>
 </html>
