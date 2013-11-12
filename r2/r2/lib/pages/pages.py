@@ -759,6 +759,9 @@ class PrefsPage(Reddit):
     """container for pages accessible via /prefs.  No extension handling."""
 
     extension_handling = False
+    extra_stylesheets = ["bootstrap.less",
+                "bootstraptheme.less",
+                "imgareaselect/css/imgareaselect-default.css"]
 
     def __init__(self, show_sidebar = False, *a, **kw):
         Reddit.__init__(self, show_sidebar = show_sidebar,
@@ -788,6 +791,7 @@ class PrefsPage(Reddit):
 class PrefOptions(Templated):
     """Preference form for updating language and display options"""
     def __init__(self, done = False):
+        self.profile_photo_base_url = "http://%s" % (g.s3_user_files_host,)
         Templated.__init__(self, done = done)
 
 class PrefFeeds(Templated):
@@ -1077,6 +1081,15 @@ class CommentVisitsBox(Templated):
         for visit in visits:
             pretty = timesince(visit, precision=60)
             self.visits.append(pretty)
+        Templated.__init__(self, *a, **kw)
+
+class CommentEmailCheck(Templated):
+    """Checkbox for choosing to receive new comments in email
+    """
+    def __init__(self, article, *a, **kw):
+        from r2.models import SaveHide
+        self.article = article
+        self.email_thread = Link._somethinged(SaveHide, c.user, article, 'email')[c.user,article,'email'] if c.user_is_loggedin and c.user else False
         Templated.__init__(self, *a, **kw)
 
 class LinkInfoPage(Reddit):

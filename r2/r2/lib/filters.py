@@ -244,28 +244,13 @@ def safemarkdown(text, nofollow=False, wrap=True, **kwargs):
 def wikimarkdown(text, include_toc=True, target=None):
     from r2.lib.cssfilter import legacy_s3_url
     
-    def img_swap(tag):
-        name = tag.get('src')
-        name = custom_img_url.search(name)
-        name = name and name.group(1)
-        if name and c.site.images.has_key(name):
-            url = c.site.images[name]
-            url = legacy_s3_url(url, c.site)
-            tag['src'] = url
-        else:
-            tag.extract()
-    
     nofollow = True
     
     text = snudown.markdown(_force_utf8(text), nofollow, target, g.domain )
     
     # TODO: We should test how much of a load this adds to the app
     soup = BeautifulSoup(text.decode('utf-8'))
-    images = soup.findAll('img')
-    
-    if images:
-        [img_swap(image) for image in images]
-    
+
     if include_toc:
         tocdiv = generate_table_of_contents(soup, prefix="wiki")
         if tocdiv:

@@ -367,6 +367,7 @@ class Link(Thing, Printable):
         pref_newwindow = user.pref_newwindow
         cname = c.cname
         site = c.site
+        is_comments = c.is_comments
 
         if user_is_loggedin:
             try:
@@ -568,10 +569,24 @@ class Link(Thing, Printable):
 
             item.editted = getattr(item, "editted", False)
 
-            if item.comment_author_id:
+            # Get the comment author
+            if item.comment_author_id and not is_comments:
                 item.comment_author = authors[item.comment_author_id]
             else:
                 item.comment_author = item.author
+
+            # If we're on the comments page, then the link should have the photo
+            # for the actual post author, otherwise use the last comment author.
+            if is_comments:
+                photo_author = item.author
+            else:
+                photo_author = item.comment_author
+
+            # Get the name for the item's photo column
+            if photo_author.profile_photo_uploaded:
+                item.photo_name = photo_author.name
+            else:
+                item.photo_name = "default_user"
 
             # generate the appropriate tagline text
             taglinetext = ''
@@ -1078,6 +1093,12 @@ class Comment(Thing, Printable):
                 item.render_css_class += " score-hidden"
             else:
                 item.score_hidden = False
+
+            # Get the name for the item's photo column
+            if item.author.profile_photo_uploaded:
+                item.photo_name = item.author.name
+            else:
+                item.photo_name = "default_user"
 
             #will seem less horrible when add_props is in pages.py
             from r2.lib.pages import UserText

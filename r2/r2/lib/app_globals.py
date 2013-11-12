@@ -139,11 +139,12 @@ class Globals(object):
 
         ConfigValue.bool: [
             'debug',
+            'template_debug',
+            'email_debug',
             'enable_flair',
             'enable_gilding',
             'log_start',
             'sqlprinting',
-            'template_debug',
             'reload_templates',
             'uncompressedJS',
             'css_killswitch',

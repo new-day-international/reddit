@@ -205,6 +205,10 @@ ${parent.thing_data_attributes(what)} data-ups="${what.upvotes}" data-downs="${w
   </div>
 ## Removing Thumbnails for now since they're messing up the lines
 ## ${self.thumbnail()}
+<%
+   photo_url = "http://%s/u/%s/profile_photo.jpg" % (g.s3_user_files_host, thing.photo_name,)
+%>
+   <img class="cropped-image-medium link_photo" src="${photo_url}">
 </%def>
 
 <%def name="link_at_domain()">

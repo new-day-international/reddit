@@ -5669,7 +5669,7 @@ body:not(.gold) .allminus-link {
 .new-comment .usertext-body {
     background-color: #e5efff;
     border: solid 1px #cddaf3;
-    margin: -1px 0;
+    margin: 2px 0;
 }
 
 .role {
@@ -7600,7 +7600,7 @@ div.footer-parent ul.tabmenu {
 	font-size: 14px;
 }
 
-p.tagline {
+div.tagline {
 	color: #555;
 	font-size: 11px;
 }
@@ -10038,4 +10038,76 @@ body.res-nightmode {
 /* Experimental: For the multireddit beta bar */
 body.res div.beta-notice {
 	top: 20px;
+}
+
+
+/* CSS for picture cropping javascript support here */
+.awesome-cropper .file-to-crop {
+  color: transparent;
+}
+.awesome-cropper .cropped-image-canvas {
+  margin: 3px;
+}
+.awesome-cropper-drop-area {
+}
+.awesome-cropper .preview {
+}
+.awesome-cropper .modal, .awesome-cropper .modal.fade.in {
+  top: 3%
+}
+.awesome-cropper .modal-dialog {
+  width: 900px;
+}
+
+
+.cropped-image {
+    vertical-align: bottom !important;
+    margin-top: 10px;
+    padding: 0;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -khtml-border-radius: 10px;
+    border-radius: 10px;
+    overflow: hidden;
+    height: 75px;
+    width: 75px;
+}
+
+.cropped-image-medium {
+    vertical-align: bottom !important;
+    padding: 0;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    -khtml-border-radius: 6px;
+    border-radius: 6px;
+    overflow: hidden;
+    height: 38px;
+    width: 38px;
+}
+
+.cropped-image-small {
+    vertical-align: bottom !important;
+    padding: 0;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -khtml-border-radius: 5px;
+    border-radius: 5px;
+    overflow: hidden;
+    height: 32px;
+    width: 32px;
+}
+
+.image-space-h {
+    margin-left: 14px;
+}
+
+.link_photo {
+  margin: 8px 3px 3px 3px;
+  float: left;
+}
+
+.comment_photo {
+  vertical-align: top !important;
+  margin: 0px 4px 0px 0px;
+  display: inline;
 }

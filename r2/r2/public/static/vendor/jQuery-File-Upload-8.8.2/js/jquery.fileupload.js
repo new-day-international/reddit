@@ -450,7 +450,7 @@
                                 formData.append(
                                     options.paramName[index] || paramName,
                                     file,
-                                    file.name
+                                    file.uploadName || file.name
                                 );
                             }
                         });

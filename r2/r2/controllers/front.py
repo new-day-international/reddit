@@ -231,6 +231,9 @@ class FrontController(RedditController, OAuth2ResourceController):
         #check for 304
         self.check_modified(article, 'comments')
 
+        # remember that we're in the post/comments page, and which one. Is this already available in templates some other way? 
+        c.is_comments = True
+
         # If there is a focal comment, communicate down to
         # comment_skeleton.html who that will be. Also, skip
         # comment_visits check
@@ -312,6 +315,10 @@ class FrontController(RedditController, OAuth2ResourceController):
                                         post_form='comment',
                                         display=display,
                                         cloneable=True))
+
+        if c.user_is_loggedin:
+            # Checkbox for whether the user wants to receive new comments in email
+            displayPane.append(CommentEmailCheck(article))
 
         if previous_visits:
             # Confusing to new users.
