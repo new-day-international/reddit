@@ -64,7 +64,7 @@ function dataURLtoBlob(dataURL) {
     };
 
     $container = div().insertAfter($inputAttachTo).addClass('awesome-cropper');
-    $cropSandbox = $('<canvas></canvas>');
+    $cropSandbox = $('<canvas></canvas>').addClass('cropped-image-canvas');
     $cropSandbox.attr({
       width: settings.width,
       height: settings.height
