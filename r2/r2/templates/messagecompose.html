@@ -72,7 +72,7 @@ function admincheck(elem) {
 
 <div class="spacer">
   <%utils:round_field title="${_('message')}">
-    ${UserText(None, text=thing.message, have_form = False, creating = True)}
+    ${UserText(None, text=thing.message, have_form = False, creating = True, extra_css = 'atnamepicker')}
   </%utils:round_field>
 </div>
 
@@ -151,4 +151,13 @@ function admincheck(elem) {
 <link rel="stylesheet" type="text/css" href="/static/css/textext-core-autocomplete.css" />
 <script src="/api/namepicker" async="async"></script>
 <script src="/static/js/lib/namepicker.js"></script>
-
+<script src="/static/js/lib/jquery.atwho.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/css/jquery.atwho.css" />
+<script>
+$(function() {
+  $('.atnamepicker textarea').atwho('run').atwho({
+      at: "@",
+      data: usernames
+  });
+});
+</script>
