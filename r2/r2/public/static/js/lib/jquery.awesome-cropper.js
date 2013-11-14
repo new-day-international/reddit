@@ -16,7 +16,7 @@ function dataURLtoBlob(dataURL) {
   $.awesomeCropper = function(inputAttachTo, options) {
     var $saveButton, $cancelButton, $closeButton, $container, $cropSandbox, $fileSelect, $imagesContainer,
  		$inputAttachTo, $progressBar, $resultImage, $resultImageSmall, $resultImageSmall, $sourceIm, 
-        $urlSelect, $urlSelectButton, a, cleanImages, div, drawImage, fileAllowed, handleDragOver, 
+        $urlSelect, $urlSelectButton, $promptDiv, a, cleanImages, div, drawImage, fileAllowed, handleDragOver,
 		handleDropFileSelect, handleFileSelect, image, input, log, readFile, removeAreaSelect, removeLoading, 
 		saveCrop, setAreaSelect, setImages, setLoading, setOriginalSize, settings, imageWasCropped;
 
@@ -103,6 +103,7 @@ function dataURLtoBlob(dataURL) {
       'aria-hidden': "true"
     });
     $closeButton = dismissButton();
+    $prompt = div().html("<h5>" + settings.promptText + "</h5>");
 
     $imagesContainer = div().append(
       div().addClass('modal-dialog').append(
@@ -112,6 +113,9 @@ function dataURLtoBlob(dataURL) {
               modalTitle()
               ),
             div().addClass('modal-body').append(
+              div().addClass('row').append(
+                $prompt.addClass('col-md-12')
+                ),
               div().addClass('row').append(
                 div().addClass('col-md-9').append($sourceIm),
                 div().addClass('col-md-3').append($cropSandbox)
