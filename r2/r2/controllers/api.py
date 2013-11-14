@@ -3488,7 +3488,6 @@ class ApiController(RedditController, OAuth2ResourceController):
         ret['policy'], ret['signature'] = s3_helpers.encode_and_sign_upload_policy(policy, s3_helpers.get_aws_secret_access_key())
         return ret
 
-    #@memoize('namepicker', time=3600)
     def GET_namepicker(self,**keywords):
         # Return a json array of usernames for a name picker
         c.allow_loggedin_cache = True
@@ -3501,15 +3500,19 @@ class ApiController(RedditController, OAuth2ResourceController):
             return abort(304, 'not modified')
 
         names = []
+        data  = []
         result = Account._query(Account.c.name!='')
         for row in result: 
             names.append(row.name)
+            data.append({'name':row.name, 'full':row.registration_fullname, 'phot':row.profile_photo_uploaded})
             
         response.headers['cache-control'] = 'max-age: 3600'
         expire_time = datetime.fromtimestamp(int(time.time())+60, g.tz)
         response.headers['expires'] = http_date_str(expire_time)
         response.headers['content-type'] = 'application/javascript'
-        return "var usernames = " + json.dumps(sorted(names)) + ";" 
+        output = "var usernames = " + json.dumps(sorted(names)) + ";"
+        output += "var userdata = " + json.dumps(sorted(data, key=lambda k: k['name'])) + ";"
+        return output
 
     @json_validate(VUser())
     def POST_profile_photo_uploaded(self, responder):
