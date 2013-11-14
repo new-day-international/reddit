@@ -2755,6 +2755,33 @@ $(function() {
                 serializeData: function(data) {
                     return data;
                 }
+            },
+            itemManager: {
+                stringToItem: function(str)
+                {
+                    return { name: str };
+                },
+
+                itemToString: function(item)
+                {
+                    return item.name;
+                },
+
+                compareItems: function(item1, item2)
+                {
+                    return item1.name == item2.name;
+                }
+            }            
+        },
+        autocomplete: {
+            render: function(suggestion) {
+                var name = suggestion.name;
+                if (suggestion.phot) {
+                    var pic = 'http://files.test.lightnet.is/u/'+name+'/profile_photo.jpg';
+                } else {
+                    var pic = 'http://files.test.lightnet.is/u/default_user/profile_photo.jpg';
+                }    
+                return '<div><img src="'+pic+'" style="height:20px;width:20px;"> <div style="display:inline;vertical-align:top;padding: 15px 0 0 4px;">'+name+'</div></div>';
             }
         }
     })
@@ -2763,7 +2790,7 @@ $(function() {
       var textext = $(e.target).textext()[0];
       $(this).trigger(
           'setSuggestions',
-          { result : textext.itemManager().filter(usernames, query) }
+          { result : textext.itemManager().filter(userdata, query) }
       );
     }); 
 });
