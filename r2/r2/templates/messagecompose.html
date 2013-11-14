@@ -154,19 +154,11 @@ function admincheck(elem) {
 <script src="/static/js/lib/jquery.atwho.js"></script>
 <link rel="stylesheet" type="text/css" href="/static/css/jquery.atwho.css" />
 <script>
-$(function() {
-  var userdata2 = $.map(userdata, function(rec, i) {
-    if (rec['phot']) {
-      var pic = 'http://files.test.lightnet.is/u/'+rec['name']+'/profile_photo.jpg';
-    } else {
-      var pic = 'http://files.test.lightnet.is/u/default_user/profile_photo.jpg';
-    }  
-    return {'name':rec['name'], 'pic':pic};
-  });  
+$(function() { 
   $('.atnamepicker textarea').atwho('run').atwho({
       at: "@",
-      tpl: '<li data-value="@$'+'{name}"><img src="$'+'{pic}" style="height:20px;width:20px;"> <div style="display:inline;vertical-align:top;padding: 15px 0 0 4px;">$'+'{name}</div></li>',
-      data: userdata2
+      tpl: '<li data-value="@$'+'{name}"><img src="http://'+s3_user_files_host+'/u/$'+'{pic}/profile_photo.jpg"> <div>$'+'{name}</div></li>',
+      data: userdata
   });
 });
 </script>

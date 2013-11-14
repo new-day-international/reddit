@@ -2775,13 +2775,8 @@ $(function() {
         },
         autocomplete: {
             render: function(suggestion) {
-                var name = suggestion.name;
-                if (suggestion.phot) {
-                    var pic = 'http://files.test.lightnet.is/u/'+name+'/profile_photo.jpg';
-                } else {
-                    var pic = 'http://files.test.lightnet.is/u/default_user/profile_photo.jpg';
-                }    
-                return '<div><img src="'+pic+'" style="height:20px;width:20px;"> <div style="display:inline;vertical-align:top;padding: 15px 0 0 4px;">'+name+'</div></div>';
+                var pic = 'http://' + s3_user_files_host + '/u/' + suggestion.pic + '/profile_photo.jpg';   
+                return '<div><img src="' + pic + '" style="height:20px;width:20px;"> <div style="display:inline;vertical-align:top;padding: 15px 0 0 4px;">' + suggestion.name + '</div></div>';
             }
         }
     })
