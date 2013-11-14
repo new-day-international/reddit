@@ -348,6 +348,7 @@ $(document).ready(function () {
     width: 100,
     height: 100,
     debug: false,
+    promptText: "${_('Please crop a recent photo to show your face. We like faces!')}",
     on_save: function(fileBlob) {
 
       $.post('/api/user_upload_permission.json', {filename: 'profile_photo.jpg', use_xhr: true,}, function (responseObj) {
