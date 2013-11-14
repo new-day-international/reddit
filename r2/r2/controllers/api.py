@@ -3499,18 +3499,20 @@ class ApiController(RedditController, OAuth2ResourceController):
             # If they got this within the last hour, pretend it hasn't changed
             return abort(304, 'not modified')
 
-        names = []
+        #names = []
         data  = []
         result = Account._query(Account.c.name!='')
         for row in result: 
-            names.append(row.name)
-            data.append({'name':row.name, 'full':row.registration_fullname, 'phot':row.profile_photo_uploaded})
+            #names.append(row.name)
+            pic = row.name if row.profile_photo_uploaded else 'default_user'
+            data.append({'name':row.name, 'full':row.registration_fullname, 'pic':pic})
             
         response.headers['cache-control'] = 'max-age: 3600'
         expire_time = datetime.fromtimestamp(int(time.time())+60, g.tz)
         response.headers['expires'] = http_date_str(expire_time)
         response.headers['content-type'] = 'application/javascript'
-        output = "var usernames = " + json.dumps(sorted(names)) + ";"
+        output = "var s3_user_files_host = '%s';" % g.s3_user_files_host
+        #output += "var usernames = " + json.dumps(sorted(names)) + ";"
         output += "var userdata = " + json.dumps(sorted(data, key=lambda k: k['name'])) + ";"
         return output
 
