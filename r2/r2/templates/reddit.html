@@ -44,30 +44,8 @@
 </%def>
 
 <%def name="global_stylesheets()">
-  %if c.lang_rtl:
-    <link rel="stylesheet" href="${static(g.stylesheet_rtl)}"
-          type="text/css" />
-    %if c.site.stylesheet_rtl:
-      <link rel="stylesheet" href="${static(c.site.stylesheet_rtl)}"
-            type="text/css" />
-    %endif
-  %else:
-    ${less_stylesheet(g.stylesheet)}
-    %if c.site.stylesheet:
-    <link rel="stylesheet" href="${static(c.site.stylesheet)}"
-          type="text/css" >
-    %endif
-  %endif
-
-  <!--[if lt IE 7]>
-    <link rel="stylesheet" href="${static('reddit-ie6-hax.css')}"
-          type="text/css" />
-  <![endif]-->
-
-  <!--[if lt IE 8]>
-    <link rel="stylesheet" href="${static('reddit-ie7-hax.css')}"
-          type="text/css" />
-  <![endif]-->
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css" type="text/css" />
+  <link rel="stylesheet" href="${static('style.css')}" type="text/css" />
 </%def>
 
 <%def name="sr_stylesheets()">
@@ -137,21 +115,27 @@
   <%include file="adminbar.html"/>
   <%include file="redditheader.html"/>
 
-  %if thing.show_sidebar:
-    <div class="side">
-      ${sidebar(content = thing.rightbox())}
-    </div>
-  %endif
+  <div class="container">
+    <div class="row">
+
 
   <% content = getattr(self, "content", None) or thing.content %>
   %if content:
     ##<div class="fixedwidth"><!--IE6sux--></div>
     ##<div class="clearleft"><!--IE6sux--></div>
     <a name="content"></a>
-    <div ${tags(id=thing.content_id)} ${classes("content", thing.css_class)} role="main">
+    <div ${tags(id=thing.content_id)} ${classes("content", "col-md-9", thing.css_class)} role="main">
       ${content()}
     </div>
   %endif
+
+  %if thing.show_sidebar:
+    <div class="side col-md-3">
+      ${sidebar(content = thing.rightbox())}
+    </div>
+  %endif
+    </div>
+  </div>
 
   %if thing.footer:
 
@@ -159,16 +143,26 @@
 
     %if not c.user_is_loggedin and not g.read_only_mode:
       %if thing.enable_login_cover:
-      <div class="login-popup cover-overlay" style="display: none">
-        <div class="cover" onclick="return hidecover(this)"></div>
-        <div class="popup">
-          <a href="#" onclick="return hidecover(this)" class="hidecover">
-            ${_("close this window")}
-          </a>
-          <h1 class="cover-msg">${strings.cover_msg}</h1>
-          ${Login(is_popup=True)}
+      <div class="login-popup cover-overlay modal" id="registrationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title" id="myModalLabel">${strings.cover_msg}</h4>
+            </div>
+            <div class="modal-body">
+              ${Login(is_popup=True)}
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div><!-- /.modal -->
+        <!-- <div class="popup">
+          <h1 class="cover-msg"></h1>
         </div>
-      </div>
+      </div> remnants -->
       %endif
       <div class="lang-popup cover-overlay" style="display: none">
         <div class="cover" onclick="return hidecover(this)"></div>

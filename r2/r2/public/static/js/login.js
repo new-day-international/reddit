@@ -209,7 +209,7 @@ r.ui.RegisterForm = function() {
     r.ui.Form.apply(this, arguments)
     this.getRealnameIDDebounced = _.debounce($.proxy(this, 'getRealnameID'), 500)
     this.$user = this.$el.find('[name="user"]')
-    this.$realnameID = this.$el.find('span#realnameID')
+    this.$realnameID = this.$el.find('input#realnameID')
     this.$user.on('keyup', $.proxy(this, 'usernameChanged'))
     this.$submit = this.$el.find('.submit button')
 }
@@ -247,7 +247,7 @@ r.ui.RegisterForm.prototype = $.extend(new r.ui.Form(), {
             this.showErrors(result.json.errors)
             this.$submit.attr('disabled', true)
         } else {
-            this.$realnameID.text(result.realnameID)
+            this.$realnameID.val(result.realnameID)
         }
     },
 

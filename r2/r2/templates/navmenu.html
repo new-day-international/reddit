@@ -120,18 +120,21 @@
 <%def name="tabmenu()">
   %if thing:
     <% css_class = str(thing.css_class) if thing.css_class else "" %>
-    <ul class="tabmenu ${css_class}"
-        ${"id='%s'" % thing._id if thing._id else ""}>
-      %for i, option in enumerate(thing):
-        <%
-           tab_name = getattr(option, 'tab_name', None)
-           li_id = "id='tab-%s'" % tab_name if tab_name else ""
-           li_class = "class='selected'" if option == thing.selected else ""
-        %>
-        <li ${li_id} ${li_class}>
-          ${option}
-        </li>
-      %endfor
-    </ul>
+    <li class="dropdown">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown">Sort <b class="caret"></b></a>
+      <ul class="dropdown-menu tabmenu ${css_class}"
+          ${"id='%s'" % thing._id if thing._id else ""}>
+        %for i, option in enumerate(thing):
+          <%
+             tab_name = getattr(option, 'tab_name', None)
+             li_id = "id='tab-%s'" % tab_name if tab_name else ""
+             li_class = "class='selected'" if option == thing.selected else ""
+          %>
+          <li ${li_id} ${li_class}>
+            ${option}
+          </li>
+        %endfor
+      </ul>
+    </li>
   %endif
 </%def>

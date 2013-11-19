@@ -361,6 +361,7 @@ module["reddit-init"] = Module("reddit-init.js",
     "jquery.reddit.js",
     "reddit.js",
     "spotlight.js",
+    "scripts.js",
 )
 
 module["reddit"] = LocalizedModule("reddit.js",

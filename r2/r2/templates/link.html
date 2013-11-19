@@ -34,13 +34,13 @@
 <%namespace file="printablebuttons.html" import="toggle_button" />
 
 <%def name="house_color_column()">
-  <div title="${thing.house_description}" class="house_color" style="width:5px; background-color: ${thing.house_color}; float: left; height: 70px">
+  <div title="${thing.house_description}" class="house_color pull-left" style="width:5px; background-color: ${thing.house_color}; float: left; height: 70px">
   </div>
 </%def>
 
 <%def name="numcol()">
   <% num = thing.num %>
-  <span class="rank" style="width:${thing.numcolmargin};">
+  <span class="rank pull-left" style="width:${thing.numcolmargin};">
     ${thing.num}
   </span>
 </%def>
@@ -88,7 +88,7 @@
 </%def>
 
 <%def name="entry()">
-  <p class="title">
+  <h4 class="title">
     %if c.site.link_flair_position == 'left':
       <%call expr="flair()" />
     %endif
@@ -114,7 +114,7 @@
            &#32;<span class="link-note">[${link_note}]</span>
         %endfor
     %endif
-  </p>
+  </h4>
 
   ##the expando button
   <% selftext_hide = thing.is_self and not thing.selftext %>
@@ -186,9 +186,9 @@ ${parent.thing_data_attributes(what)} data-ups="${what.upvotes}" data-downs="${w
 
 <%def name="midcol(display=True, cls = '')">
   %if thing.pref_compress:
-    <div class="midcol ${cls}"
+    <div class="midcol pull-left ${cls}"
   %else:
-    <div class="midcol ${cls}" style="width:${thing.midcolmargin};" 
+    <div class="midcol pull-left ${cls}" style="width:${thing.midcolmargin};" 
   %endif
        ${not display and "style='display:none'" or ''}>
     ${self.arrow(thing, 1, thing.likes)}
@@ -208,7 +208,7 @@ ${parent.thing_data_attributes(what)} data-ups="${what.upvotes}" data-downs="${w
 <%
    photo_url = "http://%s/u/%s/profile_photo.jpg" % (g.s3_user_files_host, thing.photo_name,)
 %>
-   <img class="cropped-image-medium link_photo" src="${photo_url}">
+   <img class="cropped-image-medium link_photo media-object pull-left" width="50" height="50"  src="${photo_url}">
 </%def>
 
 <%def name="link_at_domain()">
@@ -258,7 +258,7 @@ ${parent.thing_data_attributes(what)} data-ups="${what.upvotes}" data-downs="${w
             else:
                 size_str = ""
         %>
-        <img src="${s3_https_if_secure(thing.thumbnail)}" ${size_str} alt=""/>
+        <img src="${s3_https_if_secure(thing.thumbnail)}" width="50" height="50" ${size_str} alt="" class="pull-left media-object" />
     % endif
   </%call>
   %endif

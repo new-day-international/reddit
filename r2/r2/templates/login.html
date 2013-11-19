@@ -45,11 +45,6 @@
       </div>
     %endif
     ${register_form(user = thing.user_reg, dest = thing.dest)}
-    <p>
-      <span class="orangered">
-        ${_("is it really that easy? only one way to find out...")}
-      </span>
-    </p>
   </div>
   <div class="login-form-section login">
     <h3>${_("login")}</h3>
@@ -73,7 +68,8 @@
   %>
   <form id="login_reg" method="post"
         action="${add_sr(base + '/post/reg', nocname=not c.authorized_cname)}"
-        class="user-form register-form">
+        class="user-form register-form form-horizontal"
+        role="form">
     %if c.cname:
        <input type="hidden" name="${UrlParser.cname_get}" 
               value="${random.random()}" />
@@ -82,45 +78,54 @@
     %if dest:
       <input type="hidden" name="dest" value="${dest}" />
     %endif
-    <div>
-      <ul>
-        <li class="name-entry">
-          <label for="user_reg">${_('your full name (how you normally write it)')}:</label>
-          <input value="${user}" name="user" id="user_reg"
-                 type="text" maxlength="40" tabindex="3" autofocus />
-            <div class="realname_area">
-              <label for="realnameID">${_('your real name ID')}:</label>
-              <span id="realnameID" class="realname">&nbsp;</span>
-              <span class="throbber"></span>
-            </div>
-            <span class="notice-taken">${_('try another')}</span>
-            <span class="notice-available">${_('available!')}</span>
-            ${error_field("BAD_USERNAME", "user", kind="span")}
-            ${error_field("USERNAME_TAKEN", "user", kind="span")}
-            ${error_field("USERNAME_TAKEN_DEL", "user", kind="span")}
-        </li>
-        <li>
-          <label for="email_reg">
-            ${_('email')}:
-          </label>
-          <input value="" name="email" id="email_reg"
-                 type="email" maxlength="50" tabindex="3"/>
-          <label for="email_reg" class="note">${_('we only send email at your request')}</label>
-            ${error_field("BAD_EMAIL", "email", kind="span")}
-            ${error_field("EMAIL_TAKEN", "email", kind="span")}
-        </li>
-        <li>
-          <label for="passwd_reg">${_('password')}:</label>
-          <input id="passwd_reg" name="passwd" type="password"
+    <div class="form-group">
+      <div class="form-group">
+        <label for="user_reg" class="col-sm-4 control-label">Full Name:</label>
+        <div class="col-sm-6">
+          <input value="${user}" name="user" id="user_reg" class="form-control"
+                 type="text" maxlength="40" tabindex="3" autofocus  />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="realnameID" class="col-sm-4 control-label">Username:</label>
+        <div class="realname_area">
+          <div class="col-sm-6">
+            <input value="Automatically created from your name" class="form-control" id="realnameID" type="text" maxlength="40" tabindex="3" disabled />
+          </div>
+          <!-- <span id="realnameID" class="realname">&nbsp;</span> -->
+          <span class="throbber"></span>
+          <!-- <span class="notice-taken label label-danger">${_('try another')}</span>
+          <span class="notice-available label label-success">${_('available!')}</span> -->
+          ${error_field("BAD_USERNAME", "user", kind="span")}
+          ${error_field("USERNAME_TAKEN", "user", kind="span")}
+          ${error_field("USERNAME_TAKEN_DEL", "user", kind="span")}
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="email_reg" class="col-sm-4 control-label">Email:</label>
+        <div class="col-sm-6">
+          <input value="" name="email" id="email_reg" class="form-control" type="email" maxlength="50" tabindex="3"/>
+        </div>
+        ${error_field("BAD_EMAIL", "email", kind="span")}
+        ${error_field("EMAIL_TAKEN", "email", kind="span")}
+      </div>
+      <div class="form-group">
+        <label for="passwd_reg" class="col-sm-4 control-label">Password:</label>
+        <div class="col-sm-6">
+          <input id="passwd_reg" name="passwd" type="password" class="form-control"
                  tabindex="3"/>
-            ${error_field("BAD_PASSWORD", "passwd", kind="span")}
-        </li>
-        <li>
-          <label for="passwd2_reg">${_('verify password')}:</label>
-          <input name="passwd2" id="passwd2_reg"
-                 type="password" tabindex="3"/>
-          ${error_field("BAD_PASSWORD_MATCH", "passwd2", kind="span")}
-        </li>
+        </div>
+        ${error_field("BAD_PASSWORD", "passwd", kind="span")}
+      </div>
+      <div class="form-group">
+        <label for="passwd2_reg" class="col-sm-4 control-label">Verfify Password:</label>
+        <div class="col-sm-6">
+          <input id="passwd2_reg" name="passwd2" type="password" class="form-control"
+                 tabindex="3"/>
+        </div>
+        ${error_field("BAD_PASSWORD_MATCH", "passwd2", kind="span")}
+      </div>
+
         <li>
           %if not g.disable_captcha:
           <% iden = hasattr(thing, "captcha") and thing.captcha.iden or '' %>
@@ -129,20 +134,24 @@
           ${error_field("RATELIMIT", "ratelimit")}
           ${error_field("RATELIMIT", "vdelay")}
         </li>
-        <li>
-          <input type="checkbox" name="rem" id="rem_reg" tabindex="3" />
-          <label for="rem_reg" class="remember">
-            ${_('remember me')}
-          </label>
-        </li>
-      </ul>
-      <p class="submit">
-        <button type="submit" class="button" tabindex="3">
-          ${_("create account")}
-        </button>
+
+      <div class="form-group">
+        <div class="col-sm-offset-4 col-sm-6">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" name="rem" id="rem_reg" tabindex="3" > Remember me
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-offset-4 col-sm-6">
+          <button type="submit" class="btn btn-primary" tabindex="3">Create Account</button>
+        </div>
         <span class="throbber"></span>
         <span class="status"></span>
-      </p>
+      </div>
     </div>
   </form>
 </%def>
@@ -154,7 +163,8 @@
   %>
   <form id="login_login" method="post"
         action="${add_sr(base + '/post/login', nocname=not c.authorized_cname)}"
-        class="user-form login-form">
+        class="user-form login-form form-horizontal"
+        role="form">
     %if c.cname:
        <input type="hidden" name="${UrlParser.cname_get}" value="${random.random()}" />
     %endif
@@ -162,37 +172,44 @@
     %if dest:
       <input type="hidden" name="dest" value="${dest}" />
     %endif
-    <div>
-      <ul>
-        <li class="name-entry">
-          <label for="user_login">${_('email')}:</label>
-          <input value="${user}" name="email" id="user_login"
+
+    <div class="form-group">
+      <label for="user_login" class="col-sm-4 control-label">Email:</label>
+      <div class="col-sm-6">
+        <input value="${user}" name="email" id="user_login" class="form-control" 
                  type="text" maxlength="50" tabindex="2" autofocus />
-        </li>
-        <li>
-          <label for="passwd_login">${_('password')}:</label>
-          <input id="passwd_login" name="passwd" type="password" tabindex="2"/>
-          ${error_field("WRONG_PASSWORD", "passwd", kind="span")}
-        </li>
-        <li>
-          <input type="checkbox" name="rem" id="rem_login" tabindex="2" />
-          <label for="rem_login" class="remember">
-            ${_('remember me')}
+      </div>
+      ${error_field("WRONG_PASSWORD", "passwd", kind="span")}
+    </div>
+
+    <div class="form-group">
+      <label for="passwd_login" class="col-sm-4 control-label">Password:</label>
+      <div class="col-sm-6">
+        <input id="passwd_login" name="passwd" type="password" class="form-control"
+               tabindex="2"/>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="col-sm-offset-4 col-sm-6">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="rem" id="rem_login" tabindex="2" > Remember me
           </label>
-        </li>
-        <li>
-          <a class="recover-password" href="/password">
-            ${_("recover password")}
-          </a>
-        </li>
-      </ul>
-      <p class="submit">
-        <button type="submit" class="button" tabindex="2">
-          ${_("login")}
-        </button>
+        </div>
+        <a class="recover-password" href="/password">
+          ${_("recover password")}
+        </a>
+      </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-offset-4 col-sm-6">
+          <button type="submit" class="btn btn-primary" tabindex="2">Login</button>
+        </div>
         <span class="throbber"></span>
         <span class="status"></span>
-      </p>
     </div>
+
   </form>
 </%def>

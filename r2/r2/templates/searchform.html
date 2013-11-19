@@ -54,11 +54,15 @@
 </%def>
 
 <form action="${add_sr('/search')}" id="search" role="search">
-  <input type="text" 
-         %if thing.prev_search:
-           value="${thing.prev_search}" style="color:black"
-         %endif
-         name="q" placeholder="${_('search lightnet')}" />
+  <div class="input-group">
+    <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+    <input type="text" class="form-control" 
+      %if thing.prev_search:
+        value="${thing.prev_search}" style="color:black"
+      %endif
+      name="q" placeholder="${_('search lightnet')}" />
+  </div>
+
   %if thing.subreddit_search:
     
   %elif thing.simple:

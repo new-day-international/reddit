@@ -1,0 +1,12 @@
+body {
+    margin-top: 70px;
+}
+
+.login-form-side .recover-password {
+    margin-top: 10px;
+}
+
+#searchexpando {
+  display: none;
+  margin: 5px 0 0 0;
+}
