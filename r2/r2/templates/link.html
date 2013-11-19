@@ -40,7 +40,7 @@
 
 <%def name="numcol()">
   <% num = thing.num %>
-  <span class="rank pull-left" style="width:${thing.numcolmargin};">
+  <span class="rank" style="width:${thing.numcolmargin};">
     ${thing.num}
   </span>
 </%def>
@@ -68,7 +68,7 @@
 </%def>
 
 <%def name="bottom_buttons()">
-  <ul class="flat-list buttons">
+  <ul class="flat-list buttons list-inline">
     %if thing.nsfw:
      <li class="rounded nsfw-stamp stamp">
        <acronym title="${_('Adult content: Not Safe For Work')}">
@@ -88,13 +88,15 @@
 </%def>
 
 <%def name="entry()">
-  <h4 class="title">
-    %if c.site.link_flair_position == 'left':
-      <%call expr="flair()" />
-    %endif
+  <h4 class="title media-heading">
     <%call expr="make_link('title', 'title')">
       ${thing.title}
     </%call>
+  </h4>
+
+    %if c.site.link_flair_position == 'left':
+      <%call expr="flair()" />
+    %endif
     %if c.site.link_flair_position == 'right':
       <%call expr="flair()" />
     %endif
@@ -114,7 +116,6 @@
            &#32;<span class="link-note">[${link_note}]</span>
         %endfor
     %endif
-  </h4>
 
   ##the expando button
   <% selftext_hide = thing.is_self and not thing.selftext %>
@@ -185,6 +186,12 @@ ${parent.thing_data_attributes(what)} data-ups="${what.upvotes}" data-downs="${w
 </%def>
 
 <%def name="midcol(display=True, cls = '')">
+  <div class="pull-left vote-buttons text-center" style="width:25px;">
+    <i class="fa fa-arrow-up"></i><br/>
+    30<br/>
+    <i class="fa fa-arrow-down"></i>
+  </div>
+
   %if thing.pref_compress:
     <div class="midcol pull-left ${cls}"
   %else:
@@ -208,14 +215,18 @@ ${parent.thing_data_attributes(what)} data-ups="${what.upvotes}" data-downs="${w
 <%
    photo_url = "http://%s/u/%s/profile_photo.jpg" % (g.s3_user_files_host, thing.photo_name,)
 %>
-   <img class="cropped-image-medium link_photo media-object pull-left" width="50" height="50"  src="${photo_url}">
+  <a class="pull-left">
+   <img class="cropped-image-medium link_photo img-rounded media-object" width="50" height="50"  src="${photo_url}">
+  </a>
 </%def>
 
 <%def name="link_at_domain()">
   %if (not thing.is_self) or c.user_is_admin:
     <span class="domain">
       %if not thing.is_self:
-        (${plain_link(thing.domain_link_text, thing.url, _sr_path = False, target = '_blank')})
+        <span class="label">
+          ${plain_link(thing.domain_link_text, thing.url, _sr_path = False, target = '_blank')}
+        </span>
       %endif
       %if c.user_is_admin:
         &#32;

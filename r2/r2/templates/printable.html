@@ -93,7 +93,7 @@ ${self.RenderPrintable()}
    else:
       selflink = ""
  %>
-<div class="${self.thing_css_class(thing)} ${self.thing_css_rowclass(thing)} ${unsafe(cls)} ${selflink}"
+<li class="media ${self.thing_css_class(thing)} ${self.thing_css_rowclass(thing)} ${unsafe(cls)} ${selflink}"
     ${thing.display} onclick="click_thing(this)"
     ${unsafe(self.thing_data_attributes(thing))}>
   <p class="parent">
@@ -109,12 +109,13 @@ ${self.RenderPrintable()}
          like_cls = "dislikes"
    %>
   ${self.midcol(cls = like_cls)}
-  <div class="entry ${like_cls}">
+  <div class="entry media-body ${like_cls}">
     ${self.entry()}
   </div>
   ${self.Child()}
   <div class="clearleft"><!--IE6sux--></div>
-</div>
+</li>
+
 <div class="clearleft"><!--IE6sux--></div>
 </%def>
 

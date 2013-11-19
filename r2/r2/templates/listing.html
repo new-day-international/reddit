@@ -29,7 +29,7 @@
    _id = ("_%s" % thing.parent_name) if hasattr(thing, 'parent_name') else ''
    cls = thing.lookups[0].__class__.__name__.lower()
  %>
-<ul id="siteTable${_id}" class="sitetable ${cls} media">
+<ul id="siteTable${_id} item-list" class="sitetable ${cls} media-list">
   %for a in thing.things:
       ${a}
   %endfor
