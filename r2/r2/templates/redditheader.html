@@ -30,7 +30,7 @@
 <%namespace file="utils.html" import="plain_link, img_link, text_with_links, separator, logout"/>
 
 <div id="header" role="banner" class="navbar navbar-default navbar-fixed-top">
-  <div class="container">
+  <div class="">
     <ul class="nav navbar-nav">
       <li id="header-bottom-${'right' if c.lang_rtl else 'left'}">
         <a href="/" id="header-img" class="default-header" title="lightnet">lightnet</a>
@@ -89,6 +89,9 @@
             <li><a href="/allinone.html">all in one</a></li>
             <li class="divider"></li>
             <li>
+              %if c.user_is_loggedin and authentication.user_can_log_out():
+                ${logout()}
+              %endif
             </li>
           </ul>
         </li>
@@ -102,10 +105,9 @@
              mail_img_title = "no new mail"
              mail_path = "/message/inbox/"
          %>
-        ${plain_link(_("messages"), path=mail_path,
+        <li>${plain_link(_("messages"), path=mail_path,
                    title = mail_img_title, _sr_path = False,
-                   _id = "mail", _class=mail_img_class)}
-        ${separator("|")}
+                   _id = "mail", _class=mail_img_class)}</li>
         %if c.show_mod_mail:
            <%
               if c.have_mod_messages:
@@ -117,19 +119,15 @@
                 mail_img_title = "no new mod mail"
                 mail_path = "/message/moderator/"
             %>
-           ${plain_link(_("mod messages"), path=mail_path,
+           <li>${plain_link(_("mod messages"), path=mail_path,
                       title = mail_img_title, _sr_path = False,
-                      _id = "modmail", _class=mail_img_class)}
-           ${separator("|")}
+                      _id = "modmail", _class=mail_img_class)}</li>
         %endif
       %endif
 
-        <!-- $ { thing.corner_buttons() } -->
+      <!-- $ { thing.corner_buttons() } -->
 
 
-              %if c.user_is_loggedin and authentication.user_can_log_out():
-                ${logout()}
-              %endif
     </ul>
   </div>
 </div>

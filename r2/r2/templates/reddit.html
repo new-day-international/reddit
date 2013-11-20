@@ -117,8 +117,65 @@
   <%include file="adminbar.html"/>
   <%include file="redditheader.html"/>
 
-  <div class="container">
+  <div class="">
     <div class="row">
+
+    <div id="left-sidebar" class="col-md-2">
+    <form class="form-inline" role="form">
+      <div class="form-group">
+        <label class="sr-only" for="exampleInputEmail2">go to space by name</label>
+        <input type="space_name" class="form-control" id="exampleInputEmail2" placeholder="go to space by name">
+      </div>
+    </form>
+
+    <h4 class="collapsable" data-toggle="collapse" data-target="#multispaces">
+      <i class="glyphicon glyphicon-collapse-down"></i>
+      <i class="glyphicon glyphicon-collapse-up"></i> 
+    Multispaces
+    </h4>
+    <ul id="multispaces" class="collapse in space-list list-unstyled">
+      <pre>Thing: ${thing.__dict__}</pre>
+    </ul>
+
+    <h4 class="collapsable" data-toggle="collapse" data-target="#subscribed-spaces"><i class="glyphicon glyphicon-collapse-down"></i><i class="glyphicon glyphicon-collapse-up"></i> Subscribed Spaces</h4>
+    <ul id="subscribed-spaces" class="collapse in space-list list-unstyled">
+      <li>alt-currency</li>
+      <li>askjim</li>
+      <li>books</li>
+      <li>ci</li>
+      <li>collective_insight</li>
+      <li>connector</li>
+      <li>dreams</li>
+      <li>education</li>
+      <li>feedback</li>
+      <li>flosolutions</li>
+
+      <li>freedom</li>
+      <li>gameb</li>
+      <li>gameb_designprinciple</li>
+      <li>gameb_ethos</li>
+      <li>governace.talk</li>
+      <li>jefferson</li>
+      <li>lightnet</li>
+      <li>lightnet.advisors</li>
+      <li>lightnet.bugs</li>
+      <li>lightnet.design</li>
+
+      <li>lightnet.dev</li>
+      <li>lightnet.help</li>
+      <li>lightnet.news</li>
+      <li>links</li>
+      <li>looselycoupled</li>
+      <li>minecraft</li>
+      <li>moonshots</li>
+      <li>newday</li>
+      <li>newday.website</li>
+      <li>politics.economics</li>
+      <li>proximate-b</li>
+      <li>studioblue</li>
+    </ul>
+
+  </div>
 
 
   <% content = getattr(self, "content", None) or thing.content %>
@@ -126,7 +183,7 @@
     ##<div class="fixedwidth"><!--IE6sux--></div>
     ##<div class="clearleft"><!--IE6sux--></div>
     <a name="content"></a>
-    <div ${tags(id=thing.content_id)} ${classes("content", "col-md-9", thing.css_class)} role="main">
+    <div ${tags(id=thing.content_id)} ${classes("content", "col-md-7", thing.css_class)} role="main">
       ${content()}
     </div>
   %endif
@@ -141,7 +198,7 @@
 
   %if thing.footer:
 
-    ${thing.footer}
+    <!-- ${thing.footer} -->
 
     %if not c.user_is_loggedin and not g.read_only_mode:
       %if thing.enable_login_cover:

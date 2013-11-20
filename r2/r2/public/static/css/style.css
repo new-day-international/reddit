@@ -15,6 +15,14 @@ body {
     display: none;
 }
 
+.dropdown-toggle img {
+  margin: -10px 5px 0 0;
+}
+
+.row {
+  margin: 0px;
+}
+
 
 /**** original css from mocks ****/
 
@@ -24,7 +32,7 @@ body {
 }
 
 .navbar-nav>li.dropdown>a {
-  padding: 6px;
+  /*padding: 6px;*/
 }
 
 .theme-amelia #item-list>li:nth-child(odd) {
