@@ -29,6 +29,11 @@
 %>
 <%namespace file="utils.html" import="plain_link, img_link, text_with_links, separator, logout"/>
 
+<script>
+var Reddit = {};
+Reddit.modhash = "${c.modhash}";
+</script>
+
 <div id="header" role="banner" class="navbar navbar-default navbar-fixed-top">
   <div class="container">
     <ul class="nav navbar-nav">
@@ -69,8 +74,7 @@
                photo_url = "http://%s/u/%s/profile_photo.jpg" % (g.s3_user_files_host, c.user.name,)
             %>
             <img class="cropped-image-medium link_photo media-object pull-left img-rounded" src="${photo_url}" height="40" width="40" /> 
-            ${c.user.name} 
-            (<span class="userkarma" title="${_("link karma")}">${c.user.safe_karma}</span>) 
+            ${c.user.registration_fullname} 
             <b class="caret"></b>
           </a>
           <ul class="dropdown-menu">
@@ -82,14 +86,10 @@
             <li><a href="#">follow</a></li>
             <li><a href="#">password/email</a></li>
             <li><a href="#">two-factor authentication</a></li>
-            <li class="divider"></li>
-            <li role="presentation" class="dropdown-header">theme</li>
-            <li class="divider"></li>
-            <li><a href="/space_grid/">space grid</a></li>
-            <li><a href="/allinone.html">all in one</a></li>
-            <li class="divider"></li>
-            <li>
-            </li>
+            %if c.user_is_loggedin and authentication.user_can_log_out():
+              <li class="divider"></li>
+              <li><a href="#" class="postlink" data-action="/logout">${_("logout")}</a></li>
+            %endif
           </ul>
         </li>
         <%
@@ -127,9 +127,6 @@
         <!-- $ { thing.corner_buttons() } -->
 
 
-              %if c.user_is_loggedin and authentication.user_can_log_out():
-                ${logout()}
-              %endif
     </ul>
   </div>
 </div>
