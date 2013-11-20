@@ -59,27 +59,48 @@ Reddit.modhash = "${c.modhash}";
         %endif
       %else:
         <li>
-          <a href="#" class="ping">
-            <i class="fa fa-envelope-o fa-emx"></i> <span class="badge btn-danger"></span>
+          <%
+           if c.have_messages:
+             mail_img_class = 'havemail'
+             mail_img_title = "new mail!"
+             mail_path = "/message/unread/"
+           else:
+             mail_img_class = 'nohavemail'
+             mail_img_title = "no new mail"
+             mail_path = "/message/inbox/"
+          %>
+          <a href="${mail_path}" class="ping ${mail_img_class}" title="${mail_img_title}">
+            <i class="fa fa-envelope-o fa-emx"></i>
           </a>
         </li>
-        <li>
-          <a href="#" class="ping">
-            <i class="fa fa-bolt fa-emx"></i>
-          </a>
-        </li>
+        %if c.show_mod_mail:
+          <li>
+             <%
+                if c.have_mod_messages:
+                  mail_img_class = 'havemail'
+                  mail_img_title = "new mod mail!"
+                  mail_path = "/message/moderator/"
+                else:
+                  mail_img_class = 'nohavemail'
+                  mail_img_title = "no new mod mail"
+                  mail_path = "/message/moderator/"
+              %>
+            <a href="${mail_path}" class="ping ${mail_img_class}" title="${mail_img_title}">
+              <i class="fa fa-gavel fa-emx"></i>
+            </a>
+          </li>
+        %endif
+
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
             <%
                photo_url = "http://%s/u/%s/profile_photo.jpg" % (g.s3_user_files_host, c.user.name,)
             %>
-            <img class="cropped-image-medium link_photo media-object pull-left img-rounded" src="${photo_url}" height="40" width="40" /> 
-            ${c.user.registration_fullname} 
-            <b class="caret"></b>
+            <img class="cropped-image-medium link_photo media-object pull-left img-rounded" src="${photo_url}" height="40" width="40" />${c.user.registration_fullname} <b class="caret"></b>
           </a>
           <ul class="dropdown-menu">
             <li>${plain_link("Profile", "/user/%s/" % c.user.name, _sr_path=False)} </li>
-            <li><a href="#">saved</a></li>
+            <li><a href="/saved/">saved</a></li>
             <li><a href="#">options</a></li>
             <li><a href="#">apps</a></li>
             <li><a href="#">RSS feeds</a></li>
@@ -92,41 +113,7 @@ Reddit.modhash = "${c.modhash}";
             %endif
           </ul>
         </li>
-        <%
-           if c.have_messages:
-             mail_img_class = 'havemail'
-             mail_img_title = "new mail!"
-             mail_path = "/message/unread/"
-           else:
-             mail_img_class = 'nohavemail'
-             mail_img_title = "no new mail"
-             mail_path = "/message/inbox/"
-         %>
-        ${plain_link(_("messages"), path=mail_path,
-                   title = mail_img_title, _sr_path = False,
-                   _id = "mail", _class=mail_img_class)}
-        ${separator("|")}
-        %if c.show_mod_mail:
-           <%
-              if c.have_mod_messages:
-                mail_img_class = 'havemail'
-                mail_img_title = "new mod mail!"
-                mail_path = "/message/moderator/"
-              else:
-                mail_img_class = 'nohavemail'
-                mail_img_title = "no new mod mail"
-                mail_path = "/message/moderator/"
-            %>
-           ${plain_link(_("mod messages"), path=mail_path,
-                      title = mail_img_title, _sr_path = False,
-                      _id = "modmail", _class=mail_img_class)}
-           ${separator("|")}
-        %endif
       %endif
-
-        <!-- $ { thing.corner_buttons() } -->
-
-
     </ul>
   </div>
 </div>
