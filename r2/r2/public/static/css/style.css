@@ -23,6 +23,21 @@ body {
   margin: 0px;
 }
 
+.col-md-0 {
+  float: left;
+  position: relative;
+  min-height: 1px;
+  padding:0;
+  overflow: hidden;
+}
+.tall-collapse-button {
+  position:absolute;
+  right:0px;top:0px;
+  height:800px;width:10px;
+  background: black;
+  cursor: pointer;
+}
+
 
 /**** original css from mocks ****/
 
