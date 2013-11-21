@@ -486,10 +486,6 @@ class Reddit(Templated):
             ps.append(SideContentBox(_("Recently viewed links"),
                                      [ClickGadget(c.recent_clicks)]))
 
-        if c.user_is_loggedin:
-            activity_link = AccountActivityBox()
-            ps.append(activity_link)
-
         return ps
 
     def render(self, *a, **kw):
