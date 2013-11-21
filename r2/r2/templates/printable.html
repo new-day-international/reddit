@@ -149,9 +149,9 @@ ${self.RenderPrintable()}
 %>
   <div class="arrow ${_class} login-required"
        %if getattr(thing, "votable", True):
-         onclick="$(this).vote('${thing.votehash}', null, event)"
+         onclick="$(this).vote('${thing.votehash}', null, event);"
        %else:
-         onclick="$(this).show_unvotable_message()"
+         onclick="$(this).show_unvotable_message();"
        %endif
        role="button"
        % if dir > 0:
@@ -161,6 +161,11 @@ ${self.RenderPrintable()}
        % endif
        tabindex="0"
        >
+       % if dir > 0:
+          <i class="fa fa-arrow-up"></i>
+       % else:
+          <i class="fa fa-arrow-down"></i>
+       % endif
   </div>
 </%def>
 
@@ -178,7 +183,7 @@ ${self.RenderPrintable()}
 
 
 <%def name="midcol(display=True, cls = '')">
-  <div class="midcol ${cls}" 
+  <div class="midcol ${cls} unvoted vote-buttons text-center" 
        ${not display and "style='display:none'" or ''}>
     ${self.arrow(thing, 1, thing.likes)}
     ${self.arrow(thing, 0, thing.likes == False)}

@@ -7,10 +7,13 @@ $(function () {
   $(".tall-collapse-button").click(function(){
     var sidebar_width = $("#left-sidebar").outerWidth() - 1;
 
-    if($(this).parent().hasClass("col-md-3"))
+    if($(this).parent().hasClass("col-md-3")) {
         $("#left-sidebar").addClass("col-md-0").removeClass("col-md-3").width("10");
-    else
+        $(".main-list").removeClass("col-md-9").addClass("col-md-12");
+    } else {
         $("#left-sidebar").removeClass("col-md-0").addClass("col-md-3").width("auto");
+        $(".main-list").removeClass("col-md-12").addClass("col-md-9");
+    }
   })
   // $(".dropdown-toggle").dropdown();
 });

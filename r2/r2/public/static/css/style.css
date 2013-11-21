@@ -38,12 +38,31 @@ body {
   cursor: pointer;
 }
 
+.midcol {
+  margin: 0 10px 0 0;
+}
+
+.score {
+  width: 25px; 
+}
+
+.score.likes, .score.dislikes {
+  display: none;
+}
+
+.arrow {
+  width: 25px;
+  cursor: pointer;
+}
+
 
 /**** original css from mocks ****/
 
 
-#leftbar {
-      background-color: #ddd;
+#left-sidebar {
+  margin-left: -15px; margin-top: -20px;
+  padding-top: 10px;
+  background-color: #fff;
 }
 
 .navbar-nav>li.dropdown>a {
@@ -58,8 +77,14 @@ body {
   background-color: rgb(53, 58, 65);
 }
 
-#item-list>li:nth-child(odd) {
+#item-list > li:nth-child(odd) {
   background-color: #f0f0f0;
+}
+
+#item-list h4 {
+  overflow: hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap; 
 }
 
 #item-list .media {

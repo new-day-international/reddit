@@ -186,30 +186,33 @@ ${parent.thing_data_attributes(what)} data-ups="${what.upvotes}" data-downs="${w
 </%def>
 
 <%def name="midcol(display=True, cls = '')">
-  <div class="pull-left vote-buttons text-center" style="width:25px;">
-    <i class="fa fa-arrow-up"></i><br/>
-    30<br/>
-    <i class="fa fa-arrow-down"></i>
-  </div>
+  
 
   %if thing.pref_compress:
-    <div class="midcol pull-left ${cls}"
-  %else:
-    <div class="midcol pull-left ${cls}" style="width:${thing.midcolmargin};" 
+    <div class="midcol pull-left ${cls} vote-buttons text-center"
+  %else: # TODO: Add class below
+    <div class="midcol pull-left ${cls} vote-buttons text-center" 
   %endif
-       ${not display and "style='display:none'" or ''}>
+
+    ${not display and "style='display:none'" or ''}>
+
     ${self.arrow(thing, 1, thing.likes)}
+
     %if thing.pref_compress:
       <div class="score-placeholder"></div>
     %elif thing.hide_score:
-      <div class="score likes">&bull;</div> 
-      <div class="score unvoted">&bull;</div> 
+      <div class="score likes">&bull;</div>
+      <div class="score unvoted">&bull;</div>
       <div class="score dislikes">&bull;</div> 
     %else:
       ${self.score(thing, thing.likes, tag='div')}
     %endif
+
     ${self.arrow(thing, 0, thing.likes == False)}
-  </div>
+
+    </div>
+
+
 ## Removing Thumbnails for now since they're messing up the lines
 ## ${self.thumbnail()}
 <%

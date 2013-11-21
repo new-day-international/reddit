@@ -119,38 +119,39 @@
   
   <div class="row">
     <div class="col-md-9">
-      <div id="left-sidebar" class="col-md-3">
-        <form class="form-inline" role="form">
-          <div class="form-group">
-            <label class="sr-only" for="exampleInputEmail2">go to space by name</label>
-            <input type="space_name" class="form-control" id="exampleInputEmail2" placeholder="go to space by name">
+      <div class="row">
+        <div id="left-sidebar" class="col-md-3">
+          <form class="form-inline" role="form">
+            <div class="form-group">
+              <label class="sr-only" for="exampleInputEmail2">go to space by name</label>
+              <input type="space_name" class="form-control" id="exampleInputEmail2" placeholder="go to space by name">
+            </div>
+          </form>
+
+          <h4 class="collapsable" data-toggle="collapse" data-target="#multispaces">
+            <i class="glyphicon glyphicon-collapse-down"></i>
+            <i class="glyphicon glyphicon-collapse-up"></i> 
+          Multispaces
+          </h4>
+          <ul id="multispaces" class="collapse in space-list list-unstyled">
+            
+          </ul>
+
+          <h4 class="collapsable" data-toggle="collapse" data-target="#subscribed-spaces"><i class="glyphicon glyphicon-collapse-down"></i><i class="glyphicon glyphicon-collapse-up"></i> Subscribed Spaces</h4>
+          <ul id="subscribed-spaces" class="collapse in space-list list-unstyled">
+            <%subreddits = sorted(Subreddit.user_subreddits(c.user, ids=False, stale=True), key = lambda sr: sr.name.lower())%>
+            %for sr in subreddits:
+              <li>
+                <a href="/space/${sr.name}/">${sr.name}</a>
+              </li>
+            %endfor
+          </ul>
+
+          <div class="tall-collapse-button" style="">
+
           </div>
-        </form>
-
-        <h4 class="collapsable" data-toggle="collapse" data-target="#multispaces">
-          <i class="glyphicon glyphicon-collapse-down"></i>
-          <i class="glyphicon glyphicon-collapse-up"></i> 
-        Multispaces
-        </h4>
-        <ul id="multispaces" class="collapse in space-list list-unstyled">
-          
-        </ul>
-
-        <h4 class="collapsable" data-toggle="collapse" data-target="#subscribed-spaces"><i class="glyphicon glyphicon-collapse-down"></i><i class="glyphicon glyphicon-collapse-up"></i> Subscribed Spaces</h4>
-        <ul id="subscribed-spaces" class="collapse in space-list list-unstyled">
-          <%subreddits = sorted(Subreddit.user_subreddits(c.user, ids=False, stale=True), key = lambda sr: sr.name.lower())%>
-          %for sr in subreddits:
-            <li>
-              <a href="/space/${sr.name}/">${sr.name}</a>
-            </li>
-          %endfor
-        </ul>
-
-        <div class="tall-collapse-button" style="">
 
         </div>
-
-      </div>
 
 
   <% content = getattr(self, "content", None) or thing.content %>
@@ -158,8 +159,9 @@
     ##<div class="fixedwidth"><!--IE6sux--></div>
     ##<div class="clearleft"><!--IE6sux--></div>
     <a name="content"></a>
-    <div ${tags(id=thing.content_id)} ${classes("content", "col-md-9", thing.css_class)} role="main">
+    <div ${tags(id=thing.content_id)} ${classes("content", "col-md-9", "main-list", thing.css_class)} role="main">
       ${content()}
+    </div>
     </div>
   </div><!-- End main col -->
   %endif
