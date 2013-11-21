@@ -217,3 +217,7 @@ a.ping {
     text-align: center;
     vertical-align: middle;
   }
+
+.spacer {
+  margin-top: 10px;
+}
