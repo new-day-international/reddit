@@ -224,7 +224,7 @@ class Reddit(Templated):
                                comment=None,
                                clone_template=True,
                               )
-            self._content = PaneStack([ShareLink(), content, gold])
+            self._content = PaneStack([ShareLink(), content])
         else:
             self._content = content
 
