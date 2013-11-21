@@ -91,7 +91,7 @@
   <div class="spacer">
     <input name="kind" value="${thing.kind}" type="hidden"/>
     <%utils:round_field title="${_('excerpt or summary')}" description="${_('(optional)')}">
-      ${UserText(None, text = thing.text, have_form = False, creating = True)}
+      ${UserText(None, text = thing.text, have_form = False, creating = True, extra_css = 'atnamepicker')}
       ${error_field("NO_SELFS", "sr")}
     </%utils:round_field>
   </div>
@@ -142,8 +142,9 @@
   </div>
   </%utils:submit_form>
 
-
-
+<link rel="stylesheet" type="text/css" href="/static/css/namepicker.css" />
+<script src="/api/namepicker" async="async"></script>
+<script src="/static/js/lib/namepicker.js"></script>
 
 <script src="/static/vendor/jQuery-File-Upload-8.8.2/js/vendor/jquery.ui.widget.js"></script>
 <script src="/static/vendor/jQuery-File-Upload-8.8.2/js/jquery.iframe-transport.js"></script>

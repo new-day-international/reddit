@@ -3507,6 +3507,11 @@ class ApiController(RedditController, OAuth2ResourceController):
             pic = row.name if row.profile_photo_uploaded else 'default_user'
             data.append({'name':row.name, 'full':row.registration_fullname, 'pic':pic})
             
+        #spacenames = []
+        #result = Subreddit._query(Subreddit._query(sort=asc("_name")))  
+        #for row in result:
+        #    spacenames.append(row.name)  
+            
         response.headers['cache-control'] = 'max-age: 3600'
         expire_time = datetime.fromtimestamp(int(time.time())+60, g.tz)
         response.headers['expires'] = http_date_str(expire_time)
@@ -3514,6 +3519,7 @@ class ApiController(RedditController, OAuth2ResourceController):
         output = "var s3_user_files_host = '%s';" % g.s3_user_files_host
         #output += "var usernames = " + json.dumps(sorted(names)) + ";"
         output += "var userdata = " + json.dumps(sorted(data, key=lambda k: k['name'])) + ";"
+        #output += "var spacenames = " + json.dumps(sorted(spacenames)) + ";"
         return output
 
     @json_validate(VUser())

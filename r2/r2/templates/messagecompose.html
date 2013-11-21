@@ -148,17 +148,6 @@ function admincheck(elem) {
 
 </%utils:submit_form>
 
-<link rel="stylesheet" type="text/css" href="/static/css/textext-core-autocomplete.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/namepicker.css" />
 <script src="/api/namepicker" async="async"></script>
 <script src="/static/js/lib/namepicker.js"></script>
-<script src="/static/js/lib/jquery.atwho.js"></script>
-<link rel="stylesheet" type="text/css" href="/static/css/jquery.atwho.css" />
-<script>
-$(function() { 
-  $('.atnamepicker textarea').atwho('run').atwho({
-      at: "@",
-      tpl: '<li data-value="@$'+'{name}"><img src="http://'+s3_user_files_host+'/u/$'+'{pic}/profile_photo.jpg"> <div>$'+'{name}</div></li>',
-      data: userdata
-  });
-});
-</script>
