@@ -1091,6 +1091,12 @@ class CommentEmailCheck(Templated):
         self.article = article
         self.email_thread = Link._somethinged(SaveHide, c.user, article, 'email')[c.user,article,'email'] if c.user_is_loggedin and c.user else False
         Templated.__init__(self, *a, **kw)
+        
+class NamePickerLinks(Templated):
+    """Does nothing but linking in the namepicker js and css files        
+    """
+    def __init__(self, *a, **kw):
+        Templated.__init__(self, *a, **kw)
 
 class LinkInfoPage(Reddit):
     """Renders the varied /info pages for a link.  The Link object is

@@ -329,10 +329,10 @@ def run_realtime_email_queue(limit=1000, debug=False):
             if g.email_debug:
                 print 'msg: ' + fullname
             howold = (datetime.datetime.now() - msg.timestamp).total_seconds() 
-            if  howold < 120:
+            if  howold < 110:
                 # Wait until this item is 2 minutes old, to allow time for corrections
                 if g.email_debug:
-                    print 'waiting for a moment'
+                    print 'only %d seconds old. waiting for %d seconds' % (howold, 120 - howold)
                 time.sleep(120 - howold)
 
             is_com = is_post = False
