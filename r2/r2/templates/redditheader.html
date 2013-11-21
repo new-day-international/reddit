@@ -115,42 +115,12 @@ Reddit.modhash = "${c.modhash}";
             <li class="divider"></li>
             <li>
               %if c.user_is_loggedin and authentication.user_can_log_out():
-                ${logout()}
+                <a href="/logout" class="postlink" data-action="/logout">${_("logout")}</a>
               %endif
             </li>
           </ul>
         </li>
-        <%
-           if c.have_messages:
-             mail_img_class = 'havemail'
-             mail_img_title = "new mail!"
-             mail_path = "/message/unread/"
-           else:
-             mail_img_class = 'nohavemail'
-             mail_img_title = "no new mail"
-             mail_path = "/message/inbox/"
-         %>
-        <li>${plain_link(_("messages"), path=mail_path,
-                   title = mail_img_title, _sr_path = False,
-                   _id = "mail", _class=mail_img_class)}</li>
-        %if c.show_mod_mail:
-           <%
-              if c.have_mod_messages:
-                mail_img_class = 'havemail'
-                mail_img_title = "new mod mail!"
-                mail_path = "/message/moderator/"
-              else:
-                mail_img_class = 'nohavemail'
-                mail_img_title = "no new mod mail"
-                mail_path = "/message/moderator/"
-            %>
-           <li>${plain_link(_("mod messages"), path=mail_path,
-                      title = mail_img_title, _sr_path = False,
-                      _id = "modmail", _class=mail_img_class)}</li>
-        %endif
       %endif
-
-      <!-- $ { thing.corner_buttons() } -->
     </ul>
   </div>
 </div>

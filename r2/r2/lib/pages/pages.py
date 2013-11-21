@@ -224,7 +224,7 @@ class Reddit(Templated):
                                comment=None,
                                clone_template=True,
                               )
-            self._content = PaneStack([ShareLink(), content, gold])
+            self._content = PaneStack([ShareLink(), content])
         else:
             self._content = content
 
@@ -375,40 +375,47 @@ class Reddit(Templated):
                                       link="/spaces",
                                       sr_path=None,
                                       show_cover=True))
+
                 if c.site != Friends: 
-                    # Add button for submitting links
-                    if c.site.link_type != 'self':
-                        ps.append(SideBox(title=c.site.submit_link_label or
-                                                strings.submit_link_label,
-                                          css_class="submit submit-link",
-                                          link="/submit",
-                                          sr_path=not fake_sub,
-                                          show_cover=True))
-
-                    # Add button for submitting text items
-                    if c.site.link_type != 'link':
-                        ps.append(SideBox(title=c.site.submit_text_label or
-                                                strings.submit_text_label,
-                                          css_class="submit submit-text",
-                                          link="/submit?selftext=true",
-                                          sr_path=not fake_sub,
-                                          show_cover=True))
-                    # Add button for submitting files
-                    if c.site.allow_user_uploads:
-                        ps.append(SideBox(title=c.site.submit_file_label or
-                                                strings.submit_file_label,
-                                          css_class="submit submit-file",
-                                          link="/submit/file",
-                                          sr_path=not fake_sub,
-                                          show_cover=True))
-
                     if self.create_reddit_box:
                         delta = datetime.datetime.now(g.tz) - c.user._date
                         if delta.days >= g.min_membership_create_community:
-                            ps.append(SideBox(title=_('Create your own space'),
-                                              link='/spaces/create',
-                                              css_class='submit create-space',
-                                              show_cover = True, nocname=True))
+                            ps.append(IconButton(title=_('Create your own space'), link='/spaces/create', icon_class="fa fa-plus", css_class="btn-block"))
+
+                    button_group = ButtonGroup(css_class="btn-group-justified")
+                    ps.append(button_group)
+
+                    # Add button for submitting links
+                    if c.site.link_type != 'self':
+                        button_group.append(IconButton(icon_class="fa fa-link", title=_("link"), link="/submit"))                        
+                        # ps.append(SideBox(title=c.site.submit_link_label or
+                        #                         strings.submit_link_label,
+                        #                   css_class="submit submit-link",
+                        #                   link="/submit",
+                        #                   sr_path=not fake_sub,
+                        #                   show_cover=True))
+
+                    # Add button for submitting text items
+                    if c.site.link_type != 'link':
+                        button_group.append(IconButton(icon_class="fa fa-file-text-o", title=_("post"), link="/submit?selftext=true"))                        
+
+                        # ps.append(SideBox(title=c.site.submit_text_label or
+                        #                         strings.submit_text_label,
+                        #                   css_class="submit submit-text",
+                        #                   link="/submit?selftext=true",
+                        #                   sr_path=not fake_sub,
+                        #                   show_cover=True))
+                    # Add button for submitting files
+                    if c.site.allow_user_uploads:
+                        button_group.append(IconButton(icon_class="fa fa-paperclip", title=_("file"), link="/submit/file"))                        
+
+                        # ps.append(SideBox(title=c.site.submit_file_label or
+                        #                         strings.submit_file_label,
+                        #                   css_class="submit submit-file",
+                        #                   link="/submit/file",
+                        #                   sr_path=not fake_sub,
+                        #                   show_cover=True))
+
 
         no_ads_yet = True
         show_adbox = (c.user.pref_show_adbox or not c.user.gold) and not g.disable_ads
@@ -754,6 +761,23 @@ class SideBox(CachedTemplate):
                            show_cover = show_cover, nocname=nocname,
                            disabled=disabled, show_icon=show_icon)
 
+class ButtonGroup(Templated):
+    """
+    Bootstrap button group
+    """
+    def __init__(self, css_class='', buttons=[]):
+        self.buttons = list(buttons)
+        Templated.__init__(self, css_class = css_class)
+
+    def append(self, button):
+        self.buttons.append(button)
+
+class IconButton(Templated):
+    """
+    Bootstrap button
+    """
+    def __init__(self, css_class='', icon_class='', link='', title=''):
+        Templated.__init__(self, css_class = css_class, icon_class = icon_class, link = link, title = title)
 
 class PrefsPage(Reddit):
     """container for pages accessible via /prefs.  No extension handling."""
