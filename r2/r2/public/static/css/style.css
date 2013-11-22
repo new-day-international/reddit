@@ -39,6 +39,7 @@ body {
 }
 
 .midcol {
+  float: left;
   margin: 0 10px 0 0;
 }
 
@@ -55,6 +56,62 @@ body {
   cursor: pointer;
 }
 
+.expando {
+  clear: both;
+}
+
+.dropdown-title.lightdrop, .dropdown.lightdrop {
+  float: left;
+  margin-right: 5px;
+}
+.drop-choices {
+  display: none;
+  float: left;
+  }
+  .drop-choices.inuse {
+    display: block;
+    left:0 !important; top: 0 !important;
+  }
+
+.usertext-body {
+  padding: 10px 0 0 10px;
+  }
+  .usertext-body p {
+    margin: 10px 0 0 0;
+  }
+
+.tagline * {
+  display: inline;
+}
+
+.commentarea .comment {
+  margin: 10px 0 -1px 0 !important;
+  border: 1px solid #eee !important;
+  border-color: #e0e0e0 #e6e6e6 !important;
+  border-right: 0 !important;
+  border-radius: 0 !important;
+}
+
+.flat-list.buttons li {
+  float: left;
+  padding: 0px 10px 5px 0px;
+}
+
+.child {
+  margin:0 0 0 30px!important;
+}
+
+.nestedlisting>.comment .comment, 
+.nestedlisting>.comment .comment .comment .comment, 
+.nestedlisting>.comment .comment .comment .comment .comment .comment {
+  background-color: #f9f9f6!important;
+}
+
+.nestedlisting>.comment .comment .comment, 
+.nestedlisting>.comment .comment .comment .comment .comment, 
+.nestedlisting>.comment .comment .comment .comment .comment .comment .comment {
+  background-color: #fbfbfb!important;
+}
 
 /**** original css from mocks ****/
 
@@ -81,27 +138,24 @@ body {
   background-color: #f0f0f0;
 }
 
-#item-list h4 {
+#item-list h4, .tagline {
   overflow: hidden;
   text-overflow:ellipsis;
   white-space:nowrap; 
 }
 
 #item-list .media {
-  padding: 10px 5px 0;
+  clear: both;
+  /*padding:  10px 5px 0;*/
+  margin: 0px;
 }
 #item-list .media p {
   padding-bottom: 0;
   margin-bottom: 0;
 }
 
-
-#item-list .media {
-  padding: 10px 5px 0;
-}
-
-#item-list .media p {
-  margin: 0;
+#item-list .media ul, span.domain {
+  float: left;
 }
 
 #item-list .media .minor {

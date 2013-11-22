@@ -109,7 +109,6 @@
     %endif
     &#32;
 
-    ${self.link_at_domain()}
 
     %if c.user_is_admin:
         %for link_note in thing.link_notes:
@@ -125,10 +124,9 @@
          onclick="expando_child(this)"></div>
   %endif
 
-  <p class="tagline">
-    ${self.tagline()}
-  </p>
+  <p class="tagline">${self.tagline()}</p>
 
+  ${self.link_at_domain()}
   <% 
      child_content = ""
      if thing.link_child and thing.link_child.load:
@@ -187,7 +185,6 @@ ${parent.thing_data_attributes(what)} data-ups="${what.upvotes}" data-downs="${w
 
 <%def name="midcol(display=True, cls = '')">
   
-
   %if thing.pref_compress:
     <div class="midcol pull-left ${cls} vote-buttons text-center"
   %else: # TODO: Add class below

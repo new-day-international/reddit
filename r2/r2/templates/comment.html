@@ -104,7 +104,7 @@ ${parent.collapsed()}
     photo_url = "http://%s/u/%s/profile_photo.jpg" % (g.s3_user_files_host, thing.photo_name,)
 %>
 %if not collapse:
-    <img class="cropped-image-small comment_photo" src="${photo_url}">
+    <img class="cropped-image-small comment_photo img-rounded media-object" width="40" height="40" src="${photo_url}">
 %endif
     %if thing.deleted:
       <em>${_("deleted comment from")}</em>&#32;

@@ -47,9 +47,9 @@
       %endif
     </div>
 
-    <div class="drop-choices ${css_class}">
+    <div class="drop-choices btn-group-vertical ${css_class}">
       %for option in thing:
-        <% _class = "choice " + option.css_class + (" selected" if option == thing.selected else "") %>
+        <% _class = "choice btn" + option.css_class + (" selected" if option == thing.selected else "") %>
         %if thing.use_post:
           ${post_link(option.title, option.base_path, option.path,
                       option.action_params, _sr_path=option.sr_path, _class=_class)}
