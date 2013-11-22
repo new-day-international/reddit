@@ -34,17 +34,12 @@ var Reddit = {};
 Reddit.modhash = "${c.modhash}";
 </script>
 
-<div id="header" role="banner" class="navbar navbar-default navbar-fixed-top">
+<div id="header" role="banner" class="navbar navbar-default navbar-fixed-top navbar-inverse">
   <div class="">
     <ul class="nav navbar-nav">
       <li id="header-bottom-${'right' if c.lang_rtl else 'left'}">
-        <a href="/" id="header-img" class="default-header" title="lightnet">lightnet</a>
+        <a href="/" id="header-img" class="default-header navbar-brand" title="lightnet">lightnet</a>
       </li>
-
-      %for toolbar in thing.toolbars:
-        ${toolbar}
-      %endfor
-
     </ul>
     <ul class="nav navbar-nav navbar-right">
       %if not c.user_is_loggedin:

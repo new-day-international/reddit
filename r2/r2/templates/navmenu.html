@@ -138,3 +138,19 @@
     </li>
   %endif
 </%def>
+
+<%def name="bootstrap_tabs()">
+  %if thing:
+    <ul class="nav nav-tabs nav-justified">
+        %for i, option in enumerate(thing):
+          <%
+             li_class = "class='active'" if option == thing.selected else ""
+          %>
+          <li ${li_class}>
+            ${option}
+          </li>
+
+        %endfor
+    </ul>
+  %endif
+</%def>
