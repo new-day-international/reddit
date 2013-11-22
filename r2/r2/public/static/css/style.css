@@ -300,3 +300,18 @@ a.ping {
 .spacer {
   margin-top: 10px;
 }
+
+h4.collapsable.collapsed .glyphicon-collapse-down {
+  display: none;
+}
+h4.collapsable.collapsed .glyphicon-collapse-up {
+  display: inline;
+}
+
+h4.collapsable:not(.collapsed) .glyphicon-collapse-up {
+  display: none;
+}
+h4.collapsable:not(.collapsed) .glyphicon-collapse-down {
+  display: inline;
+}
+
