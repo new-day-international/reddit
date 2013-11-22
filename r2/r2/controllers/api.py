@@ -3499,16 +3499,18 @@ class ApiController(RedditController, OAuth2ResourceController):
             # If they got this within the last hour, pretend it hasn't changed
             return abort(304, 'not modified')
 
-        #names = []
+        names = []
+        hnames = {}
         data  = []
         result = Account._query(Account.c.name!='')
         for row in result: 
-            #names.append(row.name)
+            names.append(row.name)
             pic = row.name if row.profile_photo_uploaded else 'default_user'
             data.append({'name':row.name, 'full':row.registration_fullname, 'pic':pic})
+            hnames[row.name] = {'name':row.name, 'full':row.registration_fullname, 'pic':pic}
             
         #spacenames = []
-        #result = Subreddit._query(Subreddit._query(sort=asc("_name")))  
+        #result = Subreddit._query(sort=asc("_name"))  
         #for row in result:
         #    spacenames.append(row.name)  
             
@@ -3517,8 +3519,9 @@ class ApiController(RedditController, OAuth2ResourceController):
         response.headers['expires'] = http_date_str(expire_time)
         response.headers['content-type'] = 'application/javascript'
         output = "var s3_user_files_host = '%s';" % g.s3_user_files_host
-        #output += "var usernames = " + json.dumps(sorted(names)) + ";"
+        output += "var usernames = " + json.dumps(sorted(names)) + ";"
         output += "var userdata = " + json.dumps(sorted(data, key=lambda k: k['name'])) + ";"
+        output += "var userhash = " + json.dumps(hnames) + ";"
         #output += "var spacenames = " + json.dumps(sorted(spacenames)) + ";"
         return output
 
