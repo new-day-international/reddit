@@ -4,15 +4,20 @@ $(function () {
     $(this).attr('src', $(this).attr('src').replace('test.lightnet','lightnet'));
   });
 
-  $(".tall-collapse-button").click(function(){
-    var sidebar_width = $("#left-sidebar").outerWidth() - 1;
+  var sidebar_width;
 
-    if($(this).parent().hasClass("col-md-3")) {
-        $("#left-sidebar").addClass("col-md-0").removeClass("col-md-3").width("10");
-        $(".main-list").removeClass("col-md-9").addClass("col-md-12");
+  $(".tall-collapse-button").click(function(){
+
+    $(".main-list").prepend(sidebar_width);
+
+    if($("#left-sidebar").hasClass("col-md-2")) {
+        $("#left-sidebar").addClass("col-md-0").removeClass("col-md-2");
+        $(".main-list").removeClass("col-md-7").addClass("col-md-9");
+        $(".tall-collapse-button").removeClass("open").addClass("closed");
     } else {
-        $("#left-sidebar").removeClass("col-md-0").addClass("col-md-3").width("auto");
-        $(".main-list").removeClass("col-md-12").addClass("col-md-9");
+        $("#left-sidebar").removeClass("col-md-0").addClass("col-md-2");
+        $(".main-list").removeClass("col-md-9").addClass("col-md-7");
+        $(".tall-collapse-button").removeClass("closed").addClass("open");
     }
   })
   // $(".dropdown-toggle").dropdown();

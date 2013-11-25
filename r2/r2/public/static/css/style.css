@@ -1,5 +1,5 @@
 body {
-    margin-top: 70px;
+    margin-top: 50px;
 }
 
 .login-form-side .recover-password {
@@ -20,6 +20,7 @@ body {
 }
 
 .row {
+  position: relative;
   margin: 0px;
 }
 
@@ -29,14 +30,28 @@ body {
   min-height: 1px;
   padding:0;
   overflow: hidden;
+  width: 0;
+}
+
+.main-list {
+  padding: 0 0 0 30px;
 }
 .tall-collapse-button {
-  position:absolute;
-  right:0px;top:0px;
-  height:800px;width:10px;
-  background: black;
+  position: absolute;
+  left: 0px; top:0px; z-index: 99;
+  height:100%; width: 6px;
   cursor: pointer;
-}
+  }
+  .tall-collapse-button:hover { 
+    border-color: #66afe9;
+    outline: 0;
+    -webkit-box-shadow: inset 0 0 0 rgba(0,0,0,0.075),0 0 8px rgba(102,175,233,0.6);
+    box-shadow: inset 0 0 0 rgba(0,0,0,0.075),0 0 8px rgba(102,175,233,0.6); 
+  }
+.tall-collapse-button.open { 
+  background: #eee url(../sidebar-grippy.png) right;}
+.tall-collapse-button.closed { 
+  background: #eee url(../sidebar-grippy.png) left;}
 
 .midcol {
   float: left;
@@ -117,9 +132,8 @@ body {
 
 
 #left-sidebar {
-  margin-left: -15px; margin-top: -20px;
-  padding-top: 10px;
-  background-color: #fff;
+  height: 100%;
+  padding-top: 20px;
 }
 
 .navbar-nav>li.dropdown>a {
