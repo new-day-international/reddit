@@ -68,7 +68,7 @@
 </%def>
 
 <%def name="bottom_buttons()">
-  <ul class="flat-list buttons list-inline">
+  <ul class="flat-list buttons btn-group btn-group-xs">
     %if thing.nsfw:
      <li class="rounded nsfw-stamp stamp">
        <acronym title="${_('Adult content: Not Safe For Work')}">
@@ -216,7 +216,7 @@ ${parent.thing_data_attributes(what)} data-ups="${what.upvotes}" data-downs="${w
    photo_url = "http://%s/u/%s/profile_photo.jpg" % (g.s3_user_files_host, thing.photo_name,)
 %>
   <a class="pull-left">
-   <img class="cropped-image-medium link_photo img-rounded media-object" width="50" height="50"  src="${photo_url}">
+   <img class="cropped-image-medium link_photo img-rounded media-object" width="60" height="60"  src="${photo_url}">
   </a>
 </%def>
 
@@ -224,8 +224,8 @@ ${parent.thing_data_attributes(what)} data-ups="${what.upvotes}" data-downs="${w
   %if (not thing.is_self) or c.user_is_admin:
     <span class="domain">
       %if not thing.is_self:
-        <span class="label">
-          ${plain_link(thing.domain_link_text, thing.url, _sr_path = False, target = '_blank')}
+        <span class="btn btn-info btn-xs">
+          <i class="fa fa-external-link"></i> ${plain_link(thing.domain_link_text, thing.url, _sr_path = False, target = '_blank')}
         </span>
       %endif
       %if c.user_is_admin:

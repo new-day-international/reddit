@@ -141,7 +141,7 @@
 
 <%def name="bootstrap_tabs()">
   %if thing:
-    <ul class="nav nav-tabs nav-justified">
+    <ul class="nav nav-tabs">
         %for i, option in enumerate(thing):
           <%
              li_class = "class='active'" if option == thing.selected else ""

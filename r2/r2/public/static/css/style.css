@@ -2,6 +2,9 @@ body {
     margin-top: 50px;
 }
 
+.toggle .option { display: none; }
+.toggle .option.active { display: inline; }
+
 .login-form-side .recover-password {
     margin-top: 10px;
 }
@@ -34,7 +37,7 @@ body {
 }
 
 .main-list {
-  padding: 20px 0 0 30px;
+  padding: 16px 0 0 20px;
 }
 .tall-collapse-button {
   position: absolute;
@@ -43,8 +46,7 @@ body {
   cursor: pointer;
   }
   .tall-collapse-button:hover { 
-    border-color: #66afe9;
-    outline: 0;
+    outline: 1px solid #66afe9;
     -webkit-box-shadow: inset 0 0 0 rgba(0,0,0,0.075),0 0 8px rgba(102,175,233,0.6);
     box-shadow: inset 0 0 0 rgba(0,0,0,0.075),0 0 8px rgba(102,175,233,0.6); 
   }
@@ -107,9 +109,16 @@ body {
   border-radius: 0 !important;
 }
 
+.flat-list {
+  padding: 5px 0 0 10px;
+}
 .flat-list.buttons li {
-  float: left;
-  padding: 0px 10px 5px 0px;
+/*  float: left;
+  padding: 0px 10px 5px 0px;*/
+}
+
+.btn-info a {
+  color: white !important;
 }
 
 .child {
@@ -148,8 +157,8 @@ body {
   background-color: rgb(53, 58, 65);
 }
 
-#item-list > li:nth-child(odd) {
-  background-color: #f0f0f0;
+#item-list > li:nth-child(even) {
+  background-color: #eff7fc;
 }
 
 #item-list h4, .tagline {
@@ -170,6 +179,7 @@ body {
 
 #item-list .media ul, span.domain {
   float: left;
+  padding-top: 5px;
 }
 
 #item-list .media .minor {
@@ -180,7 +190,10 @@ body {
   color: rgb(47, 164, 231);
 }
 #item-list .media-object {
-  margin-top: 8px;
+  margin-top: 5px;
+}
+#item-list .media-heading {
+  margin: 3px 0 0 0;
 }
 #item-list .media .vote-buttons {
   width: 25px;
@@ -200,7 +213,8 @@ body {
 }
 
 #item-list .media {
-  border-radius: 2px;
+  padding: 5px; margin: 10px 0;
+  border-radius: 4px;
 }
 
 /*** Post ***/
@@ -329,7 +343,17 @@ h4.collapsable:not(.collapsed) .glyphicon-collapse-down {
   display: inline;
 }
 
+
+/*** Sidebar ***/
 .side {
   padding-top: 10px;
+}
+
+h2.redditname  {
+  text-transform: capitalize;
+}
+
+.sidecontentbox {
+  text-transform: capitalize;
 }
 

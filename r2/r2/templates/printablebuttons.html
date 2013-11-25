@@ -29,14 +29,14 @@
 
 <%def name="banbuttons()">
   %if thing.show_delete:
-    <li>
+    <li class="btn btn-default">
       ${ynbutton(_("delete"), _("deleted"), "del", "hide_thing")}
     </li>
   %endif
   %if thing.can_ban:
     %if not getattr(thing.thing, "use_big_modbuttons", False):
       %if not thing.show_spam:
-        <li>
+        <li class="btn btn-default">
            ${ynbutton(_("spam"), _("spammed"), "remove")}
         </li>
         <li>
@@ -45,25 +45,25 @@
       %endif
 
       %if thing.show_approve:
-        <li>
+        <li class="btn btn-default">
            ${self.state_button("approve", _("approve"),
               "return change_state(this, 'approve');", _("approved"))}
         </li>
       %endif
     %endif
   %elif thing.show_report:
-    <li>
+    <li class="btn btn-default">
       ${ynbutton(_("report"), _("reported"), "report", "hide_thing")}
     </li>
   %endif
   %if thing.show_marknsfw:
-    <li>${ynbutton(_("nsfw"), _("marked"), "marknsfw")}</li>
+    <li class="btn btn-default">${ynbutton(_("nsfw"), _("marked"), "marknsfw")}</li>
   %endif
   %if thing.show_unmarknsfw:
-    <li>${ynbutton(_("un-nsfw"), _("unmarked"), "unmarknsfw")}</li>
+    <li class="btn btn-default">${ynbutton(_("un-nsfw"), _("unmarked"), "unmarknsfw")}</li>
   %endif
   %if not getattr(thing, 'promoted', None) and c.site.link_flair_position and thing.show_flair:
-    <li>
+    <li class="btn btn-default">
       <a class="flairselectbtn" href="javascript://void(0)">${_('flair')}</a>
       <div class="flairselector drop-choices"></div>
       <form>
@@ -80,7 +80,7 @@
 
 <%def name="distinguish()">
   %if thing.show_distinguish:
-  <li class="toggle">
+  <li class="toggle btn btn-default">
     <form method="post" action="/post/distinguish">
       <input type="hidden" value="${_('distinguishing...')}" name="executed"/>
       <a href="javascript:void(0)"
@@ -170,7 +170,7 @@
 
 <%def name="linkbuttons()">
   %if thing.show_comments:
-    <li class="first">
+    <li class="first btn btn-default">
     ${self.comment_button("comment", thing.comment_label, thing.permalink,
                           _sr_path = (thing.promoted is None), 
                           a_class = thing.commentcls, 
@@ -178,24 +178,24 @@
     </li>
   %endif
   %if thing.editable:
-    <li>
+    <li class="btn btn-default">
       ${self.simple_button(_("edit"), "edit_usertext", css_class="edit-usertext")}
     </li>
   %endif
   % if c.user_is_loggedin or not g.read_only_mode:
-  <li class="share">
+  <li class="share btn btn-default">
     ${self.toggle_button("share-button", _("share"), _("cancel"),
                          "share", "cancelShare", login_required = True)}
   </li>
   % endif
   %if thing.is_loggedin:
-    <li>
+    <li class="btn btn-default">
     %if thing.saved:
        ${self.state_button("unsave", _("unsave"), "toggle_save(this)", _("save"))}
     %else:
        ${self.state_button("save", _("save"), "toggle_save(this)", _("unsave"))}
     %endif
-    </li><li>
+    </li><li class="btn btn-default">
     %if thing.hidden:
       ${self.state_button("unhide", _("unhide"), \
         "change_state(this, 'unhide', hide_thing);", _("unhidden"))}
@@ -210,12 +210,12 @@
   ${self.banbuttons()}
   %if thing.promoted is not None:
     %if thing.user_is_sponsor or thing.is_author:
-       <li>
+       <li class="btn btn-default">
          ${plain_link(_("edit"), thing.promo_url, _sr_path = False)}
        </li>
     %endif
     %if c.user_is_sponsor:
-       <li>
+       <li class="btn btn-default">
          <form action="/post/reject" class="rejection-form"
                style="display:none"
                method="post" onsubmit="reject post_form(this, 'unpromote')">
@@ -234,20 +234,20 @@
                          "reject_promo", "cancel_reject_promo")}
        </li>
       %if thing.promote_status in (PROMOTE_STATUS.unseen, PROMOTE_STATUS.rejected):
-        <li>
+        <li class="btn btn-default">
           ${ynbutton(_("accept"), _("accepted"), "promote")}
         </li>
       %endif
     %endif
     %if thing.user_is_sponsor or thing.is_author:
-      <li>
+      <li class="btn btn-default">
         ${plain_link(_("traffic"), thing.traffic_url, _sr_path = False)}
       </li>
     %endif
   %endif
 
   %if thing.show_reports and not thing.show_spam:
-   <li class="rounded reported-stamp stamp">
+   <li class="rounded reported-stamp stamp btn btn-default">
      ${strings.reports % thing.thing.reported}
    </li>
   %endif
@@ -264,14 +264,14 @@
    in_search_listing = c.profilepage or c.show_comment_parent_link
 %>
   %if not in_search_listing:
-    <li class="first">
+    <li class="first btn btn-default">
       ${self.bylink_button(_("permalink"), thing.permalink)}
     </li>
   %else:
-    <li>
+    <li class="btn btn-default">
       ${self.bylink_button(_("context"), thing.permalink + "?context=5")}
     </li>
-    <li class="first">
+    <li class="first btn btn-default">
     ${self.comment_button("comment", _("full comments"), 
                           thing.full_comment_path,
                           _sr_path = True, 
@@ -280,11 +280,11 @@
     </li>
   %endif
   %if thing.saved:
-    <li class="comment-unsave-button">
+    <li class="comment-unsave-button btn btn-default">
        ${self.state_button("unsave", _("unsave"), "toggle_save(this)", _("save"))}
     </li>
   %else:
-    <li class="comment-save-button">
+    <li class="comment-save-button btn btn-default">
        ${self.state_button("save", _("save"), "toggle_save(this)", _("unsave"))}
     </li>
   %endif
@@ -310,7 +310,7 @@
     ${self.banbuttons()}
     ${self.distinguish()}
     %if thing.can_gild:
-      <li>
+      <li class="btn btn-default">
       <a href="/gold?goldtype=gift&months=1&comment=${thing.thing._fullname}"
           title="${_("give lightnet gold in appreciation of this comment.")}"
           class="give-gold login-required"
@@ -318,12 +318,12 @@
       </li>
     %endif
     %if not in_search_listing and thing.can_reply:
-      <li>
+      <li class="btn btn-default">
         ${self.simple_button(_("reply {verb}"), "reply")}
       </li>
     %endif
     %if thing.show_reports and not thing.show_spam:
-     <li class="rounded reported-stamp stamp">
+     <li class="rounded reported-stamp stamp btn btn-default">
        ${strings.reports % thing.thing.reported}
      </li>
     %endif
@@ -338,11 +338,11 @@
 
 <%def name="messagebuttons()"> 
   %if thing.was_comment:
-    <li>
+    <li class="btn btn-default">
       ${self.bylink_button(_("context"), thing.permalink + "?context=3")}
     </li>
   %else:
-    <li class="first">
+    <li class="first btn btn-default">
       ${self.bylink_button(_("permalink"), thing.permalink)}
     </li>
   %endif
@@ -353,14 +353,14 @@
           ${ynbutton(_("block user"), _("blocked"), "block", "hide_thing")}
         </li>
       %endif
-    <li class="unread">
+    <li class="unread btn btn-default">
      ${self.state_button("unread", _("mark unread"), \
         "return change_state(this, 'unread_message', unread_thing, true);", \
          _("unread"))}
     </li>
   %endif
   %if thing.can_reply:
-    <li>
+    <li class="btn btn-default">
        ${self.simple_button(_("reply {verb}"), "reply")}
     </li>
   %endif
@@ -499,6 +499,7 @@
 ### originally in commentbutton
 <%def name="comment_button(name, link_text, link,\
             _sr_path = True, a_class='', title='', newwindow = False)">
+  <i class="fa fa-comments-o"></i> 
   ${plain_link(link_text, link, 
                _sr_path = _sr_path,
                _class=a_class, title=title, 

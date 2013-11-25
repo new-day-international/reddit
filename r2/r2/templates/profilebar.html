@@ -28,7 +28,7 @@
 <%namespace file="printablebuttons.html" import="toggle_button"/>
 
 <div class="titlebox">
-  <h1>
+  <h3>
     ${thing.user.name}
 
     %if c.user_is_admin:
@@ -45,7 +45,7 @@
       </span>
     %endif
 
-  </h1>
+  </h3>
 
   %if c.user != thing.user:
     <div>
