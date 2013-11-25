@@ -220,7 +220,7 @@ class SubredditMiddleware(object):
         if sr:
             environ['subreddit'] = sr.groups()[0]
             environ['PATH_INFO'] = self.sr_pattern.sub('', path) or '/'
-        elif path.startswith(('/spaces', '/spaces')):
+        elif path.startswith('/spaces'):
             environ['subreddit'] = 'space'
         return self.app(environ, start_response)
 
