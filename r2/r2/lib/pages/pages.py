@@ -319,6 +319,20 @@ class Reddit(Templated):
                                  data=True, return_dict=False)
         return [WrappedUser(a) for a in accounts if not a._deleted]
 
+    def new_item_buttons(self):
+        ret = []
+        # Add button for submitting links
+        if c.site.link_type != 'self':
+            ret.append(IconButton(icon_class="fa fa-link", title=_("link"), link="/submit"))                        
+
+        # Add button for submitting text items
+        if c.site.link_type != 'link':
+            ret.append(IconButton(icon_class="fa fa-file-text-o", title=_("post"), link="/submit?selftext=true"))
+        # Add button for submitting files
+        if c.site.allow_user_uploads:
+            ret.append(IconButton(icon_class="fa fa-paperclip", title=_("file"), link="/submit/file"))                        
+        return ret
+
     def rightbox(self):
         """generates content in <div class="rightbox">"""
 
@@ -382,40 +396,8 @@ class Reddit(Templated):
                         if delta.days >= g.min_membership_create_community:
                             ps.append(IconButton(title=_('Create your own space'), link='/spaces/create', icon_class="fa fa-plus", css_class="btn-block"))
 
-                    button_group = ButtonGroup(css_class="btn-group-justified")
+                    button_group = ButtonGroup(css_class="btn-group-justified", buttons=self.new_item_buttons())
                     ps.append(button_group)
-
-                    # Add button for submitting links
-                    if c.site.link_type != 'self':
-                        button_group.append(IconButton(icon_class="fa fa-link", title=_("link"), link="/submit"))                        
-                        # ps.append(SideBox(title=c.site.submit_link_label or
-                        #                         strings.submit_link_label,
-                        #                   css_class="submit submit-link",
-                        #                   link="/submit",
-                        #                   sr_path=not fake_sub,
-                        #                   show_cover=True))
-
-                    # Add button for submitting text items
-                    if c.site.link_type != 'link':
-                        button_group.append(IconButton(icon_class="fa fa-file-text-o", title=_("post"), link="/submit?selftext=true"))                        
-
-                        # ps.append(SideBox(title=c.site.submit_text_label or
-                        #                         strings.submit_text_label,
-                        #                   css_class="submit submit-text",
-                        #                   link="/submit?selftext=true",
-                        #                   sr_path=not fake_sub,
-                        #                   show_cover=True))
-                    # Add button for submitting files
-                    if c.site.allow_user_uploads:
-                        button_group.append(IconButton(icon_class="fa fa-paperclip", title=_("file"), link="/submit/file"))                        
-
-                        # ps.append(SideBox(title=c.site.submit_file_label or
-                        #                         strings.submit_file_label,
-                        #                   css_class="submit submit-file",
-                        #                   link="/submit/file",
-                        #                   sr_path=not fake_sub,
-                        #                   show_cover=True))
-
 
         no_ads_yet = True
         show_adbox = (c.user.pref_show_adbox or not c.user.gold) and not g.disable_ads
@@ -538,7 +520,7 @@ class Reddit(Templated):
 
     @property
     def sort_menu(self):
-        return NavMenu(self.sort_buttons, type='bootstrap_tabs')
+        return NavMenu(self.sort_buttons, type='bootstrap_tabs', title="Sorted by")
 
     def build_toolbars(self):
         """Sets the layout of the navigation topbar on a Reddit.  The result
@@ -583,21 +565,26 @@ class Reddit(Templated):
                 promote_buttons.append(NavButton(menu.promote, 'promoted', False))
                 toolbar.append(NavMenu(promote_buttons, type='tabmenu'))
 
+        toolbar.insert(0, self.page_name_nav())
+
+        return toolbar
+
+    def __repr__(self):
+        return "<Reddit>"
+
+    def page_name_nav(self):
         # Add the page title item in the first position
         if isinstance(c.site, DefaultSR):
             if c.user_is_loggedin:
                 front_page_title = _("my subscribed spaces")
             else:
                 front_page_title = _("popular spaces")
-            toolbar.insert(0, PageNameNav('nomenu', title=front_page_title))
+            ret = PageNameNav('nomenu', title=front_page_title)
         else:
             if not c.cname:
-                toolbar.insert(0, PageNameNav('subreddit'))
+                ret = PageNameNav('subreddit')
+        return ret
 
-        return toolbar
-
-    def __repr__(self):
-        return "<Reddit>"
 
     @staticmethod
     def content_stack(panes, css_class = None):
@@ -1473,6 +1460,9 @@ class SubredditsPage(Reddit):
         self.sr_infobar = InfoBar(message = strings.sr_subscribe)
 
         self.interestbar = InterestBar(True) if show_interestbar else None
+
+    def new_item_buttons(self):
+        return [IconButton(title=_('space'), link='/spaces/create', icon_class="fa fa-plus")]
 
     def build_toolbars(self):
         buttons =  [NavButton(menu.popular, ""),
