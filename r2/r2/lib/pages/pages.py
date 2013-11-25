@@ -522,19 +522,31 @@ class Reddit(Templated):
                                  css_class = "pref-lang")]
         return NavMenu(buttons, base_path = "/", type = "flatlist")
 
+    @property
+    def sort_buttons(self):
+        if not hasattr(self, '_sort_buttons'):
+            if c.site == Friends:
+                self._sort_buttons = [NamedButton('new', dest='', aliases=['/hot']),
+                                NamedButton('comments')]
+            else:
+                self._sort_buttons = [NamedButton('active', dest='', aliases=['/active']),
+                                NamedButton('new'),
+                                NamedButton('hot'),
+                                NamedButton('top'),
+                                ]
+        return self._sort_buttons
+
+    @property
+    def sort_menu(self):
+        return NavMenu(self.sort_buttons, type='bootstrap_tabs')
+
     def build_toolbars(self):
         """Sets the layout of the navigation topbar on a Reddit.  The result
         is a list of menus which will be rendered in order and
         displayed at the top of the Reddit."""
-        if c.site == Friends:
-            main_buttons = [NamedButton('new', dest='', aliases=['/hot']),
-                            NamedButton('comments')]
-        else:
-            main_buttons = [NamedButton('active', dest='', aliases=['/active']),
-                            NamedButton('new'),
-                            NamedButton('hot'),
-                            NamedButton('top'),
-                            ]
+        main_buttons = self.sort_buttons[:]
+        
+        if c.site != Friends:
             # files only available if in a space and uploads are turned on                
             if c.site.__class__ is Subreddit and c.site.allow_user_uploads:
                 main_buttons.append(NamedButton('files'))
