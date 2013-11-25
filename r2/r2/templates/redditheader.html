@@ -37,11 +37,11 @@ Reddit.modhash = "${c.modhash}";
 <div id="header" role="banner" class="navbar navbar-default navbar-fixed-top navbar-inverse">
   <div class="">
     <ul class="nav navbar-nav">
-      <li id="header-bottom-${'right' if c.lang_rtl else 'left'}">
+      <li class="${'active' if not request.path.startswith(("/spaces", "/people",)) else ''}" id="header-bottom-${'right' if c.lang_rtl else 'left'}">
         <a href="/" id="header-img" class="default-header navbar-brand" title="lightnet">lightnet</a>
       </li>
-      <li><a href="/spaces/">Spaces</a></li>
-      <li><a href="/people/">People</a></li>
+      <li class="${'active' if request.path.startswith("/spaces") else ''}" ><a href="/spaces/">Spaces</a></li>
+      <li class="${'class="active"' if request.path.startswith("/people") else ''}" ><a href="/people/">People</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
       %if not c.user_is_loggedin:
