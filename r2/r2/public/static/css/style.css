@@ -34,7 +34,7 @@ body {
 }
 
 .main-list {
-  padding: 0 0 0 30px;
+  padding: 20px 0 0 30px;
 }
 .tall-collapse-button {
   position: absolute;
@@ -327,5 +327,9 @@ h4.collapsable:not(.collapsed) .glyphicon-collapse-up {
 }
 h4.collapsable:not(.collapsed) .glyphicon-collapse-down {
   display: inline;
+}
+
+.side {
+  padding-top: 10px;
 }
 
