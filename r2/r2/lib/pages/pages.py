@@ -504,29 +504,25 @@ class Reddit(Templated):
                                  css_class = "pref-lang")]
         return NavMenu(buttons, base_path = "/", type = "flatlist")
 
-    @property
     def sort_buttons(self):
-        if not hasattr(self, '_sort_buttons'):
-            if c.site == Friends:
-                self._sort_buttons = [NamedButton('new', dest='', aliases=['/hot']),
-                                NamedButton('comments')]
-            else:
-                self._sort_buttons = [NamedButton('active', dest='', aliases=['/active']),
-                                NamedButton('new'),
-                                NamedButton('hot'),
-                                NamedButton('top'),
-                                ]
-        return self._sort_buttons
+        if c.site == Friends:
+            return [NamedButton('new', dest='', aliases=['/hot']),
+                            NamedButton('comments')]
+        else:
+            return [NamedButton('active', dest='', aliases=['/active']),
+                            NamedButton('new'),
+                            NamedButton('hot'),
+                            NamedButton('top'),
+                            ]
 
-    @property
     def sort_menu(self):
-        return NavMenu(self.sort_buttons, type='bootstrap_tabs', title="Sorted by")
+        return NavMenu(self.sort_buttons(), type='bootstrap_drop_down_button', title="Sorted by")
 
     def build_toolbars(self):
         """Sets the layout of the navigation topbar on a Reddit.  The result
         is a list of menus which will be rendered in order and
         displayed at the top of the Reddit."""
-        main_buttons = self.sort_buttons[:]
+        main_buttons = self.sort_buttons()[:]
         
         if c.site != Friends:
             # files only available if in a space and uploads are turned on                
@@ -1460,6 +1456,10 @@ class SubredditsPage(Reddit):
         self.sr_infobar = InfoBar(message = strings.sr_subscribe)
 
         self.interestbar = InterestBar(True) if show_interestbar else None
+
+    def sort_menu(self):
+        # can't sort these yet
+        pass
 
     def new_item_buttons(self):
         return [IconButton(title=_('space'), link='/spaces/create', icon_class="fa fa-plus")]

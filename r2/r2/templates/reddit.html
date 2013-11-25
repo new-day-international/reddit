@@ -162,6 +162,7 @@
       <div class="tall-collapse-button open" style=""></div>
       <h2>${Title()}</h2>
       <div class="row">
+        ${thing.sort_menu()}
         <div class="pull-right">
           Add new: <div class="btn-group">
             %for button in thing.new_item_buttons():
@@ -169,7 +170,6 @@
             %endfor
           </div>
         </div>
-        ${thing.sort_menu}
       </div>
       <br />
 
