@@ -110,7 +110,7 @@ body {
 }
 
 .flat-list {
-  padding: 5px 0 0 10px;
+  padding: 5px 0 0 0;
 }
 .flat-list.buttons li {
 /*  float: left;
@@ -179,7 +179,7 @@ body {
 
 #item-list .media ul, span.domain {
   float: left;
-  padding-top: 5px;
+  padding: 5px 10px 0 0;
 }
 
 #item-list .media .minor {
@@ -355,5 +355,12 @@ h2.redditname  {
 
 .sidecontentbox {
   text-transform: capitalize;
+}
+
+.click-gadget .reddit-link {
+  margin-bottom: 5px;
+}
+.click-gadget .midcol {
+  margin-bottom: 5px;
 }
 

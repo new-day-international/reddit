@@ -33,9 +33,8 @@
       <span class="collapse-button">-</span>
     %endif
   </div>
-  <ul class="content">
     %for c in thing.content:
-      <li>${c}</li>
+      ${c}
     %endfor
 
     %if thing.more_href:
