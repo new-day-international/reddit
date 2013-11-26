@@ -145,6 +145,10 @@ body {
   padding-top: 20px;
 }
 
+h4.collapsable {
+  cursor: pointer;
+}
+
 .navbar-nav>li.dropdown>a {
   /*padding: 6px;*/
 }

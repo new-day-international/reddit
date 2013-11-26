@@ -34,7 +34,7 @@ var Reddit = {};
 Reddit.modhash = "${c.modhash}";
 </script>
 
-<div id="header" role="banner" class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<div id="header" role="banner" class="navbar navbar-default navbar-fixed-top">
   <div class="">
     <ul class="nav navbar-nav">
       <li class="${'active' if not request.path.startswith(("/spaces", "/people",)) else ''}" id="header-bottom-${'right' if c.lang_rtl else 'left'}">

@@ -146,7 +146,7 @@
         %if thing.title:
           ${thing.title}
         %endif
-      <strong>${thing.selected.title}</strong> <span class="caret"></span>
+      <strong>${thing.selected}</strong> <span class="caret"></span>
       </button>
       <ul class="dropdown-menu" role="menu">
         %for i, option in enumerate(thing):
