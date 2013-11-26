@@ -139,18 +139,29 @@
   %endif
 </%def>
 
-<%def name="bootstrap_tabs()">
+<%def name="bootstrap_drop_down_button()">
   %if thing:
-    <ul class="nav nav-tabs">
+    <div class="btn-group pull-left">
+      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+        %if thing.title:
+          ${thing.title}
+        %endif
+      <strong>${thing.selected.title}</strong> <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" role="menu">
         %for i, option in enumerate(thing):
+          %if option == thing.selected:
+             <%continue %>
+          %endif
           <%
              li_class = "class='active'" if option == thing.selected else ""
           %>
           <li ${li_class}>
             ${option}
           </li>
-
         %endfor
-    </ul>
+
+      </ul>
+    </div>
   %endif
 </%def>
