@@ -316,7 +316,7 @@ class FrontController(RedditController, OAuth2ResourceController):
                                         display=display,
                                         cloneable=True,
                                         extra_css = 'atnamepicker'))
-            displayPane.append(NamePickerLinks())                            
+            #displayPane.append(NamePickerLinks())                            
 
         if c.user_is_loggedin:
             # Checkbox for whether the user wants to receive new comments in email

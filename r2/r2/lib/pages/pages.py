@@ -224,7 +224,7 @@ class Reddit(Templated):
                                comment=None,
                                clone_template=True,
                               )
-            self._content = PaneStack([ShareLink(), content, gold])
+            self._content = PaneStack([ShareLink(), NotifyLink(), content, gold])
         else:
             self._content = content
 
@@ -2305,7 +2305,15 @@ class ShareLink(CachedTemplate):
         Templated.__init__(self, link_name = link_name,
                            emails = c.user.recent_share_emails())
 
+class NotifyLink(CachedTemplate):
+   def __init__(self, link_name = "", emails = None):
+       self.captcha = c.user.needs_captcha()
+       Templated.__init__(self, link_name = link_name,
+                          emails = c.user.recent_share_emails())
+
         
+class Notify(Templated):
+  pass
 
 class Share(Templated):
     pass

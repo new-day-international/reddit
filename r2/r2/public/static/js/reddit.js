@@ -348,6 +348,18 @@ function unfriend(user_name, container_name, type) {
     }
 };
 
+function notify(elem) {
+    $.request("new_captcha");
+    $(elem).new_thing_child($(".notifylink:first").clone(true)
+                            .attr("id", "notifylink_" + $(elem).thing_id()),
+                             false);
+    $.request("new_captcha");
+};
+
+function cancelNotify(elem) {
+    return cancelToggleForm(elem, ".notifylink", ".notify-button");
+};
+
 function share(elem) {
     $.request("new_captcha");
     $(elem).new_thing_child($(".sharelink:first").clone(true)

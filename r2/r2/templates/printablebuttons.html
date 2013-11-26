@@ -183,6 +183,10 @@
     </li>
   %endif
   % if c.user_is_loggedin or not g.read_only_mode:
+  <li class="notify">
+    ${self.toggle_button("notify-button", _("notify"), _("cancel"),
+                       "notify", "cancelNotify", login_required = True)}  
+  </li>  
   <li class="share">
     ${self.toggle_button("share-button", _("share"), _("cancel"),
                          "share", "cancelShare", login_required = True)}

@@ -1449,6 +1449,28 @@ class ApiController(RedditController, OAuth2ResourceController):
                 VRatelimit.ratelimit(rate_user=True, rate_ip = True,
                                      prefix = "rate_share_")
 
+    @validatedForm(VUser(),
+                VModhash(),
+                VCaptcha(),
+                emails = ValidEmailsOrExistingUnames("notify_to"),
+                thing = VByName('parent'),
+                ip = ValidIP())
+    def POST_notify(self, notifyform, jquery, emails, thing, ip):
+        emails, users = emails
+        link = jquery.things(thing._fullname)
+        link.set_html(".notify", _("notified"))
+        notifyform.html("<div class='clearleft'></div>"
+                       "<p class='error'>%s</p>" % 
+                       _("notifications have been sent."))
+        
+        for target in users:
+            # here we do something for each user
+            pass
+            #m, inbox_rel = Message._new(c.user, target, subject, message, ip)
+            #amqp.add_item('new_message', m._fullname)
+            #queries.new_message(m, inbox_rel)
+
+
 
     @require_oauth2_scope("vote")
     @noresponse(VUser(),
