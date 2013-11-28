@@ -196,6 +196,7 @@ def menu_style(type):
              formtab = ('tabmenu', 'formtab'),
              flat_vert = ('flatlist', 'flat-vert'),
              bootstrap_drop_down_button = ('bootstrap_drop_down_button', 'bootstrap_drop_down_button'),
+             bootstrap_tabs = ('bootstrap_tabs', 'bootstrap_tabs'),
              )
     return d.get(type, default)
 

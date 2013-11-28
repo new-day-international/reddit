@@ -516,7 +516,7 @@ class Reddit(Templated):
                             ]
 
     def sort_menu(self):
-        return NavMenu(self.sort_buttons(), type='bootstrap_drop_down_button', title="Sorted by")
+        return NavMenu(self.sort_buttons(), type='bootstrap_tabs', title="Sorted by")
 
     def build_toolbars(self):
         """Sets the layout of the navigation topbar on a Reddit.  The result
