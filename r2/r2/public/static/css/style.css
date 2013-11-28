@@ -9,6 +9,10 @@ body {
     margin-top: 10px;
 }
 
+.top-bar-container {
+  height: 0 !important;
+}
+
 #searchexpando {
   display: none;
   margin: 5px 0 0 0;
@@ -29,11 +33,14 @@ body {
 
 .col-md-0 {
   float: left;
-  position: relative;
   min-height: 1px;
   padding:0;
   overflow: hidden;
   width: 0;
+}
+
+.col-fixed {
+  position: fixed;
 }
 
 .main-list {
@@ -44,6 +51,7 @@ body {
   left: 0px; top:0px; z-index: 99;
   height:100%; width: 6px;
   cursor: pointer;
+  background-attachment: fixed;
   }
   .tall-collapse-button:hover { 
     outline: 1px solid #66afe9;
@@ -143,11 +151,17 @@ body {
 #left-sidebar {
   height: 100%;
   padding-top: 20px;
-}
+  }
+  #left-sidebar ul {
+    padding-left: 25px;
+  }
 
 h4.collapsable {
   cursor: pointer;
-}
+  }
+  h4.collapsable i {
+    margin-right: 5px;
+  }
 
 .navbar-nav>li.dropdown>a {
   /*padding: 6px;*/

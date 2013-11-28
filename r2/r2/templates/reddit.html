@@ -119,7 +119,7 @@
   <%include file="redditheader.html"/>
   
   <div class="row">
-    <div id="left-sidebar" class="col-md-2">
+    <div id="left-sidebar" class="col-md-2 col-fixed">
       <form role="form">
         <div class="form-group">
           <label class="sr-only" for="exampleInputEmail2">go to space by name</label>
@@ -158,7 +158,7 @@
     ##<div class="fixedwidth"><!--IE6sux--></div>
     ##<div class="clearleft"><!--IE6sux--></div>
     <a name="content"></a>
-    <div ${tags(id=thing.content_id)} ${classes("content", "col-md-7", "main-list", thing.css_class)} role="main">
+    <div ${tags(id=thing.content_id)} ${classes("content", "col-md-7", "col-md-offset-2", "main-list", thing.css_class)} role="main">
       <div class="tall-collapse-button open" style=""></div>
       <h2>${Title()}</h2>
       <div class="row">
