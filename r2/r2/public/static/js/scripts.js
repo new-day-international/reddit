@@ -4,9 +4,11 @@ $(function () {
     $(this).attr('src', $(this).attr('src').replace('test.lightnet','lightnet'));
   });
 
+  $('.content').css("min-height", $('#right-sidebar').height() );
+
   var sidebar_width;
 
-  $(".tall-collapse-button").click(function(){
+  $(".tall-collapse-button").on("click", function(){
 
     $(".main-list").prepend(sidebar_width);
 

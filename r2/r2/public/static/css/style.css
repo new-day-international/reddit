@@ -60,7 +60,7 @@ body {
   margin: 0 10px 0 0;
 }
 
-.score {
+.midcol .score {
   width: 25px; 
 }
 
@@ -166,9 +166,9 @@ h4.collapsable {
 }
 
 #item-list h4, .tagline {
-  overflow: hidden;
+/*  overflow: hidden;
   text-overflow:ellipsis;
-  white-space:nowrap; 
+  white-space:nowrap; */
 }
 
 #item-list .media {
@@ -366,5 +366,9 @@ h2.redditname  {
 }
 .click-gadget .midcol {
   margin-bottom: 5px;
+}
+
+#moresearchinfo {
+  display: none;
 }
 

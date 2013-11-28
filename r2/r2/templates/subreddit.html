@@ -43,7 +43,7 @@
 <%def name="entry()">
 <% fullname = thing._fullname %>
 <p class="titlerow"> 
-  <a class="title" href="${thing.path}"><b>${thing.name}</b>: ${thing.title}</a>
+  <a class="title" href="${thing.path}"><h3>${thing.name}</h3>${thing.title}</a>
   %if c.user_is_admin:
   ${self.admintagline()}
   %endif

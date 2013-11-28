@@ -126,7 +126,6 @@
 
   <p class="tagline">${self.tagline()}</p>
 
-  ${self.link_at_domain()}
   <% 
      child_content = ""
      if thing.link_child and thing.link_child.load:
@@ -163,6 +162,9 @@
       cache["${thing._fullname}_cache"] = "${websafe(child_content)}";
     </script>
   %endif
+
+    ${self.link_at_domain()}
+
 </%def>
 
 <%def name="thing_css_class(what)" buffered="True">
@@ -224,7 +226,7 @@ ${parent.thing_data_attributes(what)} data-ups="${what.upvotes}" data-downs="${w
   %if (not thing.is_self) or c.user_is_admin:
     <span class="domain">
       %if not thing.is_self:
-        <span class="btn btn-info btn-xs">
+        <span class="btn btn-default btn-xs">
           <i class="fa fa-external-link"></i> ${plain_link(thing.domain_link_text, thing.url, _sr_path = False, target = '_blank')}
         </span>
       %endif
