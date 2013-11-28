@@ -160,16 +160,8 @@
     <a name="content"></a>
     <div ${tags(id=thing.content_id)} ${classes("content", "col-md-7", "col-md-offset-2", "main-list", thing.css_class)} role="main">
       <div class="tall-collapse-button open" style=""></div>
-      <h2>${Title()}</h2>
       <div class="row">
         ${thing.sort_menu()}
-        <div class="pull-right">
-          Add new: <div class="btn-group">
-            %for button in thing.new_item_buttons():
-              ${button}
-            %endfor
-          </div>
-        </div>
       </div>
       <br />
 
