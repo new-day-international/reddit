@@ -4517,6 +4517,36 @@ textext.plugin.autocomplete.js contents:
 Our code:
 Anything of class namepicker gets a textext namepicker
 */
+
+
+var multinamepickerconfig = {
+      plugins : 'tags autocomplete',
+      html : {
+          suggestion : '<div class="text-suggestion"><div class="text-label"></div></div>'
+      },    
+      autocomplete: {
+          render: function(suggestion) {
+              var pic = 'http://' + s3_user_files_host + '/u/' + userhash[suggestion].pic + '/profile_photo.jpg';   
+              return '<img src="' + pic + '"> <div>' + userhash[suggestion].full + '</div>';
+          }
+      },
+      ext: {
+          tags: {
+              renderTag: function(tag) {
+          		var self = this, node = $(self.opts('html.tag'));
+         		if (userhash[tag]) {
+          		    var full = userhash[tag].full.replace('_',' ');
+          		    node.find('.text-label').text(full);
+          		    node.data('text-tag', tag);
+          		    return node;
+          		} else {
+          		    return tag;
+          		}    
+              }
+          },
+      }
+  };
+  
 $(function() {
   $('.spacenamepicker')
     .textext({
@@ -4574,40 +4604,16 @@ $(function() {
       );
     }); 
 
-  $('.multinamepicker')
-    .textext({
-        plugins : 'tags autocomplete',
-        html : {
-            hidden : '<input type="hidden" />',
-            suggestion : '<div class="text-suggestion"><div class="text-label"></div></div>'
-        },    
-        autocomplete: {
-            render: function(suggestion) {
-                var pic = 'http://' + s3_user_files_host + '/u/' + userhash[suggestion].pic + '/profile_photo.jpg';   
-                return '<img src="' + pic + '"> <div>' + userhash[suggestion].full + '</div>';
-            }
-        },
-        ext: {
-            tags: {
-                renderTag: function(tag) {
-            		var self = this, node = $(self.opts('html.tag'));
-            		var full = userhash[tag].full.replace('_',' ');
-            		node.find('.text-label').text(full);
-            		node.data('text-tag', tag);
-            		return node;
-                }
-            },
-        }
-
-    })
-    .bind('getSuggestions',function(e, data) {
-      var query = (data ? data.query : '') || '';
-      var textext = $(e.target).textext()[0];
-      $(this).trigger(
-          'setSuggestions',
-          { result : textext.itemManager().filter(usernames, query) }
-      );
-    }); 
+  $('.multinamepicker').textext(multinamepickerconfig)
+      .bind('getSuggestions',function(e, data) {
+        var query = (data ? data.query : '') || '';
+        var textext = $(e.target).textext()[0];
+        $(this).trigger(
+            'setSuggestions',
+            { result : textext.itemManager().filter(usernames, query) }
+        );
+      }); 
+  
 });
 
 /*
@@ -4621,3 +4627,12 @@ $(function() {
       data: userdata
   });
 });
+
+
+function printObject(o) {
+  var out = '';
+  for (var p in o) {
+    out += p + ': ' + o[p] + '\n';
+  }
+  alert(out);
+}
