@@ -349,10 +349,20 @@ function unfriend(user_name, container_name, type) {
 };
 
 function notify(elem) {
+    //printObject(elem);
     $.request("new_captcha");
     $(elem).new_thing_child($(".notifylink:first").clone(true)
                             .attr("id", "notifylink_" + $(elem).thing_id()),
                              false);
+    $('#notifylink_'+$(elem).thing_id()+' textarea').textext(multinamepickerconfig)
+    .bind('getSuggestions',function(e, data) {
+      var query = (data ? data.query : '') || '';
+      var textext = $(e.target).textext()[0];
+      $(this).trigger(
+          'setSuggestions',
+          { result : textext.itemManager().filter(usernames, query) }
+      );
+    });
     $.request("new_captcha");
 };
 

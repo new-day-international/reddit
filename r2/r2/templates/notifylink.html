@@ -30,16 +30,16 @@
   <div class="clearleft"><!--IEsux--></div>
     ${error_field("RATELIMIT", "ratelimit")}
     <input type="hidden" name="parent" value="${thing.link_name}"/>
-    <table class="sharetable preftable">
-      <tr class="">
+    <table class="sharetable preftable" style="min-height:110px">
+      <tr class="" style="min-height:68px">
         <th>
           <label for="notify_to_${thing.link_name}">
-            ${_("notify these people of this post")}
+            ${_("notify people of this post")}
           </label>
         </th>
         <td>
           <textarea id="notify_to_${thing.link_name}" 
-                    name="notify_to" rows="4" cols="40" class="multinamepicker">
+                    name="notify_to" rows="4" cols="40">
             ${unsafe('&#x0D;&#x0A;'.join(websafe(e) for e in thing.emails))}
           </textarea>
         </td>
@@ -52,7 +52,7 @@
       %if thing.captcha:
         ${captchagen('', tabulate = False, size = 30)}
       %endif
-      <tr>
+      <tr style="min-height:60px;">
         <td>
         </td>
         <td>

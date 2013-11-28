@@ -1452,11 +1452,10 @@ class ApiController(RedditController, OAuth2ResourceController):
     @validatedForm(VUser(),
                 VModhash(),
                 VCaptcha(),
-                emails = ValidEmailsOrExistingUnames("notify_to"),
+                users = ValidNamepickerUnames("notify_to"),
                 thing = VByName('parent'),
                 ip = ValidIP())
-    def POST_notify(self, notifyform, jquery, emails, thing, ip):
-        emails, users = emails
+    def POST_notify(self, notifyform, jquery, users, thing, ip):
         link = jquery.things(thing._fullname)
         link.set_html(".notify", _("notified"))
         notifyform.html("<div class='clearleft'></div>"

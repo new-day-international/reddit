@@ -129,11 +129,16 @@ textext.plugin.tags.css contents:
 custom, for textext, changed by us
 */
 
-.text-core {
+.roundfield .text-core {
     min-width: 300px;
     display: inline-block;
     top: 6px;
     padding-right: 5px;
+}
+.notifylink .text-core {
+    min-height: 64px;
+    min-width: 300px;
+    top: 0px;
 }
 
 .text-label img {
@@ -172,6 +177,7 @@ custom, for textext, changed by us
 	box-shadow: inset 0 0 4px #5f99cf;
 	*/
 }
+
 
 /* 
 atwho css, slightly changed by us
