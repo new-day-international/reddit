@@ -22,6 +22,10 @@ body {
     display: none;
 }
 
+.btn .fa {
+  margin-right: 3px;
+}
+
 .dropdown-toggle img {
   margin: -10px 5px 0 0;
 }
@@ -180,6 +184,12 @@ h4.collapsable {
 
 #item-list > li:nth-child(even) {
   background-color: #eff7fc;
+}
+
+#item-list h4.title a.label {
+  padding: 3px 6px; margin-right: 5px;
+  font-size: 12px;
+  font-weight: normal;
 }
 
 #item-list h4, .tagline {

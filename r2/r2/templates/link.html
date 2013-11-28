@@ -89,6 +89,7 @@
 
 <%def name="entry()">
   <h4 class="title media-heading">
+    <a href="${thing.subreddit_path}" class="label label-default">${thing.subreddit.name}</a>
     <%call expr="make_link('title', 'title')">
       ${thing.title}
     </%call>
