@@ -327,8 +327,12 @@ a.ping {
     min-width: 20px;
     }
     a.ping i.fa-emx {
-      font-size: 1.6em;
+      font-size: 1.4em;
+      margin: 0 7px 0 0;
     }
+  a.ping span {
+    display: block-inline;
+  }
   a.ping .badge {
     position: absolute;
     right: 3px; top: 7px;
