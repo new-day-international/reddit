@@ -49,6 +49,18 @@
 
   ${addremove_button(thing.sr)}
 
+  <div class="clearfix"></div>
+
+  <h5>${thing.sr.score} subscribers</h5>
+
+  %if thing.sr.author:
+    ${unsafe(_("created by&#32;%(user)s") % dict(user = unsafe(WrappedUser(thing.sr.author).render())))}
+  %endif
+  
+  <span class="age">
+    ${_("a community for")}&#32;${thing_timestamp(thing.sr)}
+  </span> 
+
   %if thing.sr.moderator:
     <div class="leavemoderator">
       ${text_with_links(ModList.remove_self_title % dict(action='(%(action)s)'),
@@ -77,16 +89,6 @@
 
   ${thing.sr.house_rules_usertext}
 
-  <div class="bottom">
-    %if thing.sr.author:
-      ${unsafe(_("created by&#32;%(user)s") % dict(user = unsafe(WrappedUser(thing.sr.author).render())))}
-    %endif
-    
-    <span class="age">
-      ${_("a community for")}&#32;${thing_timestamp(thing.sr)}
-    </span>  
-  </div>
-
   %if c.user_is_admin:
     %if thing.sr._spam:
       ${state_button("approve", _("approve this space"),
@@ -101,10 +103,6 @@
         "return change_state(this, 'remove');", _("banned"),
         hidden_data = dict(id = thing.sr._fullname))}
     %endif
-  %endif
-
-  <div class="clear"> </div>
-  
+  %endif  
 
 </div>
-
