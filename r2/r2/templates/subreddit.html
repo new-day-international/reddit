@@ -71,7 +71,7 @@
   ${toggle_button("fancy-toggle-button", _("subscribe"), _("unsubscribe"),
                   "subscribe('%s')" % sr._fullname, 
                   "unsubscribe('%s')" % sr._fullname, 
-                  css_class = "add", alt_css_class = "remove",
+                  css_class = "add btn btn-success", alt_css_class = "remove btn btn-danger",
                   reverse = sr.subscriber,
                   login_required = True)}
 %if sr.subscriber:   
