@@ -105,13 +105,6 @@ body {
     left:0 !important; top: 0 !important;
   }
 
-.usertext-body {
-  padding: 10px 0 0 10px;
-  }
-  .usertext-body p {
-    margin: 10px 0 0 0;
-  }
-
 .tagline * {
   display: inline;
 }
@@ -379,14 +372,34 @@ h4.collapsable:not(.collapsed) .glyphicon-collapse-down {
 }
 
 
-/*** Sidebar ***/
+/*** Right Sidebar ***/
 .side {
   padding-top: 10px;
 }
 
-h2.redditname  {
-  text-transform: capitalize;
+.spacetitlebox {
+
 }
+
+.spacetitlebox h2  {
+  background: #ccc;
+  text-transform: capitalize;
+  text-align: center;
+}
+
+.usertext-body {
+  padding: 10px 0 0 10px;
+  }
+.usertext-body p {
+    margin: 10px 0 0 0;
+  }
+
+.spacetitlebox img {
+  float: left;
+  max-width: 40%;
+  margin: 0 10px 10px 0;
+}
+
 
 .sidecontentbox {
   text-transform: capitalize;

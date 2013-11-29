@@ -23,16 +23,29 @@
 <%!
    from r2.lib.strings import strings, Score
    from r2.lib.pages import WrappedUser, ModList
+   from r2.models.subreddit import DefaultSR
  %>
 
 <%namespace file="utils.html" import="plain_link, thing_timestamp, text_with_links"/>
 <%namespace file="subreddit.html" import="addremove_button" />
 <%namespace file="printablebuttons.html" import="ynbutton, state_button" />
 
-<div class="titlebox">
+<div class="spacetitlebox">
   <h2 class="hover redditname">
     ${plain_link(thing.sr.name, thing.sr.path, _sr_path=False, _class="hover")}
   </h2>
+
+  %if thing.sr.header:
+    <img src="${thing.sr.header}" />
+  %else:
+    <img src="http://s3.amazonaws.com/spaces.lightnet.is/PI1NqvjYc14zaD4d.png" />
+  %endif
+
+  %if thing.sr.description:
+    <p>${thing.sr.public_description}</p>
+  %endif
+
+
 
   ${addremove_button(thing.sr)}
 
@@ -63,10 +76,6 @@
   %endif
 
   ${thing.sr.house_rules_usertext}
-
-  %if thing.sr.description:
-    ${thing.sr.description_usertext}
-  %endif
 
   <div class="bottom">
     %if thing.sr.author:
