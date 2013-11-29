@@ -609,15 +609,15 @@ class Subreddit(Thing, Printable):
             else:
                 item.public_description_usertext = None
 
-            house_rules = '#### [](#h4-green)\n> ## [House Rules](#icon-information)\n'
+            house_rules = '## [House Rules](#icon-information)\n'
             if not item.space_is_house:
                 rules_from = item.use_rules_from_space if item.use_rules_from_space else ""
-                house_rules += ">House Rules from **[" + rules_from + "]"
+                house_rules += "House Rules from **[" + rules_from + "]"
                 house_rules += "(http://" + g.domain + "/space/" + rules_from + ")"
-                house_rules += "\:**\n\n>"
-                house_rules += "\n\n>"
-            house_rules += item.get_house_rules().replace('\n','\n\n>')
-            house_rules += "\n\n>House Color for **"
+                house_rules += "\:**\n\n"
+                house_rules += "\n\n"
+            house_rules += item.get_house_rules().replace('\n','\n\n')
+            house_rules += "\n\nHouse Color for **"
             if item.space_is_house:
                 house_rules += item.name
             else:
@@ -625,7 +625,7 @@ class Subreddit(Thing, Printable):
                 house_rules += "[" + rules_from  + "]"
                 house_rules += "(http://" + g.domain + "/space/" + rules_from + ")"
             house_rules += "\:**"
-            house_rules += "\n\n><div class=\"house_color\" "
+            house_rules += "\n\n<div class=\"house_color\" "
             house_rules += "style=\"width:265px; background-color: "
             house_rules += item.get_house_color()
             house_rules += "; float: left; margin-left: 10px; margin-top: 4px; height: 20px\"></div>&nbsp;"
