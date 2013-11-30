@@ -52,8 +52,8 @@
 
   <div class="clearfix"></div>
 
+  <h5>Access: ${thing.sr.type}</h5>
   <h5>${thing.sr.score} subscribers</h5>
-  <% WrappedUser(a) for a in Account._byID([uid for uid in thing.sr.moderators], data=True, return_dict=False) if not a._deleted %>
 
   %if thing.sr.author:
     ${unsafe(_("created by&#32;%(user)s") % dict(user = unsafe(WrappedUser(thing.sr.author).render())))}
