@@ -24,6 +24,7 @@
    from r2.lib.strings import strings, Score
    from r2.lib.pages import WrappedUser, ModList
    from r2.models.subreddit import DefaultSR
+   from r2.models import Account
  %>
 
 <%namespace file="utils.html" import="plain_link, thing_timestamp, text_with_links"/>
@@ -52,6 +53,7 @@
   <div class="clearfix"></div>
 
   <h5>${thing.sr.score} subscribers</h5>
+  <% WrappedUser(a) for a in Account._byID([uid for uid in thing.sr.moderators], data=True, return_dict=False) if not a._deleted %>
 
   %if thing.sr.author:
     ${unsafe(_("created by&#32;%(user)s") % dict(user = unsafe(WrappedUser(thing.sr.author).render())))}

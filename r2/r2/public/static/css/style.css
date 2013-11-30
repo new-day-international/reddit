@@ -416,3 +416,8 @@ h4.collapsable:not(.collapsed) .glyphicon-collapse-down {
   display: none;
 }
 
+.listing-page .searchpane {
+  width: 300px;
+  margin: 0 auto;
+}
+
