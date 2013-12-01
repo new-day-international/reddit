@@ -71,10 +71,11 @@ body {
   background: #eee url(../sidebar-grippy.png) left;}
 
 .midcol {
-  float: left;
   margin: 0 10px 0 0;
 }
-
+.midcol.vote-buttons {
+  float: left;
+}
 .midcol .score {
   width: 25px; 
 }
@@ -416,8 +417,26 @@ h4.collapsable:not(.collapsed) .glyphicon-collapse-down {
   display: none;
 }
 
+/*** spaces page ***/
+
 .listing-page .searchpane {
   width: 300px;
   margin: 0 auto;
 }
 
+#item-list .media.subreddit {
+  position: relative;
+  float: left; clear: none;
+  min-width: 250px;
+  width: 30%; height: 400px;
+  margin: 0 3% 3% 0;
+  border: 1px solid black;
+  }
+  #item-list .media.subreddit .midcol {
+    position: absolute;
+    bottom: 10px;
+  }
+  #item-list .media.subreddit h3 {
+    margin: 0; padding: 0;
+    text-align: center;
+  }

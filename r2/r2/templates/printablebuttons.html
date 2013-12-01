@@ -474,6 +474,12 @@
        css_class, alt_css_class = alt_css_class, css_class
    extra_class = "login-required" if login_required else ""
  %>
+
+ ### hackity hack hack
+ %if title == 'subscribe' or title == 'unsubscribe':
+    <% class_name += " btn-group btn-group-sm" %>
+ %endif
+
 <span class="${class_name} toggle" style="${style}">
  <a class="option active ${css_class} ${extra_class}" href="#" tabindex="100"
     %if not login_required or c.user_is_loggedin:
@@ -493,6 +499,7 @@
      &nbsp;
    %endif
  </a>
+
 </span>
 </%def>
 
