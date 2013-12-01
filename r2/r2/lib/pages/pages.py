@@ -1445,7 +1445,7 @@ class SubredditsPage(Reddit):
                  search_params = {}, *a, **kw):
         Reddit.__init__(self, title = title, loginbox = loginbox, infotext = infotext,
                         *a, **kw)
-        self.addspacebutton = IconButton(title=_('Create your own space'), link='/spaces/create', icon_class="fa fa-plus", css_class="col-md-3")
+        self.addspacebutton = IconButton(title=_('Create space'), link='/spaces/create', icon_class="fa fa-plus", css_class="col-md-3")
         self.searchbar = SearchBar(prev_search = prev_search,
                                    elapsed_time = elapsed_time,
                                    num_results = num_results,
