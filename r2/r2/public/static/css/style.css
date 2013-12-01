@@ -80,9 +80,23 @@ body {
   width: 25px; 
 }
 
+.likes .score, .dislikes .score {
+display: none;
+}
+
 .score.likes, .score.dislikes {
   display: none;
 }
+
+.dislikes div.score.dislikes {
+  display: block;
+}
+
+.likes div.score.likes {
+  display: block;
+}
+
+
 
 .arrow {
   width: 25px;
