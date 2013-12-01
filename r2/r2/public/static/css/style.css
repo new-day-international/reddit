@@ -419,9 +419,16 @@ h4.collapsable:not(.collapsed) .glyphicon-collapse-down {
 
 /*** spaces page ***/
 
-.listing-page .searchpane {
+.listing-page .searchpane {/*
   width: 300px;
-  margin: 0 auto;
+  margin: 0 auto;*/
+}
+
+/*God this is awful*/
+.listing-page .nothing{
+  height: 35px;
+  background: none;
+  border: none;
 }
 
 #item-list .media.subreddit {

@@ -1445,15 +1445,18 @@ class SubredditsPage(Reddit):
                  search_params = {}, *a, **kw):
         Reddit.__init__(self, title = title, loginbox = loginbox, infotext = infotext,
                         *a, **kw)
+        self.addspacebutton = IconButton(title=_('Create your own space'), link='/spaces/create', icon_class="fa fa-plus", css_class="col-md-3")
         self.searchbar = SearchBar(prev_search = prev_search,
                                    elapsed_time = elapsed_time,
                                    num_results = num_results,
-                                   header = _('search spaces by name'),
+                                   header = '',
                                    search_params = {},
                                    simple=True,
                                    subreddit_search=True
                                    )
         self.sr_infobar = InfoBar(message = strings.sr_subscribe)
+
+        self.blankspot = IconButton(title='', link='', icon_class="", css_class="nothing col-md-4")
 
         self.interestbar = InterestBar(True) if show_interestbar else None
 
@@ -1481,7 +1484,7 @@ class SubredditsPage(Reddit):
                 NavMenu(buttons, base_path = '/spaces', type="tabmenu")]
 
     def content(self):
-        return self.content_stack((self.searchbar,
+        return self.content_stack((self.addspacebutton, self.searchbar, self.blankspot,
                                    self.nav_menu, self.sr_infobar,
                                    self._content))
 
