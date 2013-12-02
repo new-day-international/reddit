@@ -30,7 +30,7 @@
 <%namespace file="utils.html" import="error_field, md"/>
 
 <%def name="action_button(name, btn_type, onclick, display)">
-  <button type="${btn_type}" onclick="${onclick}" class="${name}"
+  <button type="${btn_type}" onclick="${onclick}" class="btn ${name}"
           ${"style='display:none'" if not display else ""}>
     ${name}
   </button>

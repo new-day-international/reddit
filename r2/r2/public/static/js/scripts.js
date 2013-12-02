@@ -18,6 +18,15 @@ $(function () {
         $(".tall-collapse-button").removeClass("closed").addClass("open");
     }
   })
+
+  $(".item-reply").on("click", function(){
+    if($("form.usertext.cloneable").hasClass("show")) {
+      $("form.usertext.cloneable").removeClass("show");
+    } else {
+      $("form.usertext.cloneable").addClass("show");
+    }
+  })
+
   // $(".dropdown-toggle").dropdown();
 });
 

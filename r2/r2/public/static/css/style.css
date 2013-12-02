@@ -3,6 +3,14 @@ body {
     background: #f1f1f1;
 }
 
+form.usertext.cloneable {
+  display: none; clear: both;
+  margin: 20px 0;
+  }
+  form.usertext.cloneable textarea {
+    min-width: 400px; min-height: 250px;
+  }
+
 .toggle .option { display: none; }
 .toggle .option.active { display: inline; }
 
@@ -168,6 +176,7 @@ display: none;
 #left-sidebar {
   height: 100%;
   padding-top: 20px;
+  overflow: scroll;
   }
   #left-sidebar ul {
     padding-left: 25px;
@@ -197,7 +206,8 @@ h4.collapsable {
 }
 
 #item-list h4.title a.label {
-  padding: 3px 6px; margin-right: 5px;
+  display: block; float: left;
+  padding: 3px 6px; margin: 1px 5px 0 0;
   font-size: 12px;
   font-weight: normal;
 }
