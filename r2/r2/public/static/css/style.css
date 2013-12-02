@@ -462,9 +462,8 @@ h4.collapsable:not(.collapsed) .glyphicon-collapse-down {
 #item-list .media.subreddit {
   position: relative;
   float: left; clear: none;
-  min-width: 250px;
-  width: 30%; height: 400px;
-  margin: 0 3% 3% 0;
+  width: 250px; height: 400px;
+  margin: 0 10px 10px 0;
   border: 1px solid black;
   }
   #item-list .media.subreddit .midcol {
@@ -474,4 +473,7 @@ h4.collapsable:not(.collapsed) .glyphicon-collapse-down {
   #item-list .media.subreddit h3 {
     margin: 0; padding: 0;
     text-align: center;
+  }
+  p.nextprev {
+    clear: both;
   }
