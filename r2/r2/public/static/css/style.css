@@ -1,5 +1,6 @@
 body {
     margin-top: 50px;
+    background: #f1f1f1;
 }
 
 .toggle .option { display: none; }
@@ -52,6 +53,7 @@ body {
 
 .main-list {
   padding: 16px 0 0 20px;
+  background-color: #fff;
 }
 .tall-collapse-button {
   position: absolute;
