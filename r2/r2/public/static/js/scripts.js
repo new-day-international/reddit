@@ -11,10 +11,12 @@ $(function () {
     if($("#left-sidebar").hasClass("col-md-2")) {
         $("#left-sidebar").addClass("col-md-0").removeClass("col-md-2");
         $(".main-list").removeClass("col-md-7").removeClass("col-md-offset-2").addClass("col-md-9");
+        $(".footer-parent").removeClass("col-md-7").removeClass("col-md-offset-2").addClass("col-md-9");
         $(".tall-collapse-button").removeClass("open").addClass("closed");
     } else {
         $("#left-sidebar").removeClass("col-md-0").addClass("col-md-2");
         $(".main-list").removeClass("col-md-9").addClass("col-md-7").addClass("col-md-offset-2");
+        $(".footer-parent").removeClass("col-md-9").addClass("col-md-7").addClass("col-md-offset-2");
         $(".tall-collapse-button").removeClass("closed").addClass("open");
     }
   })
