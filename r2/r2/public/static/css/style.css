@@ -175,11 +175,11 @@ display: none;
 
 #left-sidebar {
   height: 100%;
-  padding-top: 20px;
+  padding: 20px 10px 100px;
   overflow: scroll;
   }
   #left-sidebar ul {
-    padding-left: 25px;
+    padding-left: 30px;
   }
 
 h4.collapsable {
