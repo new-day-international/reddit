@@ -430,6 +430,7 @@ h4.collapsable:not(.collapsed) .glyphicon-collapse-down {
 }
 
 
+
 .sidecontentbox {
   text-transform: capitalize;
 }
@@ -459,20 +460,52 @@ h4.collapsable:not(.collapsed) .glyphicon-collapse-down {
   border: none;
 }
 
+.infobar {
+  clear: both;
+  margin: 50px 0 20px;
+}
+
 #item-list .media.subreddit {
   position: relative;
   float: left; clear: none;
   width: 250px; height: 400px;
   margin: 0 10px 10px 0;
   border: 1px solid black;
+  overflow: visible;
   }
   #item-list .media.subreddit .midcol {
     position: absolute;
-    bottom: 10px;
+    bottom: 10px; left: 25px;
+  }
+  #item-list .media.subreddit .house_color {
+    display: none;
   }
   #item-list .media.subreddit h3 {
+    margin: 0; padding: 5px 0;
+    text-align: center;
+  }
+  #item-list .media.subreddit a.title {
+    display: block;
     margin: 0; padding: 0;
     text-align: center;
+  }
+  #item-list .media.subreddit .description {
+    text-align: center;
+  }
+  #item-list .media.subreddit .description img {
+    max-height: 50px;
+    margin: 10px auto;
+  }
+  #item-list .media.subreddit .usertext-body .md {
+    height: 120px;
+    overflow: scroll;
+    text-overflow: ellipsis;
+    white-space: nowrap; 
+    text-align: left;
+  }
+  #item-list .media.subreddit .usertext-body .md p {
+    overflow: visible;
+    white-space: pre-wrap; 
   }
   p.nextprev {
     clear: both;
