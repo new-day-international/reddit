@@ -71,11 +71,11 @@
         </div>
 
         <div class="bottom-area">
-          ${toggle_button("help-toggle", _("formatting help"), _("hide help"),
+          ${toggle_button("help-toggle btn pull-right", _("formatting help"), _("hide help"),
                           "helpon", "helpoff",
                            style = "" if thing.creating else "display: none")}
 
-          <a href="/wiki/etiquette" class="reddiquette" target="_blank" tabindex="100">${_('lightnet etiquette')}</a>
+          <a href="/wiki/etiquette" class="reddiquette btn pull-right" target="_blank" tabindex="100">${_('lightnet etiquette')}</a>
 
           ${error_field("TOO_LONG", thing.name, "span")}
           ${error_field("RATELIMIT", "ratelimit", "span")}

@@ -6,9 +6,11 @@ body {
 form.usertext.cloneable {
   display: none; clear: both;
   margin: 20px 0;
+  width: 400px;
   }
   form.usertext.cloneable textarea {
     min-width: 400px; min-height: 250px;
+    margin-bottom: 10px;
   }
 
 .toggle .option { display: none; }
