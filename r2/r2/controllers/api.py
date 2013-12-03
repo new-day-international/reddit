@@ -1456,11 +1456,17 @@ class ApiController(RedditController, OAuth2ResourceController):
                 thing = VByName('parent'),
                 ip = ValidIP())
     def POST_notify(self, notifyform, jquery, users, thing, ip):
-        link = jquery.things(thing._fullname)
-        link.set_html(".notify", _("notified"))
-        notifyform.html("<div class='clearleft'></div>"
-                       "<p class='error'>%s</p>" % 
-                       _("notifications have been sent."))
+        #-- Notification of either a link or a space. So, we might come from either the the notify button under a link or from the invite field in the right sidebar
+        if thing._fullname[0:2] == 't5':
+            # A space 
+            notifyform.html("<div>notifications have been sent</div><br>")
+             
+        elif thing._fullname[0:2] == 't6':
+            # A post/link
+            link = jquery.things(thing._fullname)
+            link.set_html(".notify", _("notified"))
+            notifyform.html("<div class='clearleft'></div>" 
+                "<p class='error'>%s</p>" % _("notifications have been sent."))
         
         for target in users:
             # here we do something for each user
