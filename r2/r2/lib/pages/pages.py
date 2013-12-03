@@ -326,6 +326,9 @@ class Reddit(Templated):
 
         if self.searchbox:
             ps.append(SearchForm())
+            
+        if (not isinstance(c.site, FakeSubreddit)):    
+            ps.append(SpaceNotificationForm());    
 
         if not c.user_is_loggedin and self.loginbox and not g.read_only_mode:
             ps.append(LoginFormWide())
@@ -2180,6 +2183,14 @@ class SearchBar(Templated):
                            converted_data=converted_data,
                            subreddit_search=subreddit_search, facets=facets,
                            sort=sort, recent=recent)
+
+class SpaceNotificationForm(Templated):
+   """Form for notifying other users of a space."""
+   def __init__(self):
+       self.sr = c.site
+       #sr_ids = Subreddit.user_subreddits(user)
+       #srs = Subreddit._byID(sr_ids, data=True, return_dict=False)
+       Templated.__init__(self)
 
 class Frame(Wrapped):
     """Frameset for the FrameToolbar used when a user hits /tb/. The
