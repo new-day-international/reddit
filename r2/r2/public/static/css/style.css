@@ -178,7 +178,7 @@ display: none;
 #left-sidebar {
   height: 100%;
   padding: 20px 10px 100px;
-  overflow: scroll;
+  overflow: auto;
   }
   #left-sidebar ul {
     padding-left: 30px;

@@ -170,12 +170,10 @@
 <%def name="bootstrap_tabs()">
   %if thing:
       <ul class="nav nav-tabs">
-        <% is_comments = "true" %>
         %for i, option in enumerate(thing):
           <%
             if option == thing.selected:
               li_class = "class='active'"
-              is_comments = "false"
             else:
               li_class = ""
             endif
@@ -184,10 +182,6 @@
             ${option}
           </li>
         %endfor
-          <% li_class = "class='active'" if is_comments == "true" else "" %>
-          <li ${li_class}>
-            <a href="/comments">comments</a>
-          </li>
       </ul>
   %endif
 </%def>

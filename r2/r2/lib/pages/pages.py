@@ -506,14 +506,18 @@ class Reddit(Templated):
 
     def sort_buttons(self):
         if c.site == Friends:
-            return [NamedButton('new', dest='', aliases=['/hot']),
-                            NamedButton('comments')]
+            return [
+                NamedButton('new', dest='', aliases=['/hot']),
+                NamedButton('comments')
+            ]
         else:
-            return [NamedButton('active', dest='', aliases=['/active']),
-                            NamedButton('new'),
-                            NamedButton('hot'),
-                            NamedButton('top'),
-                            ]
+            return [
+                NamedButton('active', dest='', aliases=['/active']),
+                NamedButton('new'),
+                NamedButton('hot'),
+                NamedButton('top'),
+                NamedButton('comments'),
+            ]
 
     def sort_menu(self):
         return NavMenu(self.sort_buttons(), type='bootstrap_tabs', title="Sorted by")
@@ -1460,9 +1464,23 @@ class SubredditsPage(Reddit):
 
         self.interestbar = InterestBar(True) if show_interestbar else None
 
+
+    def sort_buttons(self):
+        buttons = [
+            NamedButton('popular', dest='/spaces'),
+            #NavButton(menu.popular, ""),
+            NamedButton("new", dest='/spaces/new')
+        ]
+        if c.user_is_loggedin:
+            #add the aliases to "my reddits" stays highlighted
+            buttons.append(NamedButton("mine", dest='/spaces/mine',
+                                       aliases=['/spaces/mine/subscriber',
+                                                '/spaces/mine/contributor',
+                                                '/spaces/mine/moderator']))
+        return buttons
+
     def sort_menu(self):
-        # can't sort these yet
-        pass
+        return NavMenu(self.sort_buttons(), type='bootstrap_tabs', title="Sorted by")
 
     def new_item_buttons(self):
         return [IconButton(title=_('space'), link='/spaces/create', icon_class="fa fa-plus")]
