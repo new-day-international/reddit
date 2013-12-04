@@ -161,7 +161,7 @@ class Reddit(Templated):
         self.loginbox       = True
         self.show_sidebar   = show_sidebar
         # Hack! Not sure, can't seem to set show_sidebar in class SubredditsPage
-        if self.title == 'spaces':
+        if "SubredditsPage" in self.render_class.__name__:
             self.show_sidebar = False
         self.space_compress = space_compress and not g.template_debug
         # instantiate a footer
@@ -1477,10 +1477,11 @@ class SubredditsPage(Reddit): # /spaces page
         ]
         if c.user_is_loggedin:
             #add the aliases to "my reddits" stays highlighted
-            buttons.append(NamedButton("mine", dest='/spaces/mine',
-                                       aliases=['/spaces/mine/subscriber',
-                                                '/spaces/mine/contributor',
-                                                '/spaces/mine/moderator']))
+            buttons.append(NamedButton("mine", dest='/spaces/mine'))#,
+            #                           aliases=['/spaces/mine/subscriber',
+            #                                    '/spaces/mine/contributor',
+            #                                    '/spaces/mine/moderator']))
+            buttons.append(NamedButton("my_mod", dest='/spaces/mine/moderator'))
         return buttons
 
     def sort_menu(self):
@@ -1497,10 +1498,10 @@ class SubredditsPage(Reddit): # /spaces page
 
         if c.user_is_loggedin:
             #add the aliases to "my reddits" stays highlighted
-            buttons.append(NamedButton("mine",
-                                       aliases=['/spaces/mine/subscriber',
-                                                '/spaces/mine/contributor',
-                                                '/spaces/mine/moderator']))
+            buttons.append(NamedButton("mine"))#,
+                                       #aliases=['/spaces/mine/subscriber',
+                                       #         '/spaces/mine/contributor',
+                                       #         '/spaces/mine/moderator']))
 
         return [PageNameNav('spaces'),
                 NavMenu(buttons, base_path = '/spaces', type="tabmenu")]
@@ -1525,7 +1526,7 @@ class MySubredditsPage(SubredditsPage):
     """Same functionality as SubredditsPage, without the search box."""
     
     def content(self):
-        return self.content_stack((self.nav_menu, self.infobar, self._content))
+        return self.content_stack((self.infobar, self._content))
 
 def votes_visible(user):
     """Determines whether to show/hide a user's votes.  They are visible:

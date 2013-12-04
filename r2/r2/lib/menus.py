@@ -140,6 +140,7 @@ menu =   MenuHandler(hot          = _('hot'),
                      popular      = _("popular"),
                      create       = _("create"),
                      mine         = _("my subscribed spaces"),
+                     my_mod       = _("my moderated spaces"),
 
                      i18n         = _("help translate"),
                      errors       = _("errors"),
