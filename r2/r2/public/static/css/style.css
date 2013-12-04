@@ -183,6 +183,9 @@ display: none;
   #left-sidebar ul {
     padding-left: 30px;
   }
+  #left-sidebar ul .btn {
+    margin-left: -6px;
+  }
 
 h4.collapsable {
   cursor: pointer;
