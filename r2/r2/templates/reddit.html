@@ -158,7 +158,12 @@
     ##<div class="fixedwidth"><!--IE6sux--></div>
     ##<div class="clearleft"><!--IE6sux--></div>
     <a name="content"></a>
-    <div ${tags(id=thing.content_id)} ${classes("content", "col-md-7", "col-md-offset-2", "main-list", thing.css_class)} role="main">
+    %if thing.show_sidebar:
+      <% col_size = "col-md-7" %>
+    %else:
+      <% col_size = "col-md-10" %>
+    %endif
+    <div ${tags(id=thing.content_id)} ${classes("content", col_size, "col-md-offset-2", "main-list", thing.css_class)} role="main">
       <div class="tall-collapse-button open" style=""></div>
       <div class="row">
         ${thing.sort_menu()}
@@ -171,6 +176,7 @@
 
   %if thing.show_sidebar:
     <div id="right-sidebar" class="side col-md-3">
+      ${thing.show_sidebar}
       ${sidebar(content = thing.rightbox())}
     </div>
   %endif

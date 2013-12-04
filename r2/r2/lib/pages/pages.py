@@ -160,6 +160,9 @@ class Reddit(Templated):
         self.show_wiki_actions = show_wiki_actions
         self.loginbox       = True
         self.show_sidebar   = show_sidebar
+        # Hack! Not sure, can't seem to set show_sidebar in class SubredditsPage
+        if self.title == 'spaces':
+            self.show_sidebar = False
         self.space_compress = space_compress and not g.template_debug
         # instantiate a footer
         self.footer         = RedditFooter() if footer else None
@@ -1436,7 +1439,7 @@ class EditReddit(Reddit):
         else:
             return []
 
-class SubredditsPage(Reddit):
+class SubredditsPage(Reddit): # /spaces page
     """container for rendering a list of reddits.  The corner
     searchbox is hidden and its functionality subsumed by an in page
     SearchBar for searching over reddits.  As a result this class
@@ -1444,6 +1447,7 @@ class SubredditsPage(Reddit):
     self.searchbar"""
     searchbox    = False
     submit_box   = False
+    show_sidebar = False # Isn't changing the value in the Reddit class
     def __init__(self, prev_search = '', num_results = 0, elapsed_time = 0,
                  title = '', loginbox = True, infotext = None, show_interestbar=False,
                  search_params = {}, *a, **kw):
