@@ -47,7 +47,7 @@
       if thing.include_flair_selector:
           classes.append('flairselectable')
     %>
-    ${plain_link(thing.name + thing.karma, "/user/%s" % thing.name,
+    ${plain_link(thing.registration_fullname + thing.karma, "/user/%s" % thing.name,
                  _class = ' '.join(classes),
                  _sr_path = False, target='_blank' if c.user.pref_newwindow else target, title=thing.author_title)}
     %if thing.flair_position == 'right':

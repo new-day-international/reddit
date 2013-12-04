@@ -2647,6 +2647,7 @@ class WrappedUser(CachedTemplate):
 
         CachedTemplate.__init__(self,
                                 name = user.name,
+                                registration_fullname = user.registration_fullname,
                                 force_show_flair = force_show_flair,
                                 has_flair = has_flair,
                                 flair_enabled = flair_enabled,
