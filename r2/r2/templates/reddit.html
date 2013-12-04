@@ -44,12 +44,15 @@
 </%def>
 
 <%def name="global_stylesheets()">
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" type="text/css" />
-<!--   <link rel="stylesheet" href="//http://netdna.bootstrapcdn.com/bootswatch/3.0.2/spacelab/bootstrap.min.css" type="text/css" />
+    ${less_stylesheet('lightnet.less')}
+
+<!--   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" type="text/css" />
+ --><!--   <link rel="stylesheet" href="//http://netdna.bootstrapcdn.com/bootswatch/3.0.2/spacelab/bootstrap.min.css" type="text/css" />
  -->  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.2/css/font-awesome.min.css">
 
-  <link rel="stylesheet" href="${static('style.css')}" type="text/css" />
-</%def>
+<!--   <link rel="stylesheet" href="${static('style.css')}" type="text/css" />
+ -->
+ </%def>
 
 <%def name="sr_stylesheets()">
   %if c.can_apply_styles and c.allow_styles and c.site.stylesheet_hash:
@@ -114,11 +117,15 @@
    reddit.cur_site = "${c.site._fullname if hasattr(c.site, '_fullname') else ''}";
 </%def>
 
+<%def name="sidebar_css_class()">
+
+</%def>
+
 <%def name="bodyContent()">
   <%include file="adminbar.html"/>
   <%include file="redditheader.html"/>
   
-  <div class="row">
+  <div class="row" id="content-row">
     <div id="left-sidebar" class="col-md-2 col-fixed">
       <form role="form">
         <div class="form-group">

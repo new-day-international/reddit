@@ -442,7 +442,7 @@ module["highlight"] = Module("highlight.js",
 )
 
 module["less"] = Module('less.js',
-    'lib/less-1.3.0.min.js',
+    'lib/less-1.5.1.min.js',
     should_compile=False,
 )
 
