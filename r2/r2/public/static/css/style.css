@@ -493,7 +493,7 @@ h4.collapsable:not(.collapsed) .glyphicon-collapse-down {
     text-align: center;
   }
   #item-list .media.subreddit .description img {
-    max-height: 50px;
+    max-height: 80px;
     margin: 10px auto;
   }
   #item-list .media.subreddit .usertext-body .md {
