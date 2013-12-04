@@ -52,7 +52,13 @@
 
   <div class="clearfix"></div>
 
-  <h5>Access: ${thing.sr.type}</h5>
+  <h5>
+    Access: ${thing.sr.type} 
+    <i  id="access-help" 
+        class="fa fa-question-circle"
+        data-toggle="popover" title=""
+        role="button" data-original-title="Space Access"></i>
+  </h5>
   <h5>${thing.sr.score} subscribers</h5>
 
   %if thing.sr.author:

@@ -6,6 +6,18 @@ $(function () {
 
   $('.content').css("min-height", $('#right-sidebar').height() );
 
+    $('#access-help').popover({
+        trigger: 'hover',
+        placement: 'top',
+        html: true,
+        content: '<p>There are three levels of access</p>' +
+          '<ul class="list-unstyled popover-list">' +
+            '<li><strong>Public:</strong> anyone can view and submit</li>' +
+            '<li><strong>Restricted:</strong> anyone can view, but only some are approved to submit links</li>' +
+            '<li><strong>Private:</strong> only approved members can view and submitone</li>' +
+          '</ul>'
+    });
+
   $(".tall-collapse-button").on("click", function(){
 
     if($("#left-sidebar").hasClass("col-md-2")) {

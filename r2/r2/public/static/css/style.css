@@ -432,7 +432,9 @@ h4.collapsable:not(.collapsed) .glyphicon-collapse-down {
   margin: 0 10px 10px 0;
 }
 
-
+.popover-list li {
+  margin: 5px 0 10px 10px;
+}
 
 .sidecontentbox {
   text-transform: capitalize;
