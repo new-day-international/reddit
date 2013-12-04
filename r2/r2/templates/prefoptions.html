@@ -96,21 +96,21 @@
       </div>
     </td>
   </tr>
-  <tr>
-    <th>${_("interface language")}</th>
-    <td class="prefright">
-      ${language_tool(allow_blank = False, show_regions = True,
-                      default_lang = c.user.pref_lang)}
-      &#32;<span class="little gray hover">(*) ${_("incomplete")}
-      &#32;<a href="http://www.reddit.com/r/i18n/wiki/getting_started">${_("volunteer to translate")}</a></span>
-    </td>
-  </tr>
-  <tr>
-    <th>${_("content language")}</th>
-    <td class="prefright">
-      ${language_checkboxes(default = c.user.pref_content_langs)}
-    </td>
-  </tr>
+##  <tr>
+##    <th>${_("interface language")}</th>
+##    <td class="prefright">
+##      ${language_tool(allow_blank = False, show_regions = True,
+##                      default_lang = c.user.pref_lang)}
+##      &#32;<span class="little gray hover">(*) ${_("incomplete")}
+##      &#32;<a href="http://www.reddit.com/r/i18n/wiki/getting_started">${_("volunteer to translate")}</a></span>
+##    </td>
+##  </tr>
+##  <tr>
+##    <th>${_("content language")}</th>
+##    <td class="prefright">
+##      ${language_checkboxes(default = c.user.pref_content_langs)}
+##    </td>
+##  </tr>
 %if c.user_is_loggedin:
   %if false:
     <tr>
@@ -152,16 +152,16 @@
 ##        </span>
 ##      </p>
 
-      <p>${checkbox(_("show me links I've recently viewed"), "clickgadget")}</p>
+##      <p>${checkbox(_("show me links I've recently viewed"), "clickgadget")}</p>
       <p>${checkbox(_("compress the link display"), "compress")}</p>
-      <p>${checkbox(_("don't show links after I've liked them"), "hide_ups")}
-         &#32;
-         <span class="little gray">${_("(except my own)")}</span>
-      </p>
-      <p>${checkbox(_("don't show links after I've disliked them"), "hide_downs")}
-         &#32;
-         <span class="little gray">${_("(except my own)")}</span>
-      </p>
+##      <p>${checkbox(_("don't show links after I've liked them"), "hide_ups")}
+##         &#32;
+##         <span class="little gray">${_("(except my own)")}</span>
+##      </p>
+##      <p>${checkbox(_("don't show links after I've disliked them"), "hide_downs")}
+##         &#32;
+##         <span class="little gray">${_("(except my own)")}</span>
+##      </p>
       <%
          # stuff I can soon delete:
          _("display")
@@ -217,30 +217,30 @@
       </p>
     </td>
   </tr>
-  <tr>
-    <th>${_("messaging options")}</th>
-    <td class="prefright">
-      ${checkbox(_("show message conversations in the inbox"), \
-         "threaded_messages")}
-      &#32;<span class="little gray">
-        ${_("(only applies when you go to the 'messages' panel)")}
-      </span>
-      <br/>
-      %if c.user.pref_threaded_messages:
-        ${checkbox(_("collapse messages after I've read them"), \
-           "collapse_read_messages")}
-        &#32;<span class="little gray">
-          ${_("(otherwise, you'll have to collapse them yourself)")}
-        </span>
-        <br/>
-      %endif
-      ${checkbox(_("mark messages as read when I open my inbox"), \
-         "mark_messages_read")}
-      &#32;<span class="little gray">
-        ${_("(otherwise, they will be marked as read when you click them)")}
-      </span>
-    </td>
-  </tr>
+##  <tr>
+##    <th>${_("messaging options")}</th>
+##    <td class="prefright">
+##      ${checkbox(_("show message conversations in the inbox"), \
+##         "threaded_messages")}
+##      &#32;<span class="little gray">
+##        ${_("(only applies when you go to the 'messages' panel)")}
+##      </span>
+##      <br/>
+##      %if c.user.pref_threaded_messages:
+##        ${checkbox(_("collapse messages after I've read them"), \
+##           "collapse_read_messages")}
+##        &#32;<span class="little gray">
+##          ${_("(otherwise, you'll have to collapse them yourself)")}
+##        </span>
+##        <br/>
+##      %endif
+##      ${checkbox(_("mark messages as read when I open my inbox"), \
+##         "mark_messages_read")}
+##      &#32;<span class="little gray">
+##        ${_("(otherwise, they will be marked as read when you click them)")}
+##      </span>
+##    </td>
+##  </tr>
   <tr>
     <th>${_("display options")}</th>
     <td class="prefright">
@@ -258,18 +258,19 @@
       %endif
     </td>
   </tr>
-  <tr>
-    <th>${_("content options")}</th>
-    <td class="prefright">
-      ${checkbox(_("I am over eighteen years old and willing to view adult content"), "over_18")}
-      &#32;<span class="little gray">(${_("required to view some spaces")})</span>
-      <br/>
-        ${checkbox(_("label posts that are not safe for work (NSFW)"), "label_nsfw", disabled = c.user.pref_no_profanity, disabled_text = "(requires not 'safer for work' mode)")}
-      <br/>
-        ${checkbox(_("enable private RSS feeds"), "private_feeds")}
-       &#32;<span class="little gray">
-        ${_("(available from the 'RSS feed' tab in prefs)")}</span>
-    </td>
+##  <tr>
+##    <th>${_("content options")}</th>
+##    <td class="prefright">
+##      ${checkbox(_("I am over eighteen years old and willing to view adult content"), "over_18")}
+##      &#32;<span class="little gray">(${_("required to view some spaces")})</span>
+##      <br/>
+##        ${checkbox(_("label posts that are not safe for work (NSFW)"), "label_nsfw", disabled = c.user.pref_no_profanity, disabled_text = "(requires not 'safer for work' mode)")}
+##      <br/>
+##        ${checkbox(_("enable private RSS feeds"), "private_feeds")}
+##       &#32;<span class="little gray">
+##        ${_("(available from the 'RSS feed' tab in prefs)")}</span>
+##    </td>
+##  </tr>
   <tr>
     <th>${_("privacy options")}</th>
     <td class="prefright">
@@ -293,23 +294,23 @@
        )
       </span>
       <br />
-      ${checkbox(_("don't allow search engines to index my user profile"), "hide_from_robots")}
-      &#32;
-      <span class="little gray">
-        (
-        <a href="http://www.reddit.com/wiki/noindex">${_("details")}</a>
-        )
-      </span>
-      <br />
-      ${checkbox(_("load core JS libraries from reddit servers"), "local_js")}
-      &#32;
-      <span class="little gray">
-       (
-         <a href="http://www.reddit.com/wiki/localjs">
-           ${_("details")}
-         </a>
-       )
-      </span>
+##      ${checkbox(_("don't allow search engines to index my user profile"), "hide_from_robots")}
+##      &#32;
+##      <span class="little gray">
+##        (
+##        <a href="http://www.reddit.com/wiki/noindex">${_("details")}</a>
+##        )
+##      </span>
+##      <br />
+##      ${checkbox(_("load core JS libraries from reddit servers"), "local_js")}
+##      &#32;
+##      <span class="little gray">
+##       (
+##         <a href="http://www.reddit.com/wiki/localjs">
+##           ${_("details")}
+##         </a>
+##       )
+##      </span>
     </td>
   </tr>
 %endif
