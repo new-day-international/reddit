@@ -85,248 +85,154 @@
   %if c.cname:
     <input type="hidden" name="${UrlParser.cname_get}" value="${random.random()}" />
   %endif
-<table class="content preftable">
-  <tr>
-    <th>${_("profile picture")}</th>
-    <td class="prefright">
-      <p>${_('Please select a recent photo which clearly shows your face.')}</p>
-      <div class="bootstrap">
-      <input id="profile_picture" type="hidden" name="test[image]">
-      <br/>
-      </div>
-    </td>
-  </tr>
-##  <tr>
-##    <th>${_("interface language")}</th>
-##    <td class="prefright">
-##      ${language_tool(allow_blank = False, show_regions = True,
-##                      default_lang = c.user.pref_lang)}
-##      &#32;<span class="little gray hover">(*) ${_("incomplete")}
-##      &#32;<a href="http://www.reddit.com/r/i18n/wiki/getting_started">${_("volunteer to translate")}</a></span>
-##    </td>
-##  </tr>
-##  <tr>
-##    <th>${_("content language")}</th>
-##    <td class="prefright">
-##      ${language_checkboxes(default = c.user.pref_content_langs)}
-##    </td>
-##  </tr>
+
+<h3>${_("profile picture")}</h3>
+<div class="well col-md-6 col-md-6-offset">
+  <p>${_('Please select a recent photo which clearly shows your face.')}</p>
+  <div class="bootstrap">
+  <input id="profile_picture" type="hidden" name="test[image]">
+  <br/>
+  </div>
+</div>
+
 %if c.user_is_loggedin:
-  %if false:
-    <tr>
-      <th>${_("clicking options")}</th>
-      <td class="prefright">
+  %if false: # wtf is this
+    <h3>${_("clicking options")}</h3>
+      <div class="well col-md-6 col-md-6-offset">
         ${checkbox(_("display links with a reddit toolbar"), "frame")}
         <br/>
         ${checkbox(_("open links in a new window"), "newwindow")}
-      </td>
-    </tr>
+    </div>
   %endif
-  <tr>
-    <th>${_("media")}</th>
-    <td class="prefright">
-      %if not c.user.pref_compress:
-        ${media_radio("on", _("show thumbnails next to links"))}
-        ${media_radio("off", _("don't show thumbnails next to links"))}
-        ${media_radio("subreddit", _("show thumbnails based on that space's media preferences"))}
-       ${checkbox(_("make safe(r) for work "), "no_profanity", disabled = not c.user.pref_over_18, disabled_text = "(requires over 18)")}
-        &#32;
-        <span class="little gray">
-          ${_("(Don't show thumbnails next to anything labeled NSFW)")}
-        </span>
-      %else:
-        <p class="error">${_("to enable thumbnails, disable compressed link display")}</p>
-        <input type="hidden" name="media" value="${c.user.pref_media}"/>
-      %endif
-     <br/>
-    </td>
-  </tr>
-  <tr>
-    <th>${_("link options")}</th>
-    <td class="prefright">
-##      <p>
-##        ${checkbox(_("show the spotlight box on the front page"), "organic")}
-##        &#32;
-##        <span class="little gray">
-##          ${_("(it shows new and promoted links, and gives you a say in what's spam and what isn't.)")}
-##        </span>
-##      </p>
 
-##      <p>${checkbox(_("show me links I've recently viewed"), "clickgadget")}</p>
-      <p>${checkbox(_("compress the link display"), "compress")}</p>
-##      <p>${checkbox(_("don't show links after I've liked them"), "hide_ups")}
-##         &#32;
-##         <span class="little gray">${_("(except my own)")}</span>
-##      </p>
-##      <p>${checkbox(_("don't show links after I've disliked them"), "hide_downs")}
-##         &#32;
-##         <span class="little gray">${_("(except my own)")}</span>
-##      </p>
-      <%
-         # stuff I can soon delete:
-         _("display")
-         _("links at once")
-         _("don't show me sites with a score less than")
-         _("don't show me comments with a score less than")
-         _("comments by default")
-         %>
-      <p>
-        ${unsafe(_("display %(num)s links at once") % \
-        dict(num=capture(link_options)))}
-      </p>
-      <%
-         input = capture(num_input, c.user.pref_min_link_score,
-         'min_link_score')
-         %>
-      <p>
-      ${unsafe(_("don't show me sites with a score less than %(num)s") % dict(num = input))}
-      &#32;<span class="little gray">${_("(blank for none)")}</span>
-      </p>
-    </td>
-  </tr>
-  <tr>
-    <th>${_("comment options")}</th>
-    <td class="prefright">
-      <%
-         input = capture(num_input, c.user.pref_min_comment_score,
-                         'min_comment_score')
-         %>
-      <p>
-        ${unsafe(_("don't show me comments with a score less than %(num)s") % dict(num = input))}
-        &#32;<span class="little gray">${_("(blank for none)")}</span>
-      </p>
-      <p>
-        <%
-         input = capture(num_input, c.user.pref_num_comments,
-         'num_comments')
-         %>
-      <% s = c.user.pref_num_comments %>
-      ${unsafe(_("display %(num)s comments by default") % \
-      dict(num = input))}
+  <h3>${_("media")}</h3>
+  <div class="well col-md-6 col-md-6-offset">
+    %if not c.user.pref_compress:
+      ${media_radio("on", _("show thumbnails next to links"))}
+      ${media_radio("off", _("don't show thumbnails next to links"))}
+      ${media_radio("subreddit", _("show thumbnails based on that space's media preferences"))}
+     ${checkbox(_("make safe(r) for work "), "no_profanity", disabled = not c.user.pref_over_18, disabled_text = "(requires over 18)")}
       &#32;
+      <i  id="access-help" 
+        class="fa fa-question-circle"
+        data-toggle="popover" title=""
+        role="button" data-original-title="Space Access"></i>
       <span class="little gray">
-        (1 - ${g.max_comments});
-        &#32;
-        ${_("the smaller the number, the faster your comments pages will load")}
+        ${_("(Don't show thumbnails next to anything labeled NSFW)")}
       </span>
-      <p>
-      ${checkbox(_("highlight new comments"), "highlight_new_comments")}
-      &#32;<span class="little gray">
-        (${_("we'll remember your visits for 48 hours and show you which comments you haven't seen yet")})
-      </span>
-      </p>
-    </td>
-  </tr>
-##  <tr>
-##    <th>${_("messaging options")}</th>
-##    <td class="prefright">
-##      ${checkbox(_("show message conversations in the inbox"), \
-##         "threaded_messages")}
-##      &#32;<span class="little gray">
-##        ${_("(only applies when you go to the 'messages' panel)")}
-##      </span>
-##      <br/>
-##      %if c.user.pref_threaded_messages:
-##        ${checkbox(_("collapse messages after I've read them"), \
-##           "collapse_read_messages")}
-##        &#32;<span class="little gray">
-##          ${_("(otherwise, you'll have to collapse them yourself)")}
-##        </span>
-##        <br/>
-##      %endif
-##      ${checkbox(_("mark messages as read when I open my inbox"), \
-##         "mark_messages_read")}
-##      &#32;<span class="little gray">
-##        ${_("(otherwise, they will be marked as read when you click them)")}
-##      </span>
-##    </td>
-##  </tr>
-  <tr>
-    <th>${_("display options")}</th>
-    <td class="prefright">
-      ${checkbox(_("allow spaces to show me custom styles"), "show_stylesheets")}
-      <br/>
-      %if g.enable_flair:
-        ${checkbox(_("show user flair"), "show_flair")}
-        <br/>
-        ${checkbox(_("show link flair"), "show_link_flair")}
-      %endif
-      %if c.user.pref_show_promote is not None:
-        <br/>
-        ${checkbox(_("show promote tab on front page"),
-          "show_promote")}
-      %endif
-    </td>
-  </tr>
-##  <tr>
-##    <th>${_("content options")}</th>
-##    <td class="prefright">
-##      ${checkbox(_("I am over eighteen years old and willing to view adult content"), "over_18")}
-##      &#32;<span class="little gray">(${_("required to view some spaces")})</span>
-##      <br/>
-##        ${checkbox(_("label posts that are not safe for work (NSFW)"), "label_nsfw", disabled = c.user.pref_no_profanity, disabled_text = "(requires not 'safer for work' mode)")}
-##      <br/>
-##        ${checkbox(_("enable private RSS feeds"), "private_feeds")}
-##       &#32;<span class="little gray">
-##        ${_("(available from the 'RSS feed' tab in prefs)")}</span>
-##    </td>
-##  </tr>
-  <tr>
-    <th>${_("privacy options")}</th>
-    <td class="prefright">
-      ${checkbox(_("make my votes public"), "public_votes")}
-      &#32;
-      <span class="little gray">
-        <%
-           link1 = "&#32;<a href='/user/%s/liked'>/user/%s/liked</a>&#32;" % (c.user.name, c.user.name)
-           link2 = "&#32;<a href='/user/%s/disliked'>/user/%s/disliked</a>" % (c.user.name, c.user.name)
-           %>
-        (${unsafe(_("let everyone see %(link1)s and %(link2)s") % dict(link1=link1, link2=link2))})
-      </span>
-      <br/>
-      ${checkbox(_("allow my data to be used for research purposes"), "research")}
-      &#32;
-      <span class="little gray">
-       (
-         <a href="http://www.reddit.com/r/redditdev/comments/dtg4j/want_to_help_reddit_build_a_recommender_a_public/">
-           ${_("details")}
-         </a>
-       )
-      </span>
-      <br />
-##      ${checkbox(_("don't allow search engines to index my user profile"), "hide_from_robots")}
-##      &#32;
-##      <span class="little gray">
-##        (
-##        <a href="http://www.reddit.com/wiki/noindex">${_("details")}</a>
-##        )
-##      </span>
-##      <br />
-##      ${checkbox(_("load core JS libraries from reddit servers"), "local_js")}
-##      &#32;
-##      <span class="little gray">
-##       (
-##         <a href="http://www.reddit.com/wiki/localjs">
-##           ${_("details")}
-##         </a>
-##       )
-##      </span>
-    </td>
-  </tr>
+    %else:
+      <p class="error">${_("to enable thumbnails, disable compressed link display")}</p>
+      <input type="hidden" name="media" value="${c.user.pref_media}"/>
+    %endif
+   <br/>
+  </div>
+
+<h3>${_("link options")}</h3>
+<div class="well col-md-6 col-md-6-offset">
+  <%
+     # stuff I can soon delete:
+     _("display")
+     _("links at once")
+     _("don't show me sites with a score less than")
+     _("don't show me comments with a score less than")
+     _("comments by default")
+     %>
+  <p>
+    ${unsafe(_("display %(num)s links at once") % \
+    dict(num=capture(link_options)))}
+  </p>
+  <%
+     input = capture(num_input, c.user.pref_min_link_score,
+     'min_link_score')
+     %>
+  <p>
+  ${unsafe(_("don't show me sites with a score less than %(num)s") % dict(num = input))}
+  &#32;<span class="little gray">${_("(blank for none)")}</span>
+  </p>
+</div>
+
+<h3>${_("comment options")}</h3>
+<div class="well col-md-6 col-md-6-offset">
+  <%
+     input = capture(num_input, c.user.pref_min_comment_score,
+                     'min_comment_score')
+     %>
+  <p>
+    ${unsafe(_("don't show me comments with a score less than %(num)s") % dict(num = input))}
+    &#32;<span class="little gray">${_("(blank for none)")}</span>
+  </p>
+  <p>
+    <%
+     input = capture(num_input, c.user.pref_num_comments,
+     'num_comments')
+     %>
+  <% s = c.user.pref_num_comments %>
+  ${unsafe(_("display %(num)s comments by default") % \
+  dict(num = input))}
+  &#32;
+  <span class="little gray">
+    (1 - ${g.max_comments});
+    &#32;
+    ${_("the smaller the number, the faster your comments pages will load")}
+  </span>
+  <p>
+  ${checkbox(_("highlight new comments"), "highlight_new_comments")}
+  &#32;<span class="little gray">
+    (${_("we'll remember your visits for 48 hours and show you which comments you haven't seen yet")})
+  </span>
+  </p>
+</div>
+
+<h3>${_("display options")}</h3>
+<div class="well col-md-6 col-md-6-offset">
+  ${checkbox(_("allow spaces to show me custom styles"), "show_stylesheets")}
+  <br/>
+  %if g.enable_flair:
+    ${checkbox(_("show user flair"), "show_flair")}
+    <br/>
+    ${checkbox(_("show link flair"), "show_link_flair")}
+  %endif
+  %if c.user.pref_show_promote is not None:
+    <br/>
+    ${checkbox(_("show promote tab on front page"),
+      "show_promote")}
+  %endif
+</div>
+
+<h3>${_("privacy options")}</h3>
+<div class="well col-md-6 col-md-6-offset">
+  ${checkbox(_("make my votes public"), "public_votes")}
+  &#32;
+  <span class="little gray">
+    <%
+       link1 = "&#32;<a href='/user/%s/liked'>/user/%s/liked</a>&#32;" % (c.user.name, c.user.name)
+       link2 = "&#32;<a href='/user/%s/disliked'>/user/%s/disliked</a>" % (c.user.name, c.user.name)
+       %>
+    (${unsafe(_("let everyone see %(link1)s and %(link2)s") % dict(link1=link1, link2=link2))})
+  </span>
+  <br/>
+  ${checkbox(_("allow my data to be used for research purposes"), "research")}
+  &#32;
+  <span class="little gray">
+   (
+     <a href="http://www.reddit.com/r/redditdev/comments/dtg4j/want_to_help_reddit_build_a_recommender_a_public/">
+       ${_("details")}
+     </a>
+   )
+  </span>
+  <br />
+
+</div>
 %endif
-  <tr>
-    <th>${_("email options")}</th>
-    <td class="prefright">
-      ${checkbox(_("send an email summary of recent activity every day"), "send_activity_summary_email")}
-      <br/>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <input type="submit" class="btn" value="${_('save options')}"/>
-    </td>
-  </tr>
-</table>
+
+
+<h3>${_("email options")}</h3>
+<div class="well col-md-6 col-md-6-offset">
+  ${checkbox(_("send an email summary of recent activity every day"), "send_activity_summary_email")}
+  <br/>
+</div>
+
+<input type="submit" class="btn btn-primary" value="${_('save options')}"/>
 
 </form>
 

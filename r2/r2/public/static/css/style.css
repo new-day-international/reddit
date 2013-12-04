@@ -3,6 +3,11 @@ body {
     background: #f1f1f1;
 }
 
+.col-md-3-offset { margin-right: 25%; }
+.col-md-4-offset { margin-right: 33.3333333%; }
+.col-md-5-offset { margin-right: 41.6666666%; }
+.col-md-6-offset { margin-right: 50%; }
+
 form.usertext.cloneable {
   display: none; clear: both;
   margin: 20px 0;
