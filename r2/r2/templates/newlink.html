@@ -94,7 +94,11 @@
 
 <div class="spacer">
   <%utils:round_field title="${_('choose a space')}" id="reddit-field">
+    %if False:
     ${reddit_selector(thing.default_sr.name if thing.default_sr else None, thing.sr_searches, thing.spaces, required=True)}
+    %else:
+    <input type="text" name="sr" class="spacenamepicker" />
+    %endif
   </%utils:round_field>
 </div>
 
