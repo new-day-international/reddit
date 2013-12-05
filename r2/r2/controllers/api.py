@@ -3536,10 +3536,11 @@ class ApiController(RedditController, OAuth2ResourceController):
             data.append({'name':row.name, 'full':row.registration_fullname, 'pic':pic})
             hnames[row.name] = {'name':row.name, 'full':row.registration_fullname, 'pic':pic}
             
-        #spacenames = []
-        #result = Subreddit._query(sort=asc("_name"))  
-        #for row in result:
-        #    spacenames.append(row.name)  
+        spacenames = []
+        result = Subreddit._query(Subreddit.c.name!='')  
+        for row in result:
+            if row.can_submit(c.user):
+                spacenames.append(row.name)
             
         response.headers['cache-control'] = 'max-age: 3600'
         expire_time = datetime.fromtimestamp(int(time.time())+60, g.tz)
@@ -3549,7 +3550,7 @@ class ApiController(RedditController, OAuth2ResourceController):
         output += "var usernames = " + json.dumps(sorted(names)) + ";"
         output += "var userdata = " + json.dumps(sorted(data, key=lambda k: k['name'])) + ";"
         output += "var userhash = " + json.dumps(hnames) + ";"
-        #output += "var spacenames = " + json.dumps(sorted(spacenames)) + ";"
+        output += "var spacenames = " + json.dumps(sorted(spacenames)) + ";"
         return output
 
     @json_validate(VUser())

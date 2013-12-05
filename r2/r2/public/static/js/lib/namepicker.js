@@ -4551,6 +4551,13 @@ $(function() {
   $('.spacenamepicker')
     .textext({
         plugins : 'autocomplete',
+        ext: {
+            core: {
+                serializeData: function(data) {
+                    return data;
+                }
+            },
+        }    
     })
     .bind('getSuggestions',function(e, data) {
       var query = (data ? data.query : '') || '';
