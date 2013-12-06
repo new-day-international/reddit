@@ -1,22 +1,18 @@
 // Run all jQuery
 $(function () {
-  $('body').find('img').each(function(){
-    $(this).attr('src', $(this).attr('src').replace('test.lightnet','lightnet'));
-  });
-
   $('.content').css("min-height", $('#right-sidebar').height() );
 
-    $('#access-help').popover({
-        trigger: 'hover',
-        placement: 'top',
-        html: true,
-        content: '<p>There are three levels of access</p>' +
-          '<ul class="list-unstyled popover-list">' +
-            '<li><strong>Public:</strong> anyone can view and submit</li>' +
-            '<li><strong>Restricted:</strong> anyone can view, but only some are approved to submit links</li>' +
-            '<li><strong>Private:</strong> only approved members can view and submitone</li>' +
-          '</ul>'
-    });
+  $('#access-help').popover({
+      trigger: 'hover',
+      placement: 'top',
+      html: true,
+      content: '<p>There are three levels of access</p>' +
+        '<ul class="list-unstyled popover-list">' +
+          '<li><strong>Public:</strong> anyone can view and submit</li>' +
+          '<li><strong>Restricted:</strong> anyone can view, but only some are approved to submit links</li>' +
+          '<li><strong>Private:</strong> only approved members can view and submitone</li>' +
+        '</ul>'
+  });
 
   $(".tall-collapse-button").on("click", function(){
 
@@ -32,6 +28,15 @@ $(function () {
         $(".tall-collapse-button").removeClass("closed").addClass("open");
     }
   })
+
+  $(".fancy-toggle-button .btn").on("click", function(){
+    var checkboxes = $(this).parent().next();
+    if(checkboxes.hasClass("hide")) {
+      checkboxes.removeClass("hide").addClass("show");
+    } else {
+      checkboxes.removeClass("show").addClass("hide");
+    }
+  });
 
   $(".item-reply").on("click", function(){
     if($("form.usertext.cloneable").hasClass("show")) {
