@@ -43,7 +43,13 @@
 <%def name="entry()">
 <% fullname = thing._fullname %>
 <p class="titlerow">
-  <a class="title" href="${thing.path}"><h3>${thing.name}</h3>${thing.title}</a>
+  <a class="title" href="${thing.path}">
+    <h3>${thing.name}</h3>
+    ${thing.title[0:79]}
+    %if len(thing.title) > 80:
+      ${"..."}
+    %endif
+  </a>
   %if c.user_is_admin:
   ${self.admintagline()}
   %endif
@@ -56,7 +62,12 @@
       <img src="http://s3.amazonaws.com/spaces.lightnet.is/PI1NqvjYc14zaD4d.png" />
     %endif
 
-    ${thing.public_description_usertext}
+    <p>
+    ${thing.public_description_usertext.text[0:239]}
+    %if len(thing.public_description_usertext.text) > 240:
+      ${"..."}
+    %endif
+    </p>
   </div>
 %endif
 <p class="tagline">
@@ -68,17 +79,16 @@
 </%def>
 
 <%def name="tagline()">
-  ${self.score(thing, thing.subscriber)},
-  ${_("a community for %(time)s") % dict(time=timesince(thing._date))}
+  ${self.score(thing, thing.subscriber)}<br />
+  ${_("A community for %(time)s") % dict(time=timesince(thing._date))}
 </%def>
 
 ##this function is used by subscriptionbox.html
 <%def name="addremove_button(sr)">
-  <div class="btn-group btn-group-sm">
     ${toggle_button("fancy-toggle-button", _("subscribe"), _("unsubscribe"),
                   "subscribe('%s')" % sr._fullname, 
                   "unsubscribe('%s')" % sr._fullname, 
-                  css_class = "add btn btn-success", alt_css_class = "remove btn btn-danger",
+                  css_class = "add btn btn-danger", alt_css_class = "remove btn btn-success",
                   reverse = sr.subscriber,
                   login_required = True)}
     
@@ -87,7 +97,6 @@
     %else:
       <% show_notifications = "hide" %>
     %endif
-  </div>
 
   <div class="checkbox">
     <label>
