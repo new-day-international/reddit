@@ -2,7 +2,7 @@
 
 body {
     margin-top: 50px;
-    background: #f1f1f1;
+    background: #fff;
 }
 
 .col-md-3-offset { margin-right: 25%; }
@@ -99,23 +99,17 @@ form.usertext.cloneable {
   width: 25px; 
 }
 
-.likes .score, .dislikes .score {
-display: none;
-}
+.likes .score, 
+.dislikes .score { display: none; }
 
-.score.likes, .score.dislikes {
-  display: none;
-}
+.score.likes, 
+.score.dislikes { display: none; }
 
-.dislikes div.score.dislikes {
-  display: block;
-}
+.dislikes div.score.dislikes { display: block; }
 
-.likes div.score.likes {
-  display: block;
-}
+.likes div.score.likes { display: block; }
 
-
+.likes .score.likes { display: inline; }
 
 .arrow {
   width: 25px;
@@ -186,6 +180,7 @@ display: none;
   height: 100%;
   padding: 20px 10px 100px;
   overflow: auto;
+  background: #f1f1f1;
   }
   #left-sidebar ul {
     padding-left: 30px;
@@ -480,15 +475,28 @@ h4.collapsable:not(.collapsed) .glyphicon-collapse-down {
 #item-list .media.subreddit {
   position: relative;
   float: left; clear: none;
-  width: 250px; height: 400px;
+  width: 300px; height: 450px;
   margin: 0 10px 10px 0;
   border: 1px solid black;
   overflow: visible;
   }
+  #item-list .media.subreddit p.tagline {
+    margin-left: 10px;
+    text-align: left;
+    font-weight: bold;
+  }
   #item-list .media.subreddit .midcol {
     position: absolute;
     bottom: 10px; left: 25px;
-  }
+    text-align: center;
+    }
+    #item-list .media.subreddit .midcol .fancy-toggle-button {
+      position: relative;
+      margin: 0 auto;
+    }
+    #item-list .media.subreddit .midcol .checkbox {
+      text-align: left;
+    }
   #item-list .media.subreddit .house_color {
     display: none;
   }
@@ -498,26 +506,24 @@ h4.collapsable:not(.collapsed) .glyphicon-collapse-down {
   }
   #item-list .media.subreddit a.title {
     display: block;
-    margin: 0; padding: 0;
+    margin: 0 10px; padding: 0;
     text-align: center;
   }
   #item-list .media.subreddit .description {
-    text-align: center;
+    display: block;
+    height: 220px;
+    margin: 0 10px;
+    overflow: hidden;
+    text-align: left;
+    text-indent: 20px;
   }
   #item-list .media.subreddit .description img {
-    max-height: 80px;
+    display: block; clear: both;
+    height: 80px;
     margin: 10px auto;
   }
-  #item-list .media.subreddit .usertext-body .md {
-    height: 120px;
-    overflow: scroll;
-    text-overflow: ellipsis;
-    white-space: nowrap; 
-    text-align: left;
-  }
-  #item-list .media.subreddit .usertext-body .md p {
-    overflow: visible;
-    white-space: pre-wrap; 
+  #item-list .media.subreddit .checkbox {
+    margin-left: -5px;
   }
   p.nextprev {
     clear: both;

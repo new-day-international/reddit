@@ -166,10 +166,10 @@
     ##<div class="fixedwidth"><!--IE6sux--></div>
     ##<div class="clearleft"><!--IE6sux--></div>
     <a name="content"></a>
-    %if thing.show_sidebar:
-      <% col_size = "col-md-7" %>
-    %else:
+    %if "SubredditsPage" in thing.render_class.__name__:
       <% col_size = "col-md-10" %>
+    %else:
+      <% col_size = "col-md-7" %>
     %endif
     <div ${tags(id=thing.content_id)} ${classes("content", col_size, "col-md-offset-2", "main-list", thing.css_class)} role="main">
       <div class="tall-collapse-button open" style=""></div>
@@ -182,18 +182,20 @@
     </div>
   %endif
 
-  %if thing.show_sidebar:
-    <div id="right-sidebar" class="side col-md-3">
-      ${sidebar(content = thing.rightbox())}
-    </div>
-  %endif
+  
+      <div id="right-sidebar" class="side col-md-3">
+        %if thing.show_sidebar:
+          ${sidebar(content = thing.rightbox())}
+        %endif
+      </div>
     </div>
   </div>
 
+  <div class="row">
   %if thing.footer:
 
     ${thing.footer}
-
+    </div>
     %if not c.user_is_loggedin and not g.read_only_mode:
       %if thing.enable_login_cover:
       <div class="login-popup cover-overlay modal" id="registrationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
@@ -229,7 +231,7 @@
     %endif
   %endif
   ${framebuster()}
-  <p class="bottommenu debuginfo"><span class="icon">&pi;</span>&nbsp;<span class="content">Rendered by PID ${g.reddit_pid} on ${g.reddit_host} at ${c.start_time} running ${g.short_version}.</span></p>
+  <p class="bottommenu debuginfo col-md-7 col-md-offset-2"><span class="icon">&pi;</span>&nbsp;<span class="content">Rendered by PID ${g.reddit_pid} on ${g.reddit_host} at ${c.start_time} running ${g.short_version}.</span></p>
 </%def>
 
 <%def name="sidebar(content=None)">

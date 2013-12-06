@@ -43,7 +43,13 @@
 <%def name="entry()">
 <% fullname = thing._fullname %>
 <p class="titlerow">
-  <a class="title" href="${thing.path}"><h3>${thing.name}</h3>${thing.title}</a>
+  <a class="title" href="${thing.path}">
+    <h3>${thing.name}</h3>
+    ${thing.title[0:79]}
+    %if len(thing.title) > 80:
+      ${"..."}
+    %endif
+  </a>
   %if c.user_is_admin:
   ${self.admintagline()}
   %endif
@@ -56,7 +62,12 @@
       <img src="http://s3.amazonaws.com/spaces.lightnet.is/PI1NqvjYc14zaD4d.png" />
     %endif
 
-    ${thing.public_description_usertext}
+    <p>
+    ${thing.public_description_usertext.text[0:239]}
+    %if len(thing.public_description_usertext.text) > 240:
+      ${"..."}
+    %endif
+    </p>
   </div>
 %endif
 <p class="tagline">
@@ -68,17 +79,16 @@
 </%def>
 
 <%def name="tagline()">
-  ${self.score(thing, thing.subscriber)},
-  ${_("a community for %(time)s") % dict(time=timesince(thing._date))}
+  ${self.score(thing, thing.subscriber)}<br />
+  ${_("A community for %(time)s") % dict(time=timesince(thing._date))}
 </%def>
 
 ##this function is used by subscriptionbox.html
 <%def name="addremove_button(sr)">
-  <div class="btn-group btn-group-sm">
     ${toggle_button("fancy-toggle-button", _("subscribe"), _("unsubscribe"),
                   "subscribe('%s')" % sr._fullname, 
                   "unsubscribe('%s')" % sr._fullname, 
-                  css_class = "add btn btn-success", alt_css_class = "remove btn btn-danger",
+                  css_class = "add btn btn-danger", alt_css_class = "remove btn btn-success",
                   reverse = sr.subscriber,
                   login_required = True)}
     
@@ -88,29 +98,25 @@
       <% show_notifications = "hide" %>
     %endif
 
-    <button type="button" class="btn btn-default dropdown-toggle ${show_notifications}" data-toggle="dropdown">
-      Notifications<i class="fa fa-caret-down" style="margin-left:8px;"></i>
-    </button>
-    <ul class="dropdown-menu" role="menu">
-      <li class="checkbox">
-        <label>
-          <input type="checkbox" 
-                 id="email_posts_check" ${"checked" if hasattr(sr,'email_posts') and sr.email_posts else ""} 
-                 onclick="return space_email_click(this,'posts','${sr._fullname}');"> 
-          email me new posts in this space
-        </label>
-      </li> 
-      <li class="checkbox">
-        <label>
-          <input type="checkbox" 
-                 ${"checked" if hasattr(sr,'email_comments') and sr.email_comments else ""} 
-                 id="email_comments_check" 
-                 onclick="return space_email_click(this,'comments','${sr._fullname}');"> 
-          email me new comments in this space
-        </label>
-      </li>
-    </ul>
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" 
+           id="email_posts_check" ${"checked" if hasattr(sr,'email_posts') and sr.email_posts else ""} 
+           onclick="return space_email_click(this,'posts','${sr._fullname}');"> 
+      email me new posts in this space
+    </label>
   </div>
+
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" 
+             ${"checked" if hasattr(sr,'email_comments') and sr.email_comments else ""} 
+             id="email_comments_check" 
+             onclick="return space_email_click(this,'comments','${sr._fullname}');"> 
+      email me new comments in this space
+    </label>
+  </div>
+  
 </%def>
 
 ##this function is used by subscriptionbox.html
