@@ -87,30 +87,27 @@
     %else:
       <% show_notifications = "hide" %>
     %endif
-
-    <button type="button" class="btn btn-default dropdown-toggle ${show_notifications}" data-toggle="dropdown">
-      Notifications<i class="fa fa-caret-down" style="margin-left:8px;"></i>
-    </button>
-    <ul class="dropdown-menu" role="menu">
-      <li class="checkbox">
-        <label>
-          <input type="checkbox" 
-                 id="email_posts_check" ${"checked" if hasattr(sr,'email_posts') and sr.email_posts else ""} 
-                 onclick="return space_email_click(this,'posts','${sr._fullname}');"> 
-          email me new posts in this space
-        </label>
-      </li> 
-      <li class="checkbox">
-        <label>
-          <input type="checkbox" 
-                 ${"checked" if hasattr(sr,'email_comments') and sr.email_comments else ""} 
-                 id="email_comments_check" 
-                 onclick="return space_email_click(this,'comments','${sr._fullname}');"> 
-          email me new comments in this space
-        </label>
-      </li>
-    </ul>
   </div>
+
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" 
+           id="email_posts_check" ${"checked" if hasattr(sr,'email_posts') and sr.email_posts else ""} 
+           onclick="return space_email_click(this,'posts','${sr._fullname}');"> 
+      email me new posts in this space
+    </label>
+  </div>
+
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" 
+             ${"checked" if hasattr(sr,'email_comments') and sr.email_comments else ""} 
+             id="email_comments_check" 
+             onclick="return space_email_click(this,'comments','${sr._fullname}');"> 
+      email me new comments in this space
+    </label>
+  </div>
+  
 </%def>
 
 ##this function is used by subscriptionbox.html
