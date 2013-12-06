@@ -779,7 +779,6 @@ class IconButton(Templated):
 
 class PrefsPage(Reddit):
     """container for pages accessible via /prefs.  No extension handling."""
-
     extension_handling = False
     extra_stylesheets = ["bootstrap.less",
                 "bootstraptheme.less",
