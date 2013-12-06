@@ -14,18 +14,36 @@ $(function () {
         '</ul>'
   });
 
+  function close_leftbar() {
+    $("#left-sidebar").addClass("col-md-0").removeClass("col-md-2");
+    if ($(".main-list").hasClass("rightbar")) {
+      $(".main-list").removeClass("col-md-7").removeClass("col-md-offset-2").addClass("col-md-9");
+    } else {
+      $(".main-list").removeClass("col-md-10").removeClass("col-md-offset-2").addClass("col-md-12");
+    }
+    $(".footer-parent").removeClass("col-md-7").removeClass("col-md-offset-2").addClass("col-md-9");
+    $(".tall-collapse-button").removeClass("open").addClass("closed");
+    $.request("leftbar_expanded", {expanded: false});
+  }
+
+  function open_leftbar() {
+    $("#left-sidebar").removeClass("col-md-0").addClass("col-md-2");
+    if ($(".main-list").hasClass("rightbar")) {
+      $(".main-list").addClass("col-md-7").addClass("col-md-offset-2").removeClass("col-md-9");
+    } else {
+      $(".main-list").addClass("col-md-10").addClass("col-md-offset-2").removeClass("col-md-12");
+    }
+    $(".footer-parent").removeClass("col-md-9").addClass("col-md-7").addClass("col-md-offset-2");
+    $(".tall-collapse-button").removeClass("closed").addClass("open");
+    $.request("leftbar_expanded", {expanded: true});
+  }
+
   $(".tall-collapse-button").on("click", function(){
 
-    if($("#left-sidebar").hasClass("col-md-2")) {
-        $("#left-sidebar").addClass("col-md-0").removeClass("col-md-2");
-        $(".main-list").removeClass("col-md-7").removeClass("col-md-offset-2").addClass("col-md-9");
-        $(".footer-parent").removeClass("col-md-7").removeClass("col-md-offset-2").addClass("col-md-9");
-        $(".tall-collapse-button").removeClass("open").addClass("closed");
+    if($(".tall-collapse-button").hasClass("open")) {
+      close_leftbar();
     } else {
-        $("#left-sidebar").removeClass("col-md-0").addClass("col-md-2");
-        $(".main-list").removeClass("col-md-9").addClass("col-md-7").addClass("col-md-offset-2");
-        $(".footer-parent").removeClass("col-md-9").addClass("col-md-7").addClass("col-md-offset-2");
-        $(".tall-collapse-button").removeClass("closed").addClass("open");
+      open_leftbar();
     }
   })
 

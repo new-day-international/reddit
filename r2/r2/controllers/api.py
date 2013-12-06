@@ -869,6 +869,14 @@ class ApiController(RedditController, OAuth2ResourceController):
         elif post_or_comment == 'comments':
             r.email_comments = want
         r._commit()     
+
+    @noresponse(VUser(),
+                VModhash(),
+                expanded = VBoolean('expanded'))
+    def POST_leftbar_expanded(self, expanded):
+        # remember if the left bar is expanded or not
+        c.user.leftbar_expanded = expanded
+        c.user._commit()
         
     @noresponse(VUser(),
                 VModhash(),

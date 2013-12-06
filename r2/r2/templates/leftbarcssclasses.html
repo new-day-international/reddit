@@ -1,0 +1,40 @@
+<%def name="left_sidebar_css_classes()">
+  % if c.user.leftbar_expanded:
+    col-md-2
+  % else:
+    col-md-0
+  % endif
+</%def>
+
+<%def name="main_list_css_classes(rightbar=True)">
+  % if c.user.leftbar_expanded:
+    % if rightbar:
+      col-md-7 rightbar
+    % else:
+      col-md-10 
+    % endif
+    col-md-offset-2 
+  % else:
+    % if rightbar:
+      col-md-9 rightbar
+    % else:
+      col-md-12
+    % endif
+  % endif
+</%def>
+
+<%def name="footer_parent_css_classes()">
+  % if c.user.leftbar_expanded:
+    col-md-7 col-md-offset-2
+  % else:
+    col-md-9
+  % endif
+</%def>
+
+<%def name="tall_collapse_button_css_classes()">
+  % if c.user.leftbar_expanded:
+    open
+  % else:
+    closed
+  % endif
+</%def>

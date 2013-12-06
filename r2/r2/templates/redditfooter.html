@@ -26,8 +26,9 @@
    import datetime
 %>
 <%namespace file="utils.html" import="text_with_links"/>
+<%namespace file="leftbarcssclasses.html" import="footer_parent_css_classes"/>
 
-<div class="footer-parent col-md-7 col-md-offset-2">
+<div class="footer-parent ${footer_parent_css_classes()}">
 ##  %for toolbar in thing.nav:
 ##      <div class="col">
 ##        ${toolbar}

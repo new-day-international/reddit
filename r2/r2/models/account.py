@@ -117,6 +117,7 @@ class Account(Thing):
                      state=0,
                      cache_prefix=0,
                      profile_photo_uploaded=False,
+                     leftbar_expanded = True,
                      )
 
     def __eq__(self, other):

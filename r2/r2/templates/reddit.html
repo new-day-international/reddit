@@ -33,6 +33,7 @@
 <%namespace file="less.html" import="less_js, less_stylesheet"/>
 <%namespace file="utils.html" import="tags, classes"/>
 <%namespace file="adminbar.html" import="adminbar_stylesheet"/>
+<%namespace file="leftbarcssclasses.html" import="left_sidebar_css_classes, main_list_css_classes, tall_collapse_button_css_classes"/>
 <%inherit file="base.html"/>
 
 <%def name="Title()">
@@ -117,16 +118,12 @@
    reddit.cur_site = "${c.site._fullname if hasattr(c.site, '_fullname') else ''}";
 </%def>
 
-<%def name="sidebar_css_class()">
-
-</%def>
-
 <%def name="bodyContent()">
   <%include file="adminbar.html"/>
   <%include file="redditheader.html"/>
   
   <div class="row" id="content-row">
-    <div id="left-sidebar" class="col-md-2 col-fixed">
+    <div id="left-sidebar" class="${left_sidebar_css_classes()} col-fixed">
       <form role="form">
         <div class="form-group">
           <label class="sr-only" for="exampleInputEmail2">go to space by name</label>
@@ -166,13 +163,8 @@
     ##<div class="fixedwidth"><!--IE6sux--></div>
     ##<div class="clearleft"><!--IE6sux--></div>
     <a name="content"></a>
-    %if "SubredditsPage" in thing.render_class.__name__:
-      <% col_size = "col-md-10" %>
-    %else:
-      <% col_size = "col-md-7" %>
-    %endif
-    <div ${tags(id=thing.content_id)} ${classes("content", col_size, "col-md-offset-2", "main-list", thing.css_class)} role="main">
-      <div class="tall-collapse-button open" style=""></div>
+    <div ${tags(id=thing.content_id)} class="content main-list ${thing.css_class} ${main_list_css_classes(rightbar=thing.show_sidebar)}" role="main">
+      <div class="tall-collapse-button ${tall_collapse_button_css_classes()}" style=""></div>
       <div class="row">
         ${thing.sort_menu()}
       </div>
