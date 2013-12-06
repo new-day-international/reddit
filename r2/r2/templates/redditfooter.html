@@ -28,11 +28,11 @@
 <%namespace file="utils.html" import="text_with_links"/>
 
 <div class="footer-parent col-md-7 col-md-offset-2">
-  %for toolbar in thing.nav:
-      <div class="col">
-        ${toolbar}
-      </div>
-  %endfor
+##  %for toolbar in thing.nav:
+##      <div class="col">
+##        ${toolbar}
+##      </div>
+##  %endfor
   %if not g.domain.endswith("reddit.com"):
     <!-- http://code.reddit.com/LICENSE see Exhibit B -->
     <a href="http://www.reddit.com/code/" style="text-align:center;display:block">
