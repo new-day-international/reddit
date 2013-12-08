@@ -1,6 +1,10 @@
 // Run all jQuery
 $(function () {
   $('.content').css("min-height", $('#right-sidebar').height() );
+  $('.subreddit').tooltip({
+    selector: "[data-toggle=tooltip]",
+    container: "body"
+  })
 
   $('#access-help').popover({
       trigger: 'hover',

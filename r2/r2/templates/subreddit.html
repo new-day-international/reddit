@@ -123,31 +123,28 @@
 
 ##this function is used by subscriptionbox.html
 <%def name="permission_icons(sr)">
+  <div class="permission_icons">
   %if sr.moderator:
-    <img class="sr-type-img" title="${_('moderator')}" alt="${_('moderator')}" src="${static('shield.png')}" />
+    <i class="fa fa-shield fa-lg" data-toggle="tooltip" data-original-title="${_('moderator')}" alt="${_('moderator')}"></i>
   %endif
 
   %if sr.type in ("restricted", "private") and not sr.moderator:
-    <img class="sr-type-img"
-       %if sr.contributor:
-         alt="${_('approved submitter')}"
-         title="${_('approved submitter')}"
-         src="${static('pencil.png')}"
-       %else:
-         alt="${_('not approved')}"
-         title="${_('not approved')}"
-         src="${static('pencil-gray.png')}"
-       %endif
-    />
+    %if sr.contributor:
+      <i class="fa fa-pencil fa-lg green" alt="${_('approved submitter')}" data-toggle="tooltip" data-original-title="${_('approved submitter')}"></i>
+    %else:        
+        <i class="fa fa-pencil fa-lg red" alt="${_('not approved')}" data-toggle="tooltip" data-original-title="${_('not approved')}"></i>
+      </span>        
+    %endif
   %endif 
 
   %if sr.type == "private":
-    <img class="sr-type-img" title="${_('private')}" alt="${_('private')}" src="${static('eye.png')}" />
+    <i class="fa fa-eye fa-lg" data-toggle="tooltip" data-original-title="${_('private')}" alt="${_('private')}"></i>
   %endif
 
   %if sr.over_18:
-    <img class="sr-type-img" title="${_('over18')}" alt="${_('over18')}" src="${static('over18_icon.png')}" />
+    <i class="fa fa-ban fa-lg" data-toggle="tooltip" data-original-title="${_('over18')}" alt="${_('over18')}"></i>
   %endif
+  </div>
 
 </%def>
 
