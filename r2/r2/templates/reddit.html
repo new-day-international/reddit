@@ -174,12 +174,11 @@
     </div>
   %endif
 
-  
+    %if thing.show_sidebar:
       <div id="right-sidebar" class="side col-md-3">
-        %if thing.show_sidebar:
-          ${sidebar(content = thing.rightbox())}
-        %endif
+        ${sidebar(content = thing.rightbox())}  
       </div>
+    %endif
     </div>
   </div>
 

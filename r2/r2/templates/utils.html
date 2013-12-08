@@ -477,17 +477,18 @@ ${unsafe(txt)}
 </%def>
 
 <%def name="block_field(kind, title, description = '', css_class= '', **kw)">
-  <div class="${kind} ${css_class}"
-       %for k, v in kw.iteritems():
-         ${k}="${v}"
-       %endfor
-       >
-    <span class="title">${title}</span>
-    &#32;
+
+  <h3 class="title">${title}</h3>
+  &#32;
+  <div class="well col-md-4 col-md-8-offset ${kind} ${css_class}"
+    %for k, v in kw.iteritems():
+      ${k}="${v}"
+    %endfor
+    >
     %if description:
       <span class="gray">${description}</span>
     %endif
-    <div class="${kind}-content">
+    <div class="${kind}-content form-group">
       ${caller.body()}
     </div>
   </div>
@@ -507,20 +508,20 @@ ${unsafe(txt)}
 
 <%def name="radio_type(field_name, val_name, title, text=None, checked=False)">
   <% full_name = field_name + "_" + val_name %>
-  <tr>
-    <td class="nowrap nopadding">
-      <input name="${field_name}" type="radio" id="${full_name}"
-             value="${val_name}" class="nomargin"
-             %if checked:
-               checked="checked"
-             %endif
-             />
-      <label for="${full_name}">${title}</label>
-    </td>
+  <label for="${full_name}">
+    <input name="${field_name}" type="radio" id="${full_name}"
+           value="${val_name}" class="nomargin"
+           %if checked:
+             checked="checked"
+           %endif
+           />
+      ${title}
+    </label>
     %if text:
-      <td class="leftpad"><span class="gray">${text}</span></td>
+      <div class="leftpad">
+        <span class="gray">${text}</span>
+      </div>
     %endif
-  </tr>
 </%def>
 
 <%def name="reddit_selector(default_sr, sr_searches, spaces, required=False)">

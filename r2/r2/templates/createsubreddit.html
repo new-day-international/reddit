@@ -43,7 +43,7 @@
 %if not thing.site:
     <%utils:line_field title="${_('name')}"
                         description='${_("no spaces, e.g., slashdot")}'>
-     <input type="text" name="name" id="name" class="text"
+     <input type="text" name="name" id="name" class="text form-control"
             value="${thing.name}"/>
       %if not thing.site:
         ${error_field("SUBREDDIT_EXISTS", "name")}
@@ -57,10 +57,10 @@
   <%utils:line_field title="${_('subtitle')}"
        description='${_("e.g., news for nerds, stuff that matters")}'>
     %if thing.site:
-      <input id="title" type="text" name="title" class="text"
+      <input id="title" type="text" name="title" class="text form-control"
              value="${thing.site.title}"/>
     %else:
-      <input id="title" type="text" name="title" class="text" />
+      <input id="title" type="text" name="title" class="text form-control" />
     %endif
     ${error_field("NO_TEXT", "title")}
     ${error_field("TOO_LONG", "title")}
@@ -105,15 +105,15 @@
   <%utils:line_field title="${_('house rules')}" css_class="usertext"
                      description="${_('define the norms and expectations for your space')}">
     <div class="delete-field">
-      <ul>
-        <li>
-          <input class="nomargin" type="checkbox"
-                 name="space_is_house" id="space_is_house"
-          %if thing.site and thing.site.space_is_house:
-                 checked="checked"
-          %endif
-          >
+      <ul class="list-unstyled">
+        <li class="checkbox">
           <label for="space_is_house">
+            <input class="nomargin" type="checkbox"
+              name="space_is_house" id="space_is_house"
+              %if thing.site and thing.site.space_is_house:
+                checked="checked"
+              %endif
+              >
             ${_("space is a house (with its own house rules)")}
           </label>
         </li>
@@ -198,8 +198,7 @@
   </%utils:line_field>
 
   <%utils:line_field title="${_('type')}">
-    <div class="delete-field">
-      <table>
+    <div class="delete-field radio">
       ${utils.radio_type('type', "public", _("public"),
                          _("anyone can view and submit"),
                          (not thing.site or thing.site.type=='public'))}
@@ -216,38 +215,33 @@
                            _("anyone can view, but submissions are no longer accepted"),
                            is_archived)}
       %endif
-      </table>
       ${error_field("INVALID_OPTION", "type")}
     </div>
   </%utils:line_field>
 
   <%utils:line_field title="${_('content options')}">
-    <div class="delete-field">
-      <table>
-        ${utils.radio_type('link_type', "any", _("any"),
-                           _("any link type is allowed"),
-                           (not thing.site or thing.site.link_type=='any'))}
-        ${utils.radio_type('link_type', "link", _("links only"),
-                           _("only links to external sites are allowed"),
-                           (thing.site and thing.site.link_type=='link'))}
-        ${utils.radio_type('link_type', "self", _("text posts only"),
-                           _("only text/self posts are allowed"),
-                           (thing.site and thing.site.link_type=='self'))}
-      </table>
+    <div class="delete-field radio">
+      ${utils.radio_type('link_type', "any", _("any"),
+                         _("any link type is allowed"),
+                         (not thing.site or thing.site.link_type=='any'))}
+      ${utils.radio_type('link_type', "link", _("links only"),
+                         _("only links to external sites are allowed"),
+                         (thing.site and thing.site.link_type=='link'))}
+      ${utils.radio_type('link_type', "self", _("text posts only"),
+                         _("only text/self posts are allowed"),
+                         (thing.site and thing.site.link_type=='self'))}
       ${error_field("INVALID_OPTION", "link_type")}
-      <ul>
-        <li>
-          <input class="nomargin" type="checkbox"
-                 name="allow_user_uploads" id="allow_user_uploads"
-                 %if (thing.site and thing.site.allow_user_uploads) or (thing.site is None):
-                   checked="checked"
-                 %endif
-          >
+      <div class="checkbox">
           <label for="allow_user_uploads">
+            <input class="nomargin" type="checkbox"
+              name="allow_user_uploads" id="allow_user_uploads"
+              %if (thing.site and thing.site.allow_user_uploads) or (thing.site is None):
+                checked="checked"
+              %endif
+            >
             ${_("allow users to upload files")}
           </label>
-        </li>
-      </ul>
+          </div>
     </div>
     <div class="usertext-edit" style="display: none">
       <div class="delete-field">
@@ -269,8 +263,7 @@
     </div>
   </%utils:line_field>
   <%utils:line_field title="${_('wiki')}">
-    <div class="delete-field">
-      <table>
+    <div class="delete-field radio">
         ${utils.radio_type('wikimode', "disabled", _("disabled"),
                            _("Wiki is disabled for all users except mods"),
                            (not thing.site or thing.site.wikimode == 'disabled'))}
@@ -280,7 +273,6 @@
         ${utils.radio_type('wikimode', "anyone", _("anyone"),
                            _("Anyone who can submit to the space may edit"),
                            (thing.site and thing.site.wikimode == 'anyone'))}
-      </table>
       ${error_field("INVALID_OPTION", "wikimode")}
     </div>
 ##    <div class="usertext-edit">
@@ -312,28 +304,25 @@
       <div class="delete-field">
         <label for="nearest_neighbors">${_('Nearest neighbor reddits (separated by commas):')}</label>
             %if thing.site:
-                <input id="nearest_neighbors" type="text" name="nearest_neighbors" placeholder="" 
-                       value = "${thing.site.nearest_neighbors}" />
+                <input id="nearest_neighbors" type="text" name="nearest_neighbors" placeholder="" class="form-control"
+                  value = "${thing.site.nearest_neighbors}" />
             %else:
-                <input id="nearest_neighbors" type="text" name="nearest_neighbors" value="" placeholder="" />
+                <input id="nearest_neighbors" type="text" name="nearest_neighbors" value="" placeholder="" class="form-control" />
             %endif
       </div>
     </div>
   </%utils:line_field>
   <%utils:line_field title="${_('other options')}">
-    <div class="delete-field">
-      <ul>
-        <li>
-          <input class="nomargin" type="checkbox"
-                 name="over_18" id="over_18"
-                 %if thing.site and thing.site.over_18:
-                   checked="checked"
-                 %endif
-          >
-          <label for="over_18">
-            ${_("viewers must be over eighteen years old")}
-          </label>
-        </li>
+    <div class="delete-field checkbox">
+      <label for="over_18">
+        <input class="nomargin" type="checkbox"
+           name="over_18" id="over_18"
+           %if thing.site and thing.site.over_18:
+             checked="checked"
+           %endif
+        >
+        ${_("viewers must be over eighteen years old")}
+      </label>
 ##        <li>
 ##          <input class="nomargin" type="checkbox"
 ##                 name="allow_top" id="allow_top"
@@ -482,7 +471,7 @@
          name = "create"
          text = _("create")
   %>
-  <button name="${name}" class="btn" type="button"
+  <button name="${name}" class="btn btn-primary" type="button"
           onclick="return post_pseudo_form('#sr-form', 'site_admin')">
     ${text}
   </button>
