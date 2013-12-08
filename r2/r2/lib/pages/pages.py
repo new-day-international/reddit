@@ -393,11 +393,11 @@ class Reddit(Templated):
                                       sr_path=None,
                                       show_cover=True))
 
-                if c.site != Friends: 
-                    if self.create_reddit_box:
-                        delta = datetime.datetime.now(g.tz) - c.user._date
-                        if delta.days >= g.min_membership_create_community:
-                            ps.append(IconButton(title=_('Create your own space'), link='/spaces/create', icon_class="fa fa-plus", css_class="btn-block"))
+                ##if c.site != Friends: 
+                ##    if self.create_reddit_box:
+                ##        delta = datetime.datetime.now(g.tz) - c.user._date
+                ##        if delta.days >= g.min_membership_create_community:
+                ##           ps.append(IconButton(title=_('Create your own space'), link='/spaces/create', icon_class="fa fa-plus", css_class="btn-block"))
 
                     button_group = ButtonGroup(css_class="btn-group-justified", buttons=self.new_item_buttons())
                     ps.append(button_group)
@@ -462,14 +462,14 @@ class Reddit(Templated):
                                          more_href = mod_href,
                                          more_text = more_text))
 
-        if no_ads_yet and show_adbox:
-            ps.append(Ads())
-            if g.live_config["goldvertisement_blurbs"]:
-                ps.append(Goldvertisement())
+        ##if no_ads_yet and show_adbox:
+        ##    ps.append(Ads())
+        ##    if g.live_config["goldvertisement_blurbs"]:
+        ##        ps.append(Goldvertisement())
 
-        if c.user.pref_clickgadget and c.recent_clicks:
-            ps.append(SideContentBox(_("Recently viewed links"),
-                                     [ClickGadget(c.recent_clicks)]))
+        ##if c.user.pref_clickgadget and c.recent_clicks:
+        ##    ps.append(SideContentBox(_("Recently viewed links"),
+        ##                             [ClickGadget(c.recent_clicks)]))
 
         return ps
 
