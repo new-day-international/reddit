@@ -4,8 +4,12 @@ $(function () {
   $('.subreddit').tooltip({
     selector: "[data-toggle=tooltip]",
     container: "body"
-  })
+  });
 
+  $('.house-lightnet-rules').on('click', function(){
+    $(this).addClass("nobg");
+  });
+  
   $('#access-help').popover({
       trigger: 'hover',
       placement: 'top',
