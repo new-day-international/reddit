@@ -84,7 +84,7 @@ ${parent.thing_css_class(what)} ${"new" if thing.new else ""} ${"was-comment" if
            </a>
          </span>
        %else:
-         <span class="correspondent rounded">
+         <span class="correspondent rounded btn pull-left">
            <%
               corr = thing.author if thing.recipient else thing.to
             %>
@@ -92,9 +92,9 @@ ${parent.thing_css_class(what)} ${"new" if thing.new else ""} ${"was-comment" if
          </span>
        %endif
     %endif
-    ${thing.subject}
+    <span class="label label-default">${thing.subject}</span>
   %if thing.was_comment:
-    <a href="${thing.link_permalink}" class="title">${thing.link_title}</a>
+    <h4><a href="${thing.link_permalink}" class="title">${thing.link_title}</a></h4>
   %elif getattr(thing, "is_parent", False):
     <br/>
       <a class="expand-btn" href="#" onclick="return show_all_messages(this)">

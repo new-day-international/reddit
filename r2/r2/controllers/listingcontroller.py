@@ -783,12 +783,12 @@ class MessageController(ListingController):
                        NavButton(_("post replies"), 'selfreply'))
 
             return [NavMenu(buttons, base_path = '/message/',
-                            default = 'inbox', type = "flatlist")]
+                            default = 'inbox', type = "bootstrap_tabs")]
         elif not c.default_sr or self.where in ('moderator', 'multi'):
             buttons = (NavButton(_("all"), "inbox"),
                        NavButton(_("unread"), "unread"))
             return [NavMenu(buttons, base_path = '/message/moderator/',
-                            default = 'inbox', type = "flatlist")]
+                            default = 'inbox', type = "bootstrap_tabs")]
         return []
 
 
