@@ -73,6 +73,9 @@ Reddit.modhash = "${c.modhash}";
           %>
           <a href="${mail_path}" class="ping ${mail_img_class}" title="${mail_img_title}">
             <!-- <i class="fa fa-envelope-o fa-emx"></i> --><span>Messages</span>
+            %if c.have_messages:
+              <span class="badge label-danger"><i class="fa fa-exclamation"></i></span>
+            %endif
           </a>
         </li>
         %if c.show_mod_mail:
@@ -89,6 +92,9 @@ Reddit.modhash = "${c.modhash}";
               %>
             <a href="${mail_path}" class="ping ${mail_img_class}" title="${mail_img_title}">
               <!-- <i class="fa fa-gavel fa-emx"></i> --><span>Moderator</span>
+              %if c.have_mod_messages:
+                <span class="badge label-danger"><i class="fa fa-exclamation"></i></span>
+              %endif
             </a>
           </li>
         %endif
