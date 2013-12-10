@@ -393,7 +393,7 @@ class Reddit(Templated):
                                       sr_path=None,
                                       show_cover=True))
 
-                ##if c.site != Friends: 
+                if c.site != Friends: 
                 ##    if self.create_reddit_box:
                 ##        delta = datetime.datetime.now(g.tz) - c.user._date
                 ##        if delta.days >= g.min_membership_create_community:
