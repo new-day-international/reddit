@@ -20,7 +20,7 @@
 ## reddit Inc. All Rights Reserved.
 ###############################################################################
 
-<%namespace file="utils.html" import="plain_link, post_link, img_link, separator"/>
+<%namespace file="utils.html" import="plain_link, post_link, img_link, separator, classes"/>
 
 <%def name="dropdown()">
   ## caching comment:
@@ -139,7 +139,7 @@
   %endif
 </%def>
 
-<%def name="bootstrap_drop_down_button()">
+<%def name="bootstrap_drop_down_button_with_active()">
   %if thing:
     <div class="btn-group pull-left">
       <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
@@ -172,16 +172,53 @@
       <ul class="nav nav-tabs">
         %for i, option in enumerate(thing):
           <%
+            li_css_classes = []
             if option == thing.selected:
-              li_class = "class='active'"
-            else:
-              li_class = ""
-            endif
+              li_css_classes.append('active')
+            if hasattr(option, 'li_css_class'):
+              li_css_classes.append(option.li_css_class)
+            print option.__class__, repr(li_css_classes)
+
           %>
-          <li ${li_class}>
+          <li ${classes(*li_css_classes)}>
             ${option}
           </li>
         %endfor
       </ul>
+  %endif
+</%def>
+
+
+<%def name="bootstrap_drop_down_button()">
+  %if thing:
+    <div class="btn-group">
+      <button type="button" class="btn btn-default dropdown-toggle ${thing.css_class}" data-toggle="dropdown">
+        %if thing.prefix_icon:
+          <span class="${thing.prefix_icon}"></span>
+        %endif
+        %if thing.title:
+          ${thing.title}
+        %endif
+      <strong>${thing.selected}</strong> <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" role="menu">
+        %for i, option in enumerate(thing):
+          %if option == thing.selected:
+            <%continue %>
+          %endif
+          <%
+            li_classes = []
+            if option == thing.selected:
+              li_classes.append('active')
+            if hasattr(option, 'li_css_class'):
+              li_classes.extend(option.li_css_class)
+            print option.__class__, repr(li_classes)
+          %>
+          <li ${classes(*li_classes)}>
+            ${option}
+          </li>
+        %endfor
+      </ul>
+    </div>
   %endif
 </%def>

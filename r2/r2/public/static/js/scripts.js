@@ -1,5 +1,9 @@
 // Run all jQuery
 $(function () {
+  $("button[data-href]").click(function() {
+      location.href = $(this).data("href");
+  });
+
   $('.content').css("min-height", $('#right-sidebar').height() );
   $('.subreddit').tooltip({
     selector: "[data-toggle=tooltip]",

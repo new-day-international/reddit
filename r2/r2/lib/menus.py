@@ -210,9 +210,11 @@ class NavMenu(Styled):
     use_post = False
 
     def __init__(self, options, default = None, title = '', type = "dropdown",
-                 base_path = '', separator = '|', **kw):
+                 base_path = '', separator = '|', prefix_icon = None, li_css_class="", **kw):
         self.options = options
         self.base_path = base_path
+        self.prefix_icon = prefix_icon
+        self.li_css_class = li_css_class
 
         #add the menu style, but preserve existing css_class parameter
         style, css_class = menu_style(type)
@@ -252,6 +254,13 @@ class NavMenu(Styled):
     def __iter__(self):
         for opt in self.options:
             yield opt
+
+    def build(self, base_path):
+        # added so a NavMenu can have a NavMenu inside of it
+        pass
+
+    def is_selected(self):
+        return False
 
 class NavButton(Styled):
     """Smallest unit of site navigation.  A button once constructed
@@ -321,6 +330,17 @@ class NavButton(Styled):
         """returns the title of the button when selected (for cases
         when it is different from self.title)"""
         return self.title
+
+
+class IconButton(NavButton):
+    """
+    Bootstrap button
+    """
+    def __init__(self, title, dest, icon_class, sr_path = True, 
+                 nocname=False, opt = '', aliases = [],
+                 target = "", style = "plain", **kw):
+        self.icon_class = icon_class
+        NavButton.__init__(self, title, dest, sr_path, nocname, opt, aliases, target, style, **kw)
 
 class ModeratorMailButton(NavButton):
     def is_selected(self):

@@ -57,7 +57,7 @@ from r2.lib.filters import (
 )
 from r2.lib.menus import NavButton, NamedButton, NavMenu, PageNameNav, JsButton
 from r2.lib.menus import SubredditButton, SubredditMenu, ModeratorMailButton
-from r2.lib.menus import OffsiteButton, menu, JsNavMenu
+from r2.lib.menus import OffsiteButton, menu, JsNavMenu, IconButton
 from r2.lib.strings import plurals, rand_strings, strings, Score
 from r2.lib.utils import title_to_url, query_string, UrlParser, vote_hash
 from r2.lib.utils import url_links_builder, make_offset_date, median, to36
@@ -152,6 +152,7 @@ class Reddit(Templated):
                  show_sidebar = True, footer = True, srbar = True, page_classes = None,
                  show_wiki_actions = False, extra_js_config = None, **context):
         Templated.__init__(self, **context)
+        print "class", self.__class__, repr(title)
         self.title          = title
         self.short_description = short_description
         self.robots         = robots
@@ -321,20 +322,6 @@ class Reddit(Templated):
                                   for uid in c.site.moderators[:limit]],
                                  data=True, return_dict=False)
         return [WrappedUser(a) for a in accounts if not a._deleted]
-
-    def new_item_buttons(self):
-        ret = []
-        # Add button for submitting links
-        if c.site.link_type != 'self':
-            ret.append(IconButton(icon_class="fa fa-link", title=_("link"), link="/submit"))                        
-
-        # Add button for submitting text items
-        if c.site.link_type != 'link':
-            ret.append(IconButton(icon_class="fa fa-file-text-o", title=_("post"), link="/submit?selftext=true"))
-        # Add button for submitting files
-        if c.site.allow_user_uploads:
-            ret.append(IconButton(icon_class="fa fa-paperclip", title=_("file"), link="/submit/file"))                        
-        return ret
 
     def rightbox(self):
         """generates content in <div class="rightbox">"""
@@ -522,8 +509,25 @@ class Reddit(Templated):
                 NamedButton('comments'),
             ]
 
+    def new_item_buttons(self):
+        ret = []
+        # Add button for submitting links
+        if c.site.link_type != 'self':
+            ret.append(IconButton(icon_class="fa fa-link", title=_("link"), dest="/submit"))                        
+
+        # Add button for submitting text items
+        if c.site.link_type != 'link':
+            ret.append(IconButton(icon_class="fa fa-file-text-o", title=_("post"), dest="/submit?selftext=true"))
+        # Add button for submitting files
+        if c.site.allow_user_uploads:
+            ret.append(IconButton(icon_class="fa fa-paperclip", title=_("file"), dest="/submit/file"))                        
+        return ret
+
+    def new_button(self):
+        return NavMenu(self.new_item_buttons(), title="Add New", prefix_icon="glyphicon glyphicon-plus", css_class="btn-success", li_css_class="pull-right", type="bootstrap_drop_down_button")
+
     def sort_menu(self):
-        return NavMenu(self.sort_buttons(), type='bootstrap_tabs', title="Sorted by")
+        return NavMenu(self.sort_buttons() + [self.new_button()], type="bootstrap_tabs")
 
     def build_toolbars(self):
         """Sets the layout of the navigation topbar on a Reddit.  The result
@@ -770,13 +774,6 @@ class ButtonGroup(Templated):
     def append(self, button):
         self.buttons.append(button)
 
-class IconButton(Templated):
-    """
-    Bootstrap button
-    """
-    def __init__(self, css_class='', icon_class='', link='', title=''):
-        Templated.__init__(self, css_class = css_class, icon_class = icon_class, link = link, title = title)
-
 class PrefsPage(Reddit):
     """container for pages accessible via /prefs.  No extension handling."""
     extension_handling = False
@@ -789,6 +786,9 @@ class PrefsPage(Reddit):
                         title = "%s (%s)" %(_("preferences"),
                                             c.site.name.strip(' ')),
                         *a, **kw)
+
+    def sort_menu(self):
+        pass
 
     def build_toolbars(self):
         buttons = [NavButton(menu.options, ''),
@@ -867,6 +867,8 @@ class MessagePage(Reddit):
                                    self.infobar,
                                    self.nav_menu,
                                    self._content))
+    def sort_menu(self):
+        pass
 
     def build_toolbars(self):
         buttons =  [NamedButton('compose', sr_path = False),
@@ -917,6 +919,9 @@ class BoringPage(Reddit):
 
         Reddit.__init__(self, **context)
 
+    def sort_menu(self):
+        pass
+
     def build_toolbars(self):
         if not isinstance(c.site, (DefaultSR, SubSR)) and not c.cname:
             return [PageNameNav('subreddit', title = self.pagename)]
@@ -932,6 +937,7 @@ class FormPage(BoringPage):
     submit_box         = False
     """intended for rendering forms with no rightbox needed or wanted"""
     def __init__(self, pagename, show_sidebar = False, *a, **kw):
+        print pagename
         BoringPage.__init__(self, pagename,  show_sidebar = show_sidebar,
                             *a, **kw)
         
@@ -1179,6 +1185,9 @@ class LinkInfoPage(Reddit):
 
         robots = "noindex,nofollow" if link._deleted else None
         Reddit.__init__(self, title = title, short_description=short_description, robots=robots, *a, **kw)
+
+    def sort_menu(self):
+        pass
 
     def build_toolbars(self):
         base_path = "/%s/%s/" % (self.link._id36, title_to_url(self.link.title))
@@ -1431,12 +1440,18 @@ class EditReddit(Reddit):
                      _('about %(site)s') % dict(site=c.site.name))
 
         Reddit.__init__(self, title=title, *a, **kw)
-    
+
+    def sort_menu(self):
+        pass
+
     def build_toolbars(self):
         if not c.cname:
             return [PageNameNav('subreddit', title=self.title)]
         else:
             return []
+
+    def sort_menu(self):
+        return []
 
 class SubredditsPage(Reddit): # /spaces page
     """container for rendering a list of reddits.  The corner
@@ -1452,7 +1467,6 @@ class SubredditsPage(Reddit): # /spaces page
                  search_params = {}, *a, **kw):
         Reddit.__init__(self, title = title, loginbox = loginbox, infotext = infotext,
                         *a, **kw)
-        self.addspacebutton = IconButton(title=_('Create space'), link='/spaces/create', icon_class="fa fa-plus", css_class="col-md-3")
         self.searchbar = SearchBar(prev_search = prev_search,
                                    elapsed_time = elapsed_time,
                                    num_results = num_results,
@@ -1462,8 +1476,6 @@ class SubredditsPage(Reddit): # /spaces page
                                    subreddit_search=True
                                    )
         self.sr_infobar = InfoBar(message = strings.sr_subscribe)
-
-        self.blankspot = IconButton(title='', link='', icon_class="", css_class="nothing col-md-4")
 
         self.interestbar = InterestBar(True) if show_interestbar else None
 
@@ -1484,10 +1496,10 @@ class SubredditsPage(Reddit): # /spaces page
         return buttons
 
     def sort_menu(self):
-        return NavMenu(self.sort_buttons(), type='bootstrap_tabs', title="Sorted by")
+        return NavMenu(self.sort_buttons() + [self.new_button()], type='bootstrap_tabs', title="")
 
-    def new_item_buttons(self):
-        return [IconButton(title=_('space'), link='/spaces/create', icon_class="fa fa-plus")]
+    def new_button(self):
+        return IconButton(title=_('Create Space'), dest='/spaces/create', icon_class="fa fa-plus", css_class="btn btn-success", li_css_class="pull-right", style="button")
 
     def build_toolbars(self):
         buttons =  [NavButton(menu.popular, ""),
@@ -1506,9 +1518,7 @@ class SubredditsPage(Reddit): # /spaces page
                 NavMenu(buttons, base_path = '/spaces', type="tabmenu")]
 
     def content(self):
-        return self.content_stack((self.addspacebutton, self.searchbar, self.blankspot,
-                                   self.nav_menu, self.sr_infobar,
-                                   self._content))
+        return self.content_stack((self.searchbar, self.nav_menu, self.sr_infobar, self._content,))
 
     def rightbox(self):
         ps = Reddit.rightbox(self)
@@ -1552,6 +1562,9 @@ class ProfilePage(Reddit):
     def __init__(self, user, *a, **kw):
         self.user     = user
         Reddit.__init__(self, *a, **kw)
+
+    def sort_menu(self):
+        pass
 
     def build_toolbars(self):
         path = "/user/%s/" % self.user.name
@@ -4098,6 +4111,9 @@ class PolicyPage(BoringPage):
         BoringPage.__init__(self, pagename=pagename, show_sidebar=False,
                             content=content, **kw)
         self.welcomebar = None
+
+    def sort_menu(self):
+        pass
 
     def build_toolbars(self):
         toolbars = BoringPage.build_toolbars(self)

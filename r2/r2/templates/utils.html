@@ -54,7 +54,9 @@ id="${arg}_${thing and thing._fullname or ''}"
 </%def>
 
 <%def name="classes(*class_names)">
-class="${" ".join(filter(None, class_names))}"
+  % if len(class_names):
+    class="${" ".join(filter(None, class_names))}"
+  % endif
 </%def>
 
 <%def name="submit_form(onsubmit='', action='', _class='', method='post', _id='', **params)">

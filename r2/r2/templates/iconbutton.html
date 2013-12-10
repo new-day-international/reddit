@@ -20,4 +20,11 @@
 ## reddit Inc. All Rights Reserved.
 ###############################################################################
 
-<a class="btn btn-success ${thing.css_class}" href="${thing.link}"><span class="${thing.icon_class}"></span> ${thing.title}</a>
+
+<%def name="plain()">
+    <a class="${thing.css_class}" href="${thing.dest}"><span class="${thing.icon_class}"></span> ${thing.title}</a>
+</%def>
+
+<%def name="button()">
+    <button class="${thing.css_class}" data-href="${thing.dest}"><span class="${thing.icon_class}"></span> ${thing.title}</button>
+</%def>
