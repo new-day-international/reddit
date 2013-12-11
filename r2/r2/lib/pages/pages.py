@@ -853,7 +853,7 @@ class MessagePage(Reddit):
     def build_toolbars(self):
         buttons =  [NamedButton('compose', sr_path = False),
                     NamedButton('inbox', aliases = ["/message/comments",
-                                                    "/message/uread",
+                                                    "/message/unread",
                                                     "/message/messages",
                                                     "/message/selfreply"],
                                 sr_path = False),
@@ -2223,7 +2223,7 @@ class FrameToolbar(Wrapped):
 
         self.expanded = expanded
         self.user_is_loggedin = c.user_is_loggedin
-        self.have_messages = c.have_messages
+        self.have_messages = c.user.has_messages()
         self.user_name = c.user.name if self.user_is_loggedin else ""
         self.cname = c.cname
         self.site_name = c.site.name
