@@ -153,8 +153,13 @@
           </li>
         <%subreddits = sorted(Subreddit.user_subreddits(c.user, ids=False, stale=True), key = lambda sr: sr.name.lower())%>
         %for sr in subreddits:
+          <% is_current_space = "" %>
+          <% href = "/space/" + sr.name + "/" %>
+          %if thing.canonical_link == href:
+            <% is_current_space = "active" %>
+          %endif
           <li>
-            <a href="/space/${sr.name}/">${sr.name}</a>
+            <a href="${href}" class="${is_current_space}">${sr.name}</a>
           </li>
         %endfor
       </ul>
