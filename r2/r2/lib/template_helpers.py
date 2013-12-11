@@ -485,7 +485,7 @@ def add_attr(attrs, kind, label=None, link=None, cssclass=None, symbol=None):
         priority = 1
         cssclass = 'friend'
         if not label:
-            label = _('follow')
+            label = _('following')
         if not link:
             link = '/prefs/follow'
     elif kind == 'S':
