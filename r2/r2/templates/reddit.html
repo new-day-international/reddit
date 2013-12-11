@@ -145,7 +145,12 @@
 
       <h4 class="collapsable" data-toggle="collapse" data-target="#subscribed-spaces"><i class="glyphicon glyphicon-collapse-down"></i><i class="glyphicon glyphicon-collapse-up"></i> Subscribed Spaces</h4>
       <ul id="subscribed-spaces" class="collapse in space-list list-unstyled">
-        <li><a class="btn btn-primary btn-xs" href="/spaces/mine/">manage your spaces</a></li>
+        <li>
+          <a class="btn btn-action btn-sm" href="/spaces/mine/">
+            Manage your Spaces
+            <i class="fa fa-cogs"></i> 
+          </a>
+          </li>
         <%subreddits = sorted(Subreddit.user_subreddits(c.user, ids=False, stale=True), key = lambda sr: sr.name.lower())%>
         %for sr in subreddits:
           <li>
