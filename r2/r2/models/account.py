@@ -117,6 +117,9 @@ class Account(Thing):
                      state=0,
                      cache_prefix=0,
                      profile_photo_uploaded=False,
+                     message_count=0,
+                     moderator_message_count=0,
+                     notification_count=0,
                      )
 
     def __eq__(self, other):
@@ -127,6 +130,67 @@ class Account(Thing):
 
     def __ne__(self, other):
         return not self.__eq__(other)
+
+    # Messages come in three different flavors. Each user has a
+    # separate count for each of the flavors:
+    #
+    # messages - normal user generated content
+    # moderator messages - for all moderators of a given space
+    # notifications - system generated messages
+    #
+    def message_added(self):
+        if not self._loaded:
+            self._load()
+
+        self.message_count += 1
+        self._commit()
+
+    def moderator_message_added(self):
+        if not self._loaded:
+            self._load()
+
+        self.moderator_message_count += 1
+        self._commit()
+
+    def notification_added(self):
+        if not self._loaded:
+            self._load()
+
+        self.notification_count += 1
+        self._commit()
+
+    def clear_message_count(self):
+        print "clear_message_count"
+        import sys
+        sys.stdout.flush()
+
+        self.message_count = 0
+        self._commit()
+
+    def clear_moderator_message_count(self):
+        print "clear_moderator_message_count"
+        import sys
+        sys.stdout.flush()
+
+        self.moderator_message_count = 0
+        self._commit()
+
+    def clear_notification_count(self):
+        print "clear_notification_count"
+        import sys
+        sys.stdout.flush()
+
+        self.notification_count = 0
+        self._commit()
+
+    def has_messages(self):
+        return message_count > 0
+
+    def has_moderator_messages(self):
+        return moderator_message_count > 0
+
+    def has_notifications(self):
+        return notification_count > 0
 
     def has_interacted_with(self, sr):
         if not sr:

@@ -208,36 +208,30 @@ ul.flat-vert {text-align: left;}
  }
 
 #mail {
-    position: relative;
-    top: 2px;
-    display: inline-block;
-    text-indent: -9999px;
-    overflow: hidden;
-    width: 15px;
-    height: 10px;
+    font-weight: bold;
+    height: 15px;
 }
 #mail.havemail {
-    background-image: url(../mail.png);  /* SPRITE */
+    /* background: url(../mail.png) no-repeat left center; */  /* SPRITE */
 }
 #mail.nohavemail {
-    background-image: url(../mailgray.png);  /* SPRITE */
+    /* background: url(../mailgray.png) no-repeat left center; */  /* SPRITE */
 }
 #modmail {
-    position: relative;
-    top: -2px;
-    display: inline-block;
-    text-indent: -9999px;
-    overflow: hidden;
-    width: 16px;
-    height: 16px;
-    margin-bottom: -6px;
+    font-weight: bold;
+    height: 15px;
 }
 #modmail.havemail {
-    background-image: url(../modmail.png);  /* SPRITE */
+    /* background: url(../modmail.png) no-repeat left center; */ /* SPRITE */
 }
 #modmail.nohavemail {
-    background-image: url(../modmailgray.png);  /* SPRITE */
+    /* background: url(../modmailgray.png) no-repeat left center; */ /* SPRITE */
 }
+#notifications {
+    font-weight: bold;
+    height: 15px;
+}
+
 .user {color: gray;}
 .user .userkarma {
     cursor: help;
@@ -7308,6 +7302,15 @@ div#RESSubredditGroupDropdown {
 	#header-bottom-right a,
 	#header-bottom-right span {
 		color: #2154a3;
+	}
+
+    #header-bottom-right span.circled_number {
+      border-radius: 12px;
+      border-color: black;
+      background-color: red;
+      color: white!important;
+      padding: 2px 4px;
+      margin-right: 2px;
 	}
 
 /*
