@@ -62,12 +62,12 @@
   <h5>${thing.sr.score} subscribers</h5>
 
   %if thing.sr.author:
-    ${unsafe(_("created by&#32;%(user)s") % dict(user = unsafe(WrappedUser(thing.sr.author).render())))}
+    <h5>${unsafe(_("Created by&#32;%(user)s") % dict(user = unsafe(WrappedUser(thing.sr.author).render())))}
+    </h5>
   %endif
-  
-  <span class="age">
-    ${_("a community for")}&#32;${thing_timestamp(thing.sr)}
-  </span> 
+  <h5>
+    ${_("A community for")}&#32;${thing_timestamp(thing.sr)}
+  </h5>
 
   %if thing.sr.moderator:
     <div class="leavemoderator">
