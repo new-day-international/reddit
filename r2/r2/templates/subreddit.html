@@ -63,9 +63,10 @@
     %endif
 
     <p>
-    ${thing.public_description_usertext.text[0:239]}
-    %if len(thing.public_description_usertext.text) > 240:
-      ${"..."}
+    %if len(thing.public_description_usertext.text) > 220:
+      ${thing.public_description_usertext.text[0:219] + "..."}
+    %else:
+      ${thing.public_description_usertext.text[0:219]}
     %endif
     </p>
   </div>
