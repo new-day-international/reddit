@@ -124,12 +124,7 @@
   
   <div class="row" id="content-row">
     <div id="left-sidebar" class="${left_sidebar_css_classes()} col-fixed">
-      <form role="form">
-        <div class="form-group">
-          <label class="sr-only" for="exampleInputEmail2">go to space by name</label>
-          <input type="space_name" class="form-control" id="exampleInputEmail2" placeholder="go to space by name">
-        </div>
-      </form>
+      ${SearchForm()}
 
       <h4 class="collapsable" data-toggle="collapse" data-target="#multispaces">
         <i class="glyphicon glyphicon-collapse-down"></i>

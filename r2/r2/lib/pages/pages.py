@@ -327,9 +327,6 @@ class Reddit(Templated):
 
         ps = PaneStack(css_class='spacer')
 
-        if self.searchbox:
-            ps.append(SearchForm())
-
         if not c.user_is_loggedin and self.loginbox and not g.read_only_mode:
             ps.append(LoginFormWide())
 
