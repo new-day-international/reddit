@@ -113,10 +113,6 @@
       ${media_radio("subreddit", _("show thumbnails based on that space's media preferences"))}
      ${checkbox(_("make safe(r) for work "), "no_profanity", disabled = not c.user.pref_over_18, disabled_text = "(requires over 18)")}
       &#32;
-      <i  id="access-help" 
-        class="fa fa-question-circle"
-        data-toggle="popover" title=""
-        role="button" data-original-title="Space Access"></i>
       <span class="little gray">
         ${_("(Don't show thumbnails next to anything labeled NSFW)")}
       </span>
