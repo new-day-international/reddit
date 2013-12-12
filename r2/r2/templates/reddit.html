@@ -142,8 +142,8 @@
       <ul id="subscribed-spaces" class="collapse in space-list list-unstyled">
         <li>
           <a class="btn btn-action btn-sm" href="/spaces/mine/">
-            Manage your Spaces
             <i class="fa fa-cogs"></i> 
+            Manage your Spaces
           </a>
           </li>
         <%subreddits = sorted(Subreddit.user_subreddits(c.user, ids=False, stale=True), key = lambda sr: sr.name.lower())%>
