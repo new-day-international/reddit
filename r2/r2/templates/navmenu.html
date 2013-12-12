@@ -177,8 +177,6 @@
               li_css_classes.append('active')
             if hasattr(option, 'li_css_class'):
               li_css_classes.append(option.li_css_class)
-            print option.__class__, repr(li_css_classes)
-
           %>
           <li ${classes(*li_css_classes)}>
             ${option}
@@ -212,7 +210,6 @@
               li_classes.append('active')
             if hasattr(option, 'li_css_class'):
               li_classes.extend(option.li_css_class)
-            print option.__class__, repr(li_classes)
           %>
           <li ${classes(*li_classes)}>
             ${option}

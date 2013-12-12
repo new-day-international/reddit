@@ -152,7 +152,6 @@ class Reddit(Templated):
                  show_sidebar = True, footer = True, srbar = True, page_classes = None,
                  show_wiki_actions = False, extra_js_config = None, **context):
         Templated.__init__(self, **context)
-        print "class", self.__class__, repr(title)
         self.title          = title
         self.short_description = short_description
         self.robots         = robots
