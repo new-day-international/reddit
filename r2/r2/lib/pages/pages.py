@@ -375,16 +375,6 @@ class Reddit(Templated):
                                       link="/spaces",
                                       sr_path=None,
                                       show_cover=True))
-
-                if c.site != Friends: 
-                ##    if self.create_reddit_box:
-                ##        delta = datetime.datetime.now(g.tz) - c.user._date
-                ##        if delta.days >= g.min_membership_create_community:
-                ##           ps.append(IconButton(title=_('Create your own space'), link='/spaces/create', icon_class="fa fa-plus", css_class="btn-block"))
-
-                    button_group = ButtonGroup(css_class="btn-group-justified", buttons=self.new_item_buttons())
-                    ps.append(button_group)
-
         no_ads_yet = True
         show_adbox = (c.user.pref_show_adbox or not c.user.gold) and not g.disable_ads
         if isinstance(c.site, (MultiReddit, ModSR)) and c.user_is_loggedin:
