@@ -13,6 +13,12 @@ $(function () {
   $('.house-lightnet-rules').on('click', function(){
     $(this).addClass("nobg");
   });
+
+  $('.bottommenu .icon').on('mouseenter', function() {
+    $('.bottommenu .content').removeClass('hide');
+  }).on('mouseleave', function() {
+    $('.bottommenu .content').addClass('hide');
+  })
   
   $('#access-help').popover({
       trigger: 'hover',
