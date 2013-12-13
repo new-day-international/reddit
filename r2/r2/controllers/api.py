@@ -35,7 +35,7 @@ from r2.lib import amqp
 from r2.lib.utils import get_title, sanitize_url, timeuntil, set_last_modified
 from r2.lib.utils import query_string, timefromnow, randstr
 from r2.lib.utils import timeago, tup, filter_links, filename_to_link_title
-from r2.lib.pages import (EnemyList, FriendList, ContributorList, ModList,
+from r2.lib.pages import (EnemyList, SmallerFriendList, ContributorList, ModList,
                           BannedList, WikiBannedList, WikiMayContributeList,
                           BoringPage, FormPage, CssError, UploadedImage,
                           ClickGadget, UrlParser, WrappedUser)
@@ -814,7 +814,7 @@ class ApiController(RedditController, OAuth2ResourceController):
             c.user.friend_rels_cache(_update=True)
             c.user.add_friend_note(friend, note or '')
 
-        cls = dict(friend=FriendList,
+        cls = dict(friend=SmallerFriendList,
                    moderator=ModList,
                    moderator_invite=ModList,
                    contributor=ContributorList,

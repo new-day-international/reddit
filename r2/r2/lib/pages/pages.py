@@ -335,6 +335,10 @@ class Reddit(Templated):
 
         user_banned = c.user_is_loggedin and c.site.is_banned(c.user)
 
+        if c.site == Friends:
+            ps.append(FriendsInfoBar(c.site, c.user))
+            ps.append(SmallerFriendList())
+
         if (self.submit_box
                 and (c.user_is_loggedin or not g.read_only_mode)
                 and not user_banned):
@@ -361,13 +365,6 @@ class Reddit(Templated):
             else:
                 fake_sub = isinstance(c.site, FakeSubreddit)
 
-                # Add Edit Follow List
-                if c.site == Friends:
-                    ps.append(SideBox(title=strings.manage_follow_label,
-                                      css_class="submit manage-follow",
-                                      link="/prefs/follow",
-                                      sr_path=None,
-                                      show_cover=True))
                 # Add a button for managing subscriptions
                 if fake_sub and c.site.name.strip() == g.default_sr:
                     ps.append(SideBox(title=strings.manage_subscriptions_label,
@@ -392,9 +389,6 @@ class Reddit(Templated):
 
         if isinstance(c.site, AllSR):
             ps.append(AllInfoBar(c.site, c.user))
-
-        if c.site == Friends:
-            ps.append(FriendsInfoBar(c.site, c.user))
 
         # don't show the subreddit info bar on cnames unless the option is set
         if not isinstance(c.site, FakeSubreddit) and (not c.cname or c.site.show_cname_sidebar):
@@ -3001,13 +2995,14 @@ class UserList(Templated):
 class FriendList(UserList):
     """Friend list on /pref/friends"""
     type = 'friend'
-
+    cells = ('user', 'sendmessage', 'note', 'age', 'remove')
+    table_headers = (_('user'), '', _('note'), _('following'), '')
+    
     def __init__(self, editable = True):
-        if c.user.gold:
-            self.friend_rels = c.user.friend_rels()
-            self.cells = ('user', 'sendmessage', 'note', 'age', 'remove')
-            self._class = "gold-accent rounded"
-            self.table_headers = (_('user'), '', _('note'), _('following'), '')
+        self.friend_rels = c.user.friend_rels()
+        #self.cells = ('user', 'sendmessage', 'note', 'age', 'remove')
+        self._class = "gold-accent rounded"
+        #self.table_headers = (_('user'), '', _('note'), _('following'), '')
 
         UserList.__init__(self)
 
@@ -3033,6 +3028,16 @@ class FriendList(UserList):
     @property
     def container_name(self):
         return c.user._fullname
+
+class SmallerFriendList(FriendList):
+    cells = ('user', 'age', 'remove')
+    table_headers = (_('user'), _('following'), '')
+
+    def __init__(self, editable = True):
+        self.friend_rels = c.user.friend_rels()
+        self._class = "gold-accent rounded"
+
+        FriendList.__init__(self)
 
 
 class EnemyList(UserList):

@@ -118,6 +118,7 @@ class Account(Thing):
                      cache_prefix=0,
                      profile_photo_uploaded=False,
                      leftbar_expanded = True,
+                     registration_fullname = 'No name',
                      )
 
     def __eq__(self, other):

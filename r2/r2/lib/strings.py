@@ -194,7 +194,7 @@ Note: there are a couple of places outside of your space where someone can click
     r_all_minus_description = _("Displaying content from /space/all of lightnet, except the following spaces:"),
     all_minus_gold_only = _('Filtering /space/all is a feature only available to [lightnet gold](/gold/about) subscribers. Displaying unfiltered results from /space/all.'),
 
-    r_friends_description = _("####Displays content from Lightnet users who you are **Following**. \n \n \n * You can Follow users by clicking on a username and then click the user's **Follow** Button. \n\n * Or Click **Manage Follow List** button above"), 
+    r_friends_description = _("#### Here's what the folks you are **following** have been saying."), 
 
     missing_credit_name = _("missing name"),
     bad_credit_number = _("invalid credit card number"),

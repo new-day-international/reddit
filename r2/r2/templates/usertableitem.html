@@ -41,7 +41,7 @@
 <%def name="cell_type()">
   %if thing.name == "user":
       <span class="user">
-         ${plain_link(thing.user.name, "/user/%s/" % thing.user.name,
+         ${plain_link(thing.user.registration_fullname, "/user/%s/" % thing.user.name,
                       _sr_path=False)}
          &nbsp;(<b>${thing.user.safe_karma}</b>)
       </span>
