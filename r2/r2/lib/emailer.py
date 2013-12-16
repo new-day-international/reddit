@@ -342,13 +342,13 @@ def run_realtime_email_queue(limit=1000, debug=False):
                 is_com = True
                 comment = Comment._byID36(id36)
                 if g.email_debug:
-                    print 'comment: ' + comment.body
+                    print 'comment: ' + comment.body.encode('ascii','replace')
                 thing = comment
                 author = Account._byID(comment.author_id, True)
                 kind = Email.Kind.REALTIME_COMMENT
                 template = 'email_realtime_comment.html'
                 link = Link._byID(comment.link_id)  
-                subject = 'Re: %s' % link.title
+                subject = u'Re: %s' % link.title
                 sr_id = comment.sr_id
                 
             elif fullname_type == 't6':
@@ -356,7 +356,7 @@ def run_realtime_email_queue(limit=1000, debug=False):
                 is_post = True
                 link = Link._byID36(id36)
                 if g.email_debug:
-                    print 'post: ' + link.title
+                    print 'post: ' + link.title.encode('ascii','replace')
                 thing = link
                 author = Account._byID(link.author_id, True)
                 kind = Email.Kind.REALTIME_POST
@@ -378,13 +378,13 @@ def run_realtime_email_queue(limit=1000, debug=False):
                 if is_com: 
                     if hasattr(sub,'email_comments') and sub.email_comments:
                         if g.email_debug:
-                            print '  account ' + account.name + ': we should send this comment, because of the space setting'
+                            print '  account ' + account.name.encode('ascii','replace') + ': we should send this comment, because of the space setting'
                         whysend = 'space'
                     else:
                         email_thread = Link._somethinged(SaveHide, account, link, 'email')[account,link,'email']
                         if email_thread:
                             if g.email_debug:
-                                print '  account ' + account.name + ': we should send this comment, because of the thread setting'
+                                print '  account ' + account.name.encode('ascii','replace') + ': we should send this comment, because of the thread setting'
                             whysend = 'thread'
                         else:    
                             continue
@@ -392,7 +392,7 @@ def run_realtime_email_queue(limit=1000, debug=False):
                 elif is_post:
                     if hasattr(sub,'email_posts') and sub.email_posts:
                         if g.email_debug:
-                            print '  account ' + account.name + ': we should send this post'
+                            print '  account ' + account.name.encode('ascii','replace') + ': we should send this post'
                         whysend = 'space'
                     else:
                         continue
@@ -406,7 +406,7 @@ def run_realtime_email_queue(limit=1000, debug=False):
                 from_email = '"%s" <%s>' % (g.realtime_email_from_name, g.share_reply,)
                 send_html_email(account.email, g.share_reply, subject, html_body, from_full=from_email, session=session)
                 if g.email_debug:
-                    print '    sent to ' + account.name + ' at ' + account.email
+                    print '    sent to ' + account.name.encode('ascii','replace') + ' at ' + account.email
 
         if g.email_debug:
             print 'Done running queue'
