@@ -1235,7 +1235,7 @@ class Message(Thing, Printable):
 
     @classmethod
     def _new(cls, author, to, subject, body, ip, parent=None, sr=None,
-             from_sr=False):
+             from_sr=False, in_box='inbox'):
         m = Message(subject=subject, body=body, author_id=author._id, new=True,
                     ip=ip, from_sr=from_sr)
         m._spam = author._spam
@@ -1284,7 +1284,7 @@ class Message(Thing, Printable):
             # an initial message to an SR, add to the moderator inbox
             # (i.e., don't do it for automated messages from the SR)
             if parent or to_subreddit and not from_sr:
-                inbox_rel.append(ModeratorInbox._add(sr, m, 'inbox'))
+                inbox_rel.append(ModeratorInbox._add(sr, m, in_box))
             if author.name in g.admins:
                 m.distinguished = 'admin'
                 m._commit()
@@ -1303,7 +1303,7 @@ class Message(Thing, Printable):
                 # Don't notify on PMs from blocked users, either
                 notify_recipient = (to.name != author.name and
                              author._id not in to.enemies)
-                inbox_rel.append(Inbox._add(to, m, 'inbox',
+                inbox_rel.append(Inbox._add(to, m, in_box,
                                             notify_recipient=notify_recipient))
             # find the message originator
             elif sr_id and m.first_message:
@@ -1311,7 +1311,7 @@ class Message(Thing, Printable):
                 orig = Account._byID(first.author_id, True)
                 # if the originator is not a moderator...
                 if not sr.is_moderator(orig) and orig._id != author._id:
-                    inbox_rel.append(Inbox._add(orig, m, 'inbox'))
+                    inbox_rel.append(Inbox._add(orig, m, in_box))
         return (m, inbox_rel)
 
     @property

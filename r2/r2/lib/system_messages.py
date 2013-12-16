@@ -26,6 +26,8 @@ from pylons.i18n import N_
 from r2.models import Account, Message
 from r2.lib.db import queries
 
+from r2.lib import amqp
+
 
 user_added_messages = {
     "moderator_invite": {
@@ -108,3 +110,8 @@ def notify_user_added(rel_type, author, user, target):
         item, inbox_rel = Message._new(modmail_author, target, subject, msg,
                                        request.ip, sr=target)
         queries.new_message(item, inbox_rel)
+
+def send_notification_message(user, target, subject, message, ip):
+    m, inbox_rel = Message._new(user, target, subject, message, ip, in_box='notifications')
+    amqp.add_item('new_notification', m._fullname)
+    queries.new_message(m, inbox_rel)

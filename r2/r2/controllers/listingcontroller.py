@@ -775,7 +775,7 @@ class MessageController(ListingController):
     @property
     def menus(self):
         if c.default_sr and self.where in ('inbox', 'messages', 'comments',
-                          'selfreply', 'unread'):
+                          'selfreply', 'unread', 'notifications'):
             buttons = (NavButton(_("all"), "inbox"),
                        NavButton(_("unread"), "unread"),
                        NavButton(plurals.messages, "messages"),
@@ -828,7 +828,7 @@ class MessageController(ListingController):
         return w
 
     def builder(self):
-        if (self.where == 'messages' or
+        if (self.where in ('messages', 'notifications') or
             (self.where in ("moderator", "multi") and self.subwhere != "unread")):
             root = c.user
             message_cls = UserMessageBuilder
@@ -864,7 +864,8 @@ class MessageController(ListingController):
         return ListingController.builder(self)
 
     def listing(self):
-        if (self.where == 'messages' and 
+        print "Inside Message.listing()"
+        if ((self.where == 'messages' or self.where == 'notifications') and
             (c.user.pref_threaded_messages or self.message)):
             return Listing(self.builder_obj).listing()
         pane = ListingController.listing(self)
