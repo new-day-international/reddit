@@ -64,7 +64,7 @@ from r2.controllers.api_docs import api_doc, api_section
 from r2.lib.search import SearchQuery
 from r2.controllers.oauth2 import OAuth2ResourceController, require_oauth2_scope
 from r2.lib.template_helpers import add_sr, get_domain
-from r2.lib.system_messages import notify_user_added
+from r2.lib.system_messages import notify_user_added, send_notification_message
 from r2.controllers.ipn import generate_blob
 from r2.lib.lock import TimeoutExpired
 
@@ -1458,23 +1458,29 @@ class ApiController(RedditController, OAuth2ResourceController):
     def POST_notify(self, notifyform, jquery, users, thing, ip):
         #-- Notification of either a link or a space. So, we might come from either the the notify button under a link or from the invite field in the right sidebar
         if thing._fullname[0:2] == 't5':
-            # A space 
-            notifyform.html("<div>notifications have been sent</div><br>")
-             
+            # A space
+            subject = "check out this space: %s" % (thing.title)
+            message = "check out this space: [%s](%s)" % (thing.title, thing.path)
+            notifyform.html("<div>space notifications have been sent</div><br>")
+
         elif thing._fullname[0:2] == 't6':
             # A post/link
+            permalink = thing.make_permalink_slow()
+            subject = "check out this item: %s" % (thing.title)
+            message = "check out this item: [%s](%s)" % (thing.title, permalink)
             link = jquery.things(thing._fullname)
             link.set_html(".notify", _("notified"))
             notifyform.html("<div class='clearleft'></div>" 
-                "<p class='error'>%s</p>" % _("notifications have been sent."))
-        
+                "<p class='error'>%s</p>" % _("item notifications have been sent."))
+
+        print "sending message: %s " % (subject)
+        print "   message: %s" % (message)
+        import sys
+        sys.stdout.flush()
+
         for target in users:
             # here we do something for each user
-            pass
-            #m, inbox_rel = Message._new(c.user, target, subject, message, ip)
-            #amqp.add_item('new_message', m._fullname)
-            #queries.new_message(m, inbox_rel)
-
+            send_notification_message(c.user,target, subject, message, ip)
 
 
     @require_oauth2_scope("vote")
