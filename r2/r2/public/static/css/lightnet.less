@@ -117,11 +117,20 @@ form.usertext.cloneable {
 .score.likes, 
 .score.dislikes { display: none; }
 
-.dislikes div.score.dislikes { display: block; }
+.dislikes .score.dislikes { 
+  display: inline; 
+  color: #2fa4e7;
+  font-weight: bold;
+}
 
 .likes div.score.likes { display: block; }
 
-.likes .score.likes { display: inline; }
+.likes .score.likes { 
+  display: inline; 
+  color: #ff4900;
+  font-weight: bold;
+}
+
 
 .arrow {
   width: 25px;
@@ -656,3 +665,24 @@ h4.collapsable:not(.collapsed) .glyphicon-collapse-down {
 #access-help {
   margin-left: 5px;
 }
+
+#item-list .media:hover .vote-buttons i {
+  color: #888888;
+  }
+  #item-list .arrow:focus {
+    outline: none !important;
+  }
+  #item-list .media .vote-buttons i:focus {
+    outline: none;
+  }
+
+.arrow.upmod i, 
+.arrow.up:hover i {
+  color: #ff4900 !important;
+}
+
+.arrow.downmod i, 
+.arrow.down:hover i {
+  color: #2fa4e7 !important;
+}
+
