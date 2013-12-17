@@ -771,6 +771,7 @@ class PrefsPage(Reddit):
 
     def build_toolbars(self):
         buttons = [NavButton(menu.options, ''),
+                   NamedButton('profedit'),
                    NamedButton('apps')]
 
         if c.user.pref_private_feeds:
@@ -793,6 +794,12 @@ class PrefOptions(Templated):
     def __init__(self, done = False):
         self.profile_photo_base_url = "http://%s" % (g.s3_user_files_host,)
         Templated.__init__(self, done = done)
+
+class ProfEdit(Templated):
+    """Editing one's profile"""
+    def __init__(self):
+        Templated.__init__(self)
+    
 
 class PrefFeeds(Templated):
     pass

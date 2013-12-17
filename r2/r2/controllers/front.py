@@ -1241,7 +1241,9 @@ class FormsController(RedditController):
         """Preference page"""
         content = None
         infotext = None
-        if not location or location == 'options':
+        if not location or location == 'profedit':
+            content = ProfEdit();    
+        elif location == 'options':
             content = PrefOptions(done=request.get.get('done'))
         elif location == 'follow':
             content = PaneStack()

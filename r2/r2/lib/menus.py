@@ -95,6 +95,7 @@ menu =   MenuHandler(hot          = _('hot'),
                      rules        = _('rules'),
 
                      #preferences
+                     profedit     = _('profile'),
                      options      = _('options'),
                      apps         = _("apps"),
                      feeds        = _("RSS feeds"),
