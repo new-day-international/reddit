@@ -96,7 +96,7 @@ def password_email(user):
 
     token = PasswordResetToken._new(user)
     passlink = 'http://' + g.domain + '/resetpassword/' + token._id
-    g.log.info("Generated password reset link: %r", (passlink,))
+    g.log.info("Generated password reset link: %r", passlink)
     _system_email(user.email,
                   PasswordReset(user=user,
                                 passlink=passlink).render(style='email'),
@@ -161,9 +161,9 @@ def send_queued_mail(test = False):
         try:
             mimetext = email.to_MIMEText()
             if mimetext is None:
-                g.log.info("Got None mimetext for email from %r and to %r", (email.fr_addr, email.to_addr,))
+                g.log.info("Got None mimetext for email from %r and to %r", email.fr_addr, email.to_addr)
             if test:
-                g.log.info("mime text: %r", (mimetext.as_string(),))
+                g.log.info("mime text: %r", mimetext.as_string())
             else:
                 session.sendmail(email.fr_addr, email.to_addr,
                                  mimetext.as_string())
@@ -323,7 +323,7 @@ def run_realtime_email_queue(limit=1000, debug=False):
             fullname_type = fullname[0:2]
             id36 = fullname[3:]
             if g.email_debug:
-                g.log.info('msg: %r', (fullname,))
+                g.log.info('msg: %r', fullname)
             howold = (datetime.datetime.now() - msg.timestamp).total_seconds() 
             if  howold < 120:
                 # Wait until this item is 2 minutes old, to allow time for corrections
@@ -338,7 +338,7 @@ def run_realtime_email_queue(limit=1000, debug=False):
                 is_com = True
                 comment = Comment._byID36(id36)
                 if g.email_debug:
-                    g.log.info('comment: %r', (comment.body,))
+                    g.log.info('comment: %r', comment.body)
                 thing = comment
                 author = Account._byID(comment.author_id, True)
                 kind = Email.Kind.REALTIME_COMMENT
@@ -352,7 +352,7 @@ def run_realtime_email_queue(limit=1000, debug=False):
                 is_post = True
                 link = Link._byID36(id36)
                 if g.email_debug:
-                    g.log.info('post: %r', (link.title,))
+                    g.log.info('post: %r', link.title)
                 thing = link
                 author = Account._byID(link.author_id, True)
                 kind = Email.Kind.REALTIME_POST
@@ -374,13 +374,13 @@ def run_realtime_email_queue(limit=1000, debug=False):
                 if is_com: 
                     if hasattr(sub,'email_comments') and sub.email_comments:
                         if g.email_debug:
-                            g.log.info('  account %r: we should send this comment, because of the space setting', (account.name,))
+                            g.log.info('  account %r: we should send this comment, because of the space setting', account.name)
                         whysend = 'space'
                     else:
                         email_thread = Link._somethinged(SaveHide, account, link, 'email')[account,link,'email']
                         if email_thread:
                             if g.email_debug:
-                                g.log.info('  account %r: we should send this comment, because of the thread setting', (account.name,))
+                                g.log.info('  account %r: we should send this comment, because of the thread setting', account.name)
                             whysend = 'thread'
                         else:    
                             continue
@@ -388,7 +388,7 @@ def run_realtime_email_queue(limit=1000, debug=False):
                 elif is_post:
                     if hasattr(sub,'email_posts') and sub.email_posts:
                         if g.email_debug:
-                            g.log.info('  account %r: we should send this post', (account.name,))
+                            g.log.info('  account %r: we should send this post', account.name)
                         whysend = 'space'
                     else:
                         continue
@@ -402,7 +402,7 @@ def run_realtime_email_queue(limit=1000, debug=False):
                 from_email = '"%s" <%s>' % (g.realtime_email_from_name, g.share_reply,)
                 send_html_email(account.email, g.share_reply, subject, html_body, from_full=from_email, session=session)
                 if g.email_debug:
-                    g.log.info('    sent to %r at %r', (account.name, account.email,))
+                    g.log.info('    sent to %r at %r', account.name, account.email)
 
         if g.email_debug:
             g.log.info('Done running queue')
