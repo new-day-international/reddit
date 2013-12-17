@@ -96,7 +96,7 @@ def password_email(user):
 
     token = PasswordResetToken._new(user)
     passlink = 'http://' + g.domain + '/resetpassword/' + token._id
-    g.log.info("Generated password reset link: " + passlink)
+    g.log.info("Generated password reset link: %r", (passlink,))
     _system_email(user.email,
                   PasswordReset(user=user,
                                 passlink=passlink).render(style='email'),
@@ -140,10 +140,7 @@ def open_smtp_session():
             session.starttls()
             session.login(g.smtp_username, g.smtp_password)
     except:
-        print( "Error opening SMTP session for server: %s, user: %s, password %s" % (g.smtp_server, g.smtp_username, g.smtp_password))
-        import sys
-        sys.stdout.flush()
-        session = None
+        raise
 
     return session
 
@@ -164,10 +161,9 @@ def send_queued_mail(test = False):
         try:
             mimetext = email.to_MIMEText()
             if mimetext is None:
-                print ("Got None mimetext for email from %r and to %r"
-                       % (email.fr_addr, email.to_addr))
+                g.log.info("Got None mimetext for email from %r and to %r", (email.fr_addr, email.to_addr,))
             if test:
-                print mimetext.as_string()
+                g.log.info("mime text: %r", (mimetext.as_string(),))
             else:
                 session.sendmail(email.fr_addr, email.to_addr,
                                  mimetext.as_string())
@@ -176,7 +172,7 @@ def send_queued_mail(test = False):
         except (smtplib.SMTPRecipientsRefused, smtplib.SMTPSenderRefused,
                 UnicodeDecodeError, AttributeError):
             # handle error and print, but don't stall the rest of the queue
-            print "Handled error sending mail (traceback to follow)"
+            g.log.info("Handled error sending mail (traceback to follow)")
             traceback.print_exc(file = sys.stdout)
             email.set_sent(rejected = True)
 
@@ -311,13 +307,13 @@ def run_realtime_email_queue(limit=1000, debug=False):
 
         # Open the SMTP session
         if g.email_debug:
-            print 'Opening SMTP session'
+            g.log.info('Opening SMTP session')
         session = open_smtp_session()
 
         if time.time() - run_realtime_email_queue.last_got_accounts > 600:
             #-- Pick up a fresh list of accounts, if we havenn't done so recently, in case settings change
             if g.email_debug:
-                print 'Getting accounts'
+                g.log.info('Getting accounts')
             run_realtime_email_queue.accounts = Account._query(Account.c.email != None, sort = asc('_date'), data=True)
             run_realtime_email_queue.last_got_accounts = time.time()
         
@@ -327,12 +323,12 @@ def run_realtime_email_queue(limit=1000, debug=False):
             fullname_type = fullname[0:2]
             id36 = fullname[3:]
             if g.email_debug:
-                print 'msg: ' + fullname
+                g.log.info('msg: %r', (fullname,))
             howold = (datetime.datetime.now() - msg.timestamp).total_seconds() 
             if  howold < 120:
                 # Wait until this item is 2 minutes old, to allow time for corrections
                 if g.email_debug:
-                    print 'waiting for a moment'
+                    g.log.info('waiting for a moment')
                 time.sleep(120 - howold)
 
             is_com = is_post = False
@@ -342,7 +338,7 @@ def run_realtime_email_queue(limit=1000, debug=False):
                 is_com = True
                 comment = Comment._byID36(id36)
                 if g.email_debug:
-                    print 'comment: ' + comment.body.encode('ascii','replace')
+                    g.log.info('comment: %r', (comment.body,))
                 thing = comment
                 author = Account._byID(comment.author_id, True)
                 kind = Email.Kind.REALTIME_COMMENT
@@ -356,7 +352,7 @@ def run_realtime_email_queue(limit=1000, debug=False):
                 is_post = True
                 link = Link._byID36(id36)
                 if g.email_debug:
-                    print 'post: ' + link.title.encode('ascii','replace')
+                    g.log.info('post: %r', (link.title,))
                 thing = link
                 author = Account._byID(link.author_id, True)
                 kind = Email.Kind.REALTIME_POST
@@ -378,13 +374,13 @@ def run_realtime_email_queue(limit=1000, debug=False):
                 if is_com: 
                     if hasattr(sub,'email_comments') and sub.email_comments:
                         if g.email_debug:
-                            print '  account ' + account.name.encode('ascii','replace') + ': we should send this comment, because of the space setting'
+                            g.log.info('  account %r: we should send this comment, because of the space setting', (account.name,))
                         whysend = 'space'
                     else:
                         email_thread = Link._somethinged(SaveHide, account, link, 'email')[account,link,'email']
                         if email_thread:
                             if g.email_debug:
-                                print '  account ' + account.name.encode('ascii','replace') + ': we should send this comment, because of the thread setting'
+                                g.log.info('  account %r: we should send this comment, because of the thread setting', (account.name,))
                             whysend = 'thread'
                         else:    
                             continue
@@ -392,7 +388,7 @@ def run_realtime_email_queue(limit=1000, debug=False):
                 elif is_post:
                     if hasattr(sub,'email_posts') and sub.email_posts:
                         if g.email_debug:
-                            print '  account ' + account.name.encode('ascii','replace') + ': we should send this post'
+                            g.log.info('  account %r: we should send this post', (account.name,))
                         whysend = 'space'
                     else:
                         continue
@@ -406,10 +402,10 @@ def run_realtime_email_queue(limit=1000, debug=False):
                 from_email = '"%s" <%s>' % (g.realtime_email_from_name, g.share_reply,)
                 send_html_email(account.email, g.share_reply, subject, html_body, from_full=from_email, session=session)
                 if g.email_debug:
-                    print '    sent to ' + account.name.encode('ascii','replace') + ' at ' + account.email
+                    g.log.info('    sent to %r at %r', (account.name, account.email,))
 
         if g.email_debug:
-            print 'Done running queue'
+            g.log.info('Done running queue')
 
         # Close the session.
         session.quit()
