@@ -621,14 +621,19 @@ h4.collapsable:not(.collapsed) .glyphicon-collapse-down {
         margin-bottom: 2px;
       }
   #item-list .media.subreddit .house_color {
-    display: none;
+    display: block; position: absolute;
+    width: 298px; height: 14px;
+    left: 0px; top: 0px;
+    border-radius: 3px 3px 0 0;
+    border-bottom: 1px solid #000000;
   }
   #item-list .media.subreddit p.titlerow a.title {
     height: 0px;
   }
   #item-list .media.subreddit h3 {
-    margin: 0; padding: 5px 0;
+    margin: 0; padding: 10px 0 0;
     text-align: center;
+    text-transform: capitalize;
   }
   #item-list .media.subreddit a.title {
     display: block;
