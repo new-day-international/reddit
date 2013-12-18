@@ -257,7 +257,7 @@ def handle_items(queue, callback, ack=True, limit=1, min_size=0,
         raise ValueError("min_size must be less than limit")
     from pylons import c
     from raven import Client
-    raven_client = Client(g.config['sentry_dsn']))
+    raven_client = Client(g.config['sentry_dsn'])
 
     chan = connection_manager.get_channel()
     countdown = None
