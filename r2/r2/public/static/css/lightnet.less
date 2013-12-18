@@ -266,7 +266,7 @@ h4.collapsable {
   text-overflow:ellipsis;
   white-space:nowrap; */
 }
-#item-list .media:hover .flat-list a {
+#item-list .entry:hover .flat-list a {
   color: #000;
 }
 #item-list .flat-list a {
@@ -745,6 +745,31 @@ h4.collapsable:not(.collapsed) .glyphicon-collapse-down {
 
 .usertext-buttons .save {
   margin-right: 10px;
+}
+
+.entry .flat-list.buttons a[onclick*='reply'] {
+  padding: 1px 5px;
+  border-radius: 3px !important;
+  border: 1px solid #ddd;
+  font-weight: normal !important;
+  font-size: 12px;
+  line-height: 1.5;
+  }
+  .entry:hover .flat-list.buttons a[onclick*='reply'] {
+    padding: 1px 5px;
+    background: rgb(66, 139, 202);
+    border-radius: 3px !important;
+    border: 1px solid rgb(53, 126, 189);
+    color: #fff !important;
+    }
+    .entry:hover .flat-list.buttons a[onclick*='reply']:hover {
+      background-color: #3276b1;
+      border-color: #285e8e;
+      text-decoration: none;
+    }
+
+.item-reply {
+  border-radius: 3px !important;
 }
 
 .listing-page .item-reply {
