@@ -80,8 +80,8 @@
 </%def>
 
 <%def name="tagline()">
-  ${self.score(thing, thing.subscriber)}<br />
-  ${_("A community for %(time)s") % dict(time=timesince(thing._date))}
+  ${self.score(thing, thing.subscriber)}
+  ${_("in a community for %(time)s") % dict(time=timesince(thing._date))}
 </%def>
 
 ##this function is used by subscriptionbox.html
