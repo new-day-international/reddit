@@ -256,6 +256,8 @@ def handle_items(queue, callback, ack=True, limit=1, min_size=0,
     if limit < min_size:
         raise ValueError("min_size must be less than limit")
     from pylons import c
+    from raven import Client
+    raven_client = Client(g.config['sentry_dsn']))
 
     chan = connection_manager.get_channel()
     countdown = None
@@ -311,6 +313,7 @@ def handle_items(queue, callback, ack=True, limit=1, min_size=0,
             # flush any log messages printed by the callback
             sys.stdout.flush()
         except:
+            raven_client.captureException()
             for item in items:
                 # explicitly reject the items that we've not processed
                 chan.basic_reject(item.delivery_tag, requeue = True)
