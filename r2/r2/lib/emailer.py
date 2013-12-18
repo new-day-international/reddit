@@ -305,11 +305,6 @@ def run_realtime_email_queue(limit=1000, debug=False):
     @g.stats.amqp_processor('realtime_email_q')
     def _run_realtime_email_queue(msgs, chan):
 
-        # Open the SMTP session
-        if g.email_debug:
-            g.log.info('Opening SMTP session')
-        session = open_smtp_session()
-
         if time.time() - run_realtime_email_queue.last_got_accounts > 600:
             #-- Pick up a fresh list of accounts, if we havenn't done so recently, in case settings change
             if g.email_debug:
@@ -336,21 +331,21 @@ def run_realtime_email_queue(limit=1000, debug=False):
             if fullname_type == 't1':
                 # a comment
                 is_com = True
-                comment = Comment._byID36(id36)
+                comment = Comment._byID36(id36, data=True)
                 if g.email_debug:
                     g.log.info('comment: %r', comment.body)
                 thing = comment
                 author = Account._byID(comment.author_id, True)
                 kind = Email.Kind.REALTIME_COMMENT
                 template = 'email_realtime_comment.html'
-                link = Link._byID(comment.link_id)  
+                link = Link._byID(comment.link_id, data=True)  
                 subject = u'Re: %s' % link.title
                 sr_id = comment.sr_id
                 
             elif fullname_type == 't6':
                 # a post/link
                 is_post = True
-                link = Link._byID36(id36)
+                link = Link._byID36(id36, data=True)
                 if g.email_debug:
                     g.log.info('post: %r', link.title)
                 thing = link
@@ -363,7 +358,7 @@ def run_realtime_email_queue(limit=1000, debug=False):
             else:
                 return
             
-            sr = Subreddit._byID(sr_id)
+            sr = Subreddit._byID(sr_id, data=True)
             
             subject = "[%s] %s" % (sr.name, subject)
             
@@ -392,8 +387,12 @@ def run_realtime_email_queue(limit=1000, debug=False):
                         whysend = 'space'
                     else:
                         continue
-                        
 
+                if not ('session' in locals()):
+                    # Open the SMTP session
+                    if g.email_debug:
+                        g.log.info('Opening SMTP session')
+                    session = open_smtp_session()
 
                 # Render the template
                 html_email_template = g.mako_lookup.get_template(template)
@@ -407,8 +406,9 @@ def run_realtime_email_queue(limit=1000, debug=False):
         if g.email_debug:
             g.log.info('Done running queue')
 
-        # Close the session.
-        session.quit()
+        if 'session' in locals():
+            # Close the session.
+            session.quit()
 
     amqp.handle_items('realtime_email_q', _run_realtime_email_queue, limit = limit)
     
