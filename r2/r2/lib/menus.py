@@ -109,7 +109,7 @@ menu =   MenuHandler(hot          = _('hot'),
                      sent         = _("sent"),
 
                      # comments
-                     comments     = _("comments {toolbar}"),
+                     comments     = _("latest comments"),
                      related      = _("related"),
                      details      = _("details"),
                      duplicates   = _("other discussions (%(num)s)"),
