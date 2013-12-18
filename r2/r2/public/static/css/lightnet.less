@@ -297,6 +297,10 @@ h4.collapsable {
   padding: 5px 0 0 0;
 }
 
+span.domain {
+  margin: 0 0 5px 5px;
+}
+
 #item-list .media .minor {
   color: rgb(221, 221, 221);
 }
@@ -305,10 +309,9 @@ h4.collapsable {
   color: rgb(47, 164, 231);
 }
 #item-list .media-object {
-  margin-top: 5px;
 }
 #item-list .media-heading {
-  margin: 3px 0 0 0;
+  margin: 0 0 0 0;
 }
 #item-list .media .vote-buttons {
   width: 25px;
@@ -705,6 +708,30 @@ h4.collapsable:not(.collapsed) .glyphicon-collapse-down {
   #item-list .media .vote-buttons i:focus {
     outline: none;
   }
+
+
+
+.arrow.up, .arrow.upmod,
+.arrow.down, .arrow.downmod {
+  position: relative;
+  height: 12px;
+  overflow: hidden;
+}
+
+.arrow i {
+  position: absolute;
+  left: 6px;
+}
+
+.arrow.up i,
+.arrow.upmod {
+  top: 0;
+}
+
+.arrow.down i,
+.arrow.downmod i {
+  bottom: 0;
+}
 
 .arrow.upmod i, 
 .arrow.up:hover i {
