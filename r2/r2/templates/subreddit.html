@@ -86,10 +86,10 @@
 
 ##this function is used by subscriptionbox.html
 <%def name="addremove_button(sr)">
-    ${toggle_button("fancy-toggle-button", _("subscribe"), _("unsubscribe"),
+    ${toggle_button("fancy-toggle-button", _("Subscribe"), _("Unsubscribe"),
                   "subscribe('%s')" % sr._fullname, 
                   "unsubscribe('%s')" % sr._fullname, 
-                  css_class = "add btn btn-danger", alt_css_class = "remove btn btn-success",
+                  css_class = "add btn btn-success", alt_css_class = "remove btn btn-subtle btn-sm",
                   reverse = sr.subscriber,
                   login_required = True)}
     
