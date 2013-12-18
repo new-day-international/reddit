@@ -288,7 +288,7 @@ def send_html_email(to_addr, from_addr, subject, html, subtype="html", from_full
     if close_session:
         session.quit()
 
-def run_realtime_email_queue(limit=1000, debug=False):
+def run_realtime_email_queue(limit=1, debug=False):
     # Email new posts, comments or messages to whoever's set to get them
     # Called from reddit_consumer-realtime_email_q long running job
     
@@ -338,7 +338,7 @@ def run_realtime_email_queue(limit=1000, debug=False):
                 kind = Email.Kind.REALTIME_COMMENT
                 template = 'email_realtime_comment.html'
                 link = Link._byID(comment.link_id, data=True)  
-                subject = u'Re: %s' % link.title
+                subject = u'Re: %s' % link.title.decode('utf-8')
                 sr_id = comment.sr_id
                 
             elif fullname_type == 't6':
