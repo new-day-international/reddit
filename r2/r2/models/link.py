@@ -577,10 +577,7 @@ class Link(Thing, Printable):
 
             # If we're on the comments page, then the link should have the photo
             # for the actual post author, otherwise use the last comment author.
-            if is_comments:
-                photo_author = item.author
-            else:
-                photo_author = item.comment_author
+            photo_author = item.author
 
             # Get the name for the item's photo column
             if photo_author.profile_photo_uploaded:
