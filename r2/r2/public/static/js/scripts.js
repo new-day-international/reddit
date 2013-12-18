@@ -10,6 +10,14 @@ $(function () {
     container: "body"
   });
 
+  $('#house-name').on('click', function() {
+    if( $('.sidebar_description').css('height') == "0px" ) {
+      $('.sidebar_description').css('height', 'auto');
+    } else {
+      $('.sidebar_description').css('height', "0px");
+    }
+  });
+
   $('.house-lightnet-rules').on('click', function(){
     $(this).addClass("nobg");
   });

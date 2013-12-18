@@ -95,7 +95,13 @@
     ${thing.flair_prefs}
   %endif
 
-  ${thing.sr.house_rules_usertext}
+  <h2 id="house-name">
+    ${thing.sr.get_house_description()}<i class="fa fa-sort-asc"></i>
+  </h2>
+    ${thing.sr.house_rules_usertext}
+  <h2 style="background-color: ${thing.sr.get_house_color()} !important;" class="house-color">
+    &nbsp;
+  </h2>
 
   %if c.user_is_admin:
     %if thing.sr._spam:
