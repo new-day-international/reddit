@@ -589,28 +589,8 @@ class Link(Thing, Printable):
                 item.photo_name = "default_user"
 
             # generate the appropriate tagline text
-            taglinetext = ''
-            if item.score_fmt == Score.points:
-                taglinetext = ("<span>" +  _("%(score)s added %(when)s ago") + "</span>")
-                if item.different_sr:
-                    taglinetext += "<span>" + _("by %(author)s to %(reddit)s") + "</span>"
-                else:
-                    taglinetext += "<span>" + _("by %(author)s") + "</span>"
+            taglinetext = ("<span>" +  _("%(author)s posted %(when)s ago") + "</span>")
 
-            else:
-                # note the last comment author and item creator as appropriate
-                if item.comment_author_id:
-                    taglinetext = _("last comment %(whenactive)s ago by %(commentauthor)s, "
-                                    "started %(when)s ago by %(author)s")
-                else:
-                    taglinetext = _("added %(when)s ago by %(author)s")
-
-                # note the reddit if appropriate
-                if item.different_sr:
-                    if item.comment_author_id:
-                        taglinetext += _(" in %(reddit)s")
-                    else:
-                        taglinetext += _(" to %(reddit)s")
 
             item.taglinetext = taglinetext
 
