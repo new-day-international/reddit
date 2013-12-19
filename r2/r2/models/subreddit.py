@@ -1506,7 +1506,7 @@ Subreddit.__bases__ += (
     UserRel('moderator_invite', SRMember,
             permission_class=ModeratorPermissionSet),
     UserRel('contributor', SRMember),
-    UserRel('subscriber', SRMember, disable_ids_fn=True),
+    UserRel('subscriber', SRMember), # Disabling as it makes exporting data easier --myers : , disable_ids_fn=True),
     UserRel('banned', SRMember),
     UserRel('wikibanned', SRMember),
     UserRel('wikicontributor', SRMember),

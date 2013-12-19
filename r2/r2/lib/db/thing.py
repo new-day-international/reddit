@@ -556,7 +556,9 @@ class ThingMeta(type):
         super(ThingMeta, cls).__init__(name, bases, dct)
     
     def __repr__(cls):
-        return '<thing: %s>' % cls._type_name
+        if hasattr(cls, '_type_name'):
+            return '<thing: %s>' % cls._type_name
+        return '<thing>'
 
 class Thing(DataThing):
     __metaclass__ = ThingMeta

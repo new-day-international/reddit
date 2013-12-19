@@ -4,75 +4,83 @@
 from r2.models import *
 from r2.lib.utils import fetch_things2, flatten
 
-import yaml
+import yaml, pprint
 
 def dump_to_file(name_of_type, data):
     with file('%s.yml' % (name_of_type,), 'wb') as outfile:
-        yaml.dump(data, outfile, Dumper=yaml.CDumper)
+        yaml.dump(data, outfile, Dumper=yaml.CDumper, default_flow_style=False)
+
+def thing_to_dict(thing):
+    ret = dict(
+        _date=thing._date,
+        _spam=thing._spam,
+        _deleted=thing._deleted,
+        _ups=thing._ups,
+        _downs=thing._downs,
+    )
+    for k, v in thing.__dict__['_t'].items():
+        ret[k] = v
+    return ret
 
 def export_data():
-    accounts = Account._query(data=True)
+    print Subreddit.__bases__
+
+
+    accounts = Account._query(data=True, allow_deleted=True)
     accounts._sort = asc('_date')
     accounts = list(fetch_things2(accounts))
     print "accounts: ", len(accounts)
 
-    # TODO: created at, modified at
-    out_accounts = {}
+    out = {}
     for account in accounts:
-        out_accounts[account.name] = dict(
-            name=account.registration_fullname,
-            email=account.email,
-            profile_photo_uploaded=account.profile_photo_uploaded,
-        )
+        out[account.name] = thing_to_dict(account)
+        out[account.name]['id'] = int(account._id)
+    dump_to_file('accounts', out)
 
-    dump_to_file('accounts', out_accounts)
+    subreddits = Subreddit._query(data=True)
+    subreddits._sort = asc('_date')
+    subreddits = list(fetch_things2(subreddits))
+    print "subreddits: ", len(subreddits)
 
-    spaces = Subreddit._query(data=True)
-    spaces._sort = asc('_date')
-    spaces = list(fetch_things2(spaces))
-    print "spaces: ", len(spaces)
+    out = {}
+    for subreddit in subreddits:
+        out[subreddit.name] = thing_to_dict(subreddit)
+        for rel in ['moderator_ids', 'moderator_invite_ids', 'contributor_ids', 'subscriber_ids', 'banned_ids', 'wikibanned_ids', 'wikicontributor_ids']:
+            accounts = []
+            for ii in getattr(subreddit, rel)():
+                try:
+                    accounts.append(Account._byID(ii).name)
+                except AttributeError:
+                    print "missing account for relation %r: Account id %r" % (rel, ii,)
+            if len(accounts):
+                out[subreddit.name][rel.replace('_id', '')] = accounts
 
-    out_spaces = {}
-    for space in spaces:
-        out_spaces[space.name] = dict(
-            lang=space.lang,
-            use_rules_from_space=space.use_rules_from_space,
-        )
-    dump_to_file('spaces', out_spaces)
+    dump_to_file('subreddits', out)
 
-    # TODO: created at, modified at
     links = Link._query(data=True)
     links._sort = asc('_date')
     links = list(fetch_things2(links))
     print "links: ", len(links)
 
-    out_links = {}
+    out = {}
     # TODO: Votes
     for link in links:
-        out_links[int(link._id)] = dict(
-            space=link.subreddit_slow.name,
-            author=link.author_slow.name,
-            kind=link.kind,
-            url=link.url,
-            title=link.title,
-            description=link.selftext.decode('utf-8'),
-        )
+        out[int(link._id)] = thing_to_dict(link)
 
-    dump_to_file('links', out_links)
+    dump_to_file('links', out)
 
     comments = Comment._query(data=True)
     comments._sort = asc('_date')
     comments = list(fetch_things2(comments))
     print "comments: ", len(comments)
-    out_comments = {}
 
+    out = {}
     # TODO: Votes
     for comment in comments:
-        out_comments[int(comment._id)] = dict(
-            parent_id=comment.parent_id,
-            link_id=comment.link_id,
-            body=comment.body,
-            ip=comment.ip,
-            author=comment.author_slow.name,
-        )
-    dump_to_file('comments', out_comments)
+        out[int(comment._id)] = thing_to_dict(comment)
+        out[int(comment._id)]['author'] = comment.author_slow.name
+        out[int(comment._id)]['subreddit'] = comment.subreddit_slow.name
+    dump_to_file('comments', out)
+
+    # wiki
+    # WikiPagesBySR.query([sr._id36]
