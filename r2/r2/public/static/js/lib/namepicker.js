@@ -4547,7 +4547,8 @@ var multinamepickerconfig = {
       }
   };
   
-$(function() {
+function namepicker_init() {
+    
   $('.spacenamepicker')
     .textext({
         plugins : 'autocomplete',
@@ -4620,21 +4621,18 @@ $(function() {
             { result : textext.itemManager().filter(usernames, query) }
         );
       }); 
-  
-});
 
-/*
-Any textarea of class atnamepicker, or under such a class, gets an atwho namepicker
-*/
-
-$(function() { 
   $('.atnamepicker, .atnamepicker textarea').atwho('run').atwho({
-      at: "@",
-      tpl: '<li data-value="@$'+'{name}"><img src="http://'+s3_user_files_host+'/u/$'+'{pic}/profile_photo.jpg"> <div>$'+'{full}</div></li>',
-      data: userdata
-  });
-});
+        at: "@",
+        tpl: '<li data-value="@$'+'{name}"><img src="http://'+s3_user_files_host+'/u/$'+'{pic}/profile_photo.jpg"> <div>$'+'{full}</div></li>',
+        data: userdata
+    });
+  
+}
 
+$.getScript("/api/namepicker", function() {
+    namepicker_init();
+});  
 
 function printObject(o) {
   var out = '';
