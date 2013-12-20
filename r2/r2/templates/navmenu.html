@@ -139,15 +139,18 @@
   %endif
 </%def>
 
-<%def name="bootstrap_drop_down_button_with_active()">
+<%def name="bootstrap_drop_down_tab()">
   %if thing:
-    <div class="btn-group pull-left">
-      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-        %if thing.title:
+    <% print repr(thing.active) %>
+    %if thing.active:
+      <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+        %if thing.active:
+          ${thing.title} (sorted by ${thing.selected.title}) 
+        %else:
           ${thing.title}
         %endif
-      <strong>${thing.selected}</strong> <span class="caret"></span>
-      </button>
+      <span class="caret"></span>
+      </a>
       <ul class="dropdown-menu" role="menu">
         %for i, option in enumerate(thing):
           %if option == thing.selected:
@@ -160,9 +163,12 @@
             ${option}
           </li>
         %endfor
-
       </ul>
-    </div>
+    %else:
+      <a href="${list(thing)[0].path}">
+        ${thing.title}
+      </a>
+    %endif
   %endif
 </%def>
 

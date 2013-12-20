@@ -180,7 +180,11 @@ menu =   MenuHandler(hot          = _('hot'),
                      languages = _('languages'),
                      adverts = _('adverts'),
 
-                     whitelist = _("whitelist")
+                     whitelist = _("whitelist"),
+
+                     # for action bar
+                     items = _('items'),
+
                      )
 
 def menu_style(type):
@@ -198,6 +202,7 @@ def menu_style(type):
              flat_vert = ('flatlist', 'flat-vert'),
              bootstrap_drop_down_button = ('bootstrap_drop_down_button', 'bootstrap_drop_down_button'),
              bootstrap_tabs = ('bootstrap_tabs', 'bootstrap_tabs'),
+             bootstrap_drop_down_tab = ('bootstrap_drop_down_tab', 'bootstrap_drop_down_tab'),
              )
     return d.get(type, default)
 
@@ -208,6 +213,9 @@ class NavMenu(Styled):
     can be used to set individualized CSS."""
 
     use_post = False
+    
+    # does the parent think this one is active
+    active = False
 
     def __init__(self, options, default = None, title = '', type = "dropdown",
                  base_path = '', separator = '|', prefix_icon = None, li_css_class="", **kw):
@@ -234,6 +242,8 @@ class NavMenu(Styled):
         # (possibly None)
         self.default = default
         self.selected = self.find_selected()
+        if hasattr(self.selected, 'active'):
+            self.selected.active = True
         self.is_dropdown = (style == "dropdown")
 
         Styled.__init__(self, title = title, **kw)
@@ -255,18 +265,24 @@ class NavMenu(Styled):
         for opt in self.options:
             yield opt
 
+    # added so a NavMenu can have a NavMenu inside of it
     def build(self, base_path):
-        # added so a NavMenu can have a NavMenu inside of it
-        pass
+        self.base_path = base_path
 
+    # added so a NavMenu can have a NavMenu inside of it
     def is_selected(self):
-        return False
+        # if one of our options is selected, then we are selected
+        return self.selected is not None
 
 class NavButton(Styled):
     """Smallest unit of site navigation.  A button once constructed
     must also have its build() method called with the current path to
     set self.path.  This step is done automatically if the button is
     passed to a NavMenu instance upon its construction."""
+
+    # does the parent think this one is active
+    active = False
+
     def __init__(self, title, dest, sr_path = True, 
                  nocname=False, opt = '', aliases = [],
                  target = "", style = "plain", **kw):
