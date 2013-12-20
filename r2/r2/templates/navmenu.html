@@ -20,6 +20,10 @@
 ## reddit Inc. All Rights Reserved.
 ###############################################################################
 
+<%!
+   from r2.lib.template_helpers import add_sr
+%>
+
 <%namespace file="utils.html" import="plain_link, post_link, img_link, separator, classes"/>
 
 <%def name="dropdown()">
@@ -141,7 +145,6 @@
 
 <%def name="bootstrap_drop_down_tab()">
   %if thing:
-    <% print repr(thing.active) %>
     %if thing.active:
       <a class="dropdown-toggle" data-toggle="dropdown" href="#">
         %if thing.active:
@@ -165,7 +168,8 @@
         %endfor
       </ul>
     %else:
-      <a href="${list(thing)[0].path}">
+      <% href = add_sr(list(thing)[0].path) %>
+      <a href="${href}">
         ${thing.title}
       </a>
     %endif

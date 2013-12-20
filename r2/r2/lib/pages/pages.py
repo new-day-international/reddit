@@ -491,14 +491,14 @@ class Reddit(Templated):
         ret = []
         # Add button for submitting links
         if c.site.link_type != 'self':
-            ret.append(IconButton(icon_class="fa fa-link", title=_("link"), dest="/submit"))                        
+            ret.append(IconButton(icon_class="fa fa-link", title=_("link"), dest="submit"))                        
 
         # Add button for submitting text items
         if c.site.link_type != 'link':
-            ret.append(IconButton(icon_class="fa fa-file-text-o", title=_("post"), dest="/submit?selftext=true"))
+            ret.append(IconButton(icon_class="fa fa-file-text-o", title=_("post"), dest="submit?selftext=true"))
         # Add button for submitting files
         if c.site.allow_user_uploads:
-            ret.append(IconButton(icon_class="fa fa-paperclip", title=_("file"), dest="/submit/file"))                        
+            ret.append(IconButton(icon_class="fa fa-paperclip", title=_("file"), dest="submit/file"))                        
         return ret
 
     def new_button(self):
@@ -922,7 +922,6 @@ class FormPage(BoringPage):
     submit_box         = False
     """intended for rendering forms with no rightbox needed or wanted"""
     def __init__(self, pagename, show_sidebar = False, *a, **kw):
-        print pagename
         BoringPage.__init__(self, pagename,  show_sidebar = show_sidebar,
                             *a, **kw)
         

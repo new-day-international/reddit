@@ -20,9 +20,13 @@
 ## reddit Inc. All Rights Reserved.
 ###############################################################################
 
+<%!
+   from r2.lib.template_helpers import add_sr
+%>
 
 <%def name="plain()">
-    <a class="${thing.css_class}" href="${thing.dest}"><span class="${thing.icon_class}"></span> ${thing.title}</a>
+    <% href = add_sr(thing.dest, sr_path=thing.sr_path) %>
+    <a class="${thing.css_class}" href="${href}"><span class="${thing.icon_class}"></span> ${thing.title}</a>
 </%def>
 
 <%def name="button()">

@@ -268,6 +268,8 @@ class NavMenu(Styled):
     # added so a NavMenu can have a NavMenu inside of it
     def build(self, base_path):
         self.base_path = base_path
+        for o in self.options:
+            o.build(self.base_path)
 
     # added so a NavMenu can have a NavMenu inside of it
     def is_selected(self):
