@@ -8,10 +8,11 @@ import yaml, pprint
 
 def dump_to_file(name_of_type, data):
     with file('%s.yml' % (name_of_type,), 'wb') as outfile:
-        yaml.dump(data, outfile, Dumper=yaml.CDumper, default_flow_style=False)
+        yaml.safe_dump(data, outfile, default_flow_style=False)
 
 def thing_to_dict(thing):
     ret = dict(
+        _id=thing._id,
         _date=thing._date,
         _spam=thing._spam,
         _deleted=thing._deleted,
@@ -23,9 +24,6 @@ def thing_to_dict(thing):
     return ret
 
 def export_data():
-    print Subreddit.__bases__
-
-
     accounts = Account._query(data=True, allow_deleted=True)
     accounts._sort = asc('_date')
     accounts = list(fetch_things2(accounts))
@@ -34,7 +32,6 @@ def export_data():
     out = {}
     for account in accounts:
         out[account.name] = thing_to_dict(account)
-        out[account.name]['id'] = int(account._id)
     dump_to_file('accounts', out)
 
     subreddits = Subreddit._query(data=True)
@@ -66,6 +63,8 @@ def export_data():
     # TODO: Votes
     for link in links:
         out[int(link._id)] = thing_to_dict(link)
+        out[int(link._id)]['author'] = link.author_slow.name
+        out[int(link._id)]['subreddit'] = link.subreddit_slow.name
 
     dump_to_file('links', out)
 
