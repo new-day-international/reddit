@@ -82,10 +82,6 @@
       ${separator("|")}
 
       <%
-        print "redditheader.html (from user) %d %d %d" % (c.user.message_count, c.user.moderator_message_count, c.user.notification_count)
-        import sys
-        sys.stdout.flush()
-
         if c.user.message_count > 0:
           mail_img_class = 'havemail'
           mail_img_title = "new mail!"

@@ -115,3 +115,21 @@ def send_notification_message(user, target, subject, message, ip):
     m, inbox_rel = Message._new(user, target, subject, message, ip, in_box='notifications')
     amqp.add_item('new_notification', m._fullname)
     queries.new_message(m, inbox_rel)
+
+def send_notification_message_to_users(user,to_users,title,url,ip):
+    if len(to_users) <= 0:
+        return
+
+    # Compose the subject and message
+    subject = "check this out: %s" % (title)
+    message = "check out this item: [%s](%s)" % (title, url)
+
+    # Notify any @user_name users.
+    for account in to_users:
+        print "sending message: %s " % (subject)
+        print "   message     : %s" % (message)
+        print "   to          : %s" % (account.registration_fullname,)
+        import sys
+        sys.stdout.flush()
+
+        send_notification_message(user, account, subject, message, ip)
