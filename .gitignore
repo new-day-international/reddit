@@ -39,3 +39,5 @@ r2/r2/lib/wrapped.c
 r2/r2/models/_builder.c
 
 r2/r2/.tags
+
+.git_backup/
