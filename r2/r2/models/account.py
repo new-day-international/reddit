@@ -160,26 +160,14 @@ class Account(Thing):
         self._commit()
 
     def clear_message_count(self):
-        print "clear_message_count"
-        import sys
-        sys.stdout.flush()
-
         self.message_count = 0
         self._commit()
 
     def clear_moderator_message_count(self):
-        print "clear_moderator_message_count"
-        import sys
-        sys.stdout.flush()
-
         self.moderator_message_count = 0
         self._commit()
 
     def clear_notification_count(self):
-        print "clear_notification_count"
-        import sys
-        sys.stdout.flush()
-
         self.notification_count = 0
         self._commit()
 

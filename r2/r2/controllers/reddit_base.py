@@ -44,6 +44,8 @@ from pylons.controllers.util import redirect_to
 from pylons.i18n import _
 from pylons.i18n.translation import LanguageError
 
+import snudown
+
 from r2.config.extensions import is_api
 from r2.lib import filters, pages, utils, hooks
 from r2.lib.authentication import authenticate_user
@@ -82,6 +84,7 @@ from r2.lib.validator import (
     VTarget,
 )
 from r2.models import (
+    Account,
     All,
     AllMinus,
     DefaultSR,
@@ -851,6 +854,31 @@ class MinimalController(BaseController):
 
         return request.method.upper() != "POST"
 
+def username_exists(username):
+    print "Checking existence of %s" % (username,)
+    try:
+        account = Account._by_name(username)
+    except NotFound:
+        account = None
+        pass
+
+    if account:
+        return True
+    else:
+        return False
+
+def username_to_display_name(username):
+    print "Getting display name for %s" % (username,)
+    try:
+        account = Account._by_name(username)
+    except NotFound:
+        account = None
+        pass
+
+    if account:
+        return account.registration_fullname
+    else:
+        return username
 
 class RedditController(MinimalController):
 
@@ -885,6 +913,7 @@ class RedditController(MinimalController):
     @staticmethod
     def disable_admin_mode(user):
         c.cookies[g.admin_cookie] = Cookie(value='', expires=DELETE)
+
 
     def pre(self):
         record_timings = g.admin_cookie in request.cookies or g.debug
@@ -1044,6 +1073,9 @@ class RedditController(MinimalController):
             g.stats.end_logging_timings()
 
         hooks.get_hook("reddit.request.begin").call()
+
+        # Set the @username callbacks for the markdown processor.
+        snudown.set_username_callbacks(username_exists, username_to_display_name)
 
         c.request_timer.intermediate("base-pre")
 

@@ -861,6 +861,7 @@ class MessagePage(Reddit):
         if c.show_mod_mail:
             buttons.append(ModeratorMailButton(menu.modmail, "moderator",
                                                sr_path = False))
+        buttons.append(NamedButton('notifications', sr_path = False))
         if not c.default_sr:
             buttons.append(ModeratorMailButton(
                 _("%(site)s mail") % {'site': c.site.name}, "moderator",

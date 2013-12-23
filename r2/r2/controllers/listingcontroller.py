@@ -864,7 +864,6 @@ class MessageController(ListingController):
         return ListingController.builder(self)
 
     def listing(self):
-        print "Inside Message.listing()"
         if ((self.where == 'messages' or self.where == 'notifications') and
             (c.user.pref_threaded_messages or self.message)):
             return Listing(self.builder_obj).listing()
@@ -878,10 +877,6 @@ class MessageController(ListingController):
         return pane
 
     def query(self):
-        print "MessageController.query %s %s" % (self.where, self.subwhere if self.subwhere else "")
-        import sys
-        sys.stdout.flush()
-
         if self.where == 'messages':
             q = queries.get_inbox_messages(c.user)
         elif self.where == 'comments':
@@ -967,10 +962,6 @@ class MessageController(ListingController):
             self.mark = 'false'
         else:
             self.mark = 'true'
-
-        print "MessageController.GET_listing: mark %s, self.mark %s" % (mark, self.mark)
-        import sys
-        sys.stdout.flush()
 
         self.message = message
 

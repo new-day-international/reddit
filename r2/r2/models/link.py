@@ -1302,9 +1302,13 @@ class Message(Thing, Printable):
                 # an orangered, if they PM themselves.
                 # Don't notify on PMs from blocked users, either
                 notify_recipient = (to.name != author.name and
-                             author._id not in to.enemies)
+                             author._id not in to.enemies and
+                             in_box != 'notifications')
                 inbox_rel.append(Inbox._add(to, m, in_box,
                                             notify_recipient=notify_recipient))
+                if in_box == 'notifications':
+                    to.notification_added()
+
             # find the message originator
             elif sr_id and m.first_message:
                 first = Message._byID(m.first_message, True)

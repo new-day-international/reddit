@@ -26,6 +26,8 @@ from reddit_base import cross_domain, paginated_listing
 from pylons.i18n import _
 from pylons import c, g, request, response
 
+from snudown import set_username_callbacks
+
 from r2.lib.validator import *
 
 from r2.models import *
@@ -64,7 +66,7 @@ from r2.controllers.api_docs import api_doc, api_section
 from r2.lib.search import SearchQuery
 from r2.controllers.oauth2 import OAuth2ResourceController, require_oauth2_scope
 from r2.lib.template_helpers import add_sr, get_domain
-from r2.lib.system_messages import notify_user_added, send_notification_message
+from r2.lib.system_messages import notify_user_added, send_notification_message, send_notification_message_to_users
 from r2.controllers.ipn import generate_blob
 from r2.lib.lock import TimeoutExpired
 
@@ -283,6 +285,33 @@ class ApiController(RedditController, OAuth2ResourceController):
         """
         from r2.models.admintools import is_banned_domain
 
+        notify_accounts = set()
+
+        def username_exists(username):
+            try:
+                account = Account._by_name(username)
+            except NotFound:
+                account = None
+                pass
+
+            if account:
+                notify_accounts.add(account)
+                return True
+            else:
+                return False
+
+        def username_to_display_name(username):
+            try:
+                account = Account._by_name(username)
+            except NotFound:
+                account = None
+                pass
+
+            if account:
+                return account.registration_fullname
+            else:
+                return username
+
         if isinstance(url, (unicode, str)):
             #backwards compatability
             if url.lower() == 'self':
@@ -411,21 +440,31 @@ class ApiController(RedditController, OAuth2ResourceController):
             admintools.spam(l, banner = "domain (%s)" % banmsg)
 
         if kind == 'self':
-            l.url = l.make_permalink_slow()
             l.is_self = True
-            l.selftext = selftext
 
-            l._commit()
+        if selftext and selftext != '':
+            # Check for notifications
+            set_username_callbacks(username_exists, username_to_display_name)
+            md = safemarkdown(selftext)
+
+            # Setup the permalink
+            l.url = l.make_permalink_slow()
             l.set_url_cache()
 
-        elif kind in ('link', 'file') and selftext and selftext != '':
+            # Remember the self text.
             l.selftext = selftext
-            l._commit()
+
+        # Commit the link changes.
+        l._commit()
 
         queries.queue_vote(c.user, l, True, ip,
                            cheater = (errors.CHEATER, None) in c.errors)
         if save:
             r = l._save(c.user)
+
+        # Handle any @user notifications...
+        if len(notify_accounts) > 0:
+            send_notification_message_to_users(c.user, notify_accounts, l.title, l.url, ip)
 
         #set the ratelimiter
         if should_ratelimit:
@@ -1189,21 +1228,83 @@ class ApiController(RedditController, OAuth2ResourceController):
     @require_oauth2_scope("edit")
     @validatedForm(VUser(),
                    VModhash(),
+                   ip = ValidIP(),
                    item = VByNameIfAuthor('thing_id'),
                    text = VSelfText('text'))
     @api_doc(api_section.links_and_comments)
-    def POST_editusertext(self, form, jquery, item, text):
+    def POST_editusertext(self, form, jquery, ip, item, text):
         """Edit the body text of a comment or self-post."""
+
+        original_notify_accounts = set()
+        notify_accounts = set()
+        new_notify_accounts = set()
+
+        def username_exists(username):
+            try:
+                account = Account._by_name(username)
+            except NotFound:
+                account = None
+                pass
+
+            if account:
+                notify_accounts.add(account)
+                return True
+            else:
+                return False
+
+        def username_to_display_name(username):
+            try:
+                account = Account._by_name(username)
+            except NotFound:
+                account = None
+                pass
+
+            if account:
+                return account.registration_fullname
+            else:
+                return username
+
         if (not form.has_errors("text",
                                 errors.NO_TEXT, errors.TOO_LONG) and
             not form.has_errors("thing_id", errors.NOT_AUTHOR)):
 
+            # Get the original text from the item.
+            if isinstance(item, Comment):
+                original_text = item.body
+            elif isinstance(item, Link):
+                original_text = item.selftext
+
+            # If the text changed...
+            text_changed = False
+            if text != original_text:
+
+                text_changed = True
+
+                set_username_callbacks(username_exists, username_to_display_name)
+
+                # Check for notifications using the original text...
+                notify_accounts.clear()
+                md = safemarkdown(original_text)
+                original_notify_accounts = notify_accounts.copy()
+
+                # Now check for notifications using the new text...
+                notify_accounts.clear()
+                md = safemarkdown(text)
+
+                # We only want to send to new accounts that were not already
+                # notified of this message.
+                new_notify_accounts = notify_accounts.difference(original_notify_accounts)
+
             if isinstance(item, Comment):
                 item_kind = 'comment'
                 item.body = text
+                title = 'comment by ' % (c.user.registration_fullname)
+                url = item.url
             elif isinstance(item, Link):
                 item_kind = 'link'
                 item.selftext = text
+                title = item.title
+                url = item.url
             else:
                 g.log.warning("%s tried to edit usertext on %r", c.user, item)
                 return
@@ -1226,6 +1327,10 @@ class ApiController(RedditController, OAuth2ResourceController):
             if item_kind == 'link':
                 set_last_modified(item, 'comments')
                 LastModified.touch(item._fullname, 'Comments')
+
+            # Handle the @user notification changes
+            if text_changed and len(new_notify_accounts) > 0:
+                send_notification_message_to_users(c.user, new_notify_accounts, title, url, ip)
 
             wrapper = default_thing_wrapper(expand_children = True)
             jquery(".content").replace_things(item, True, True, wrap = wrapper)
@@ -1255,6 +1360,33 @@ class ApiController(RedditController, OAuth2ResourceController):
         To start a new message thread, use [/api/compose](#POST_api_compose).
 
         """
+        notify_accounts = set()
+
+        def username_exists(username):
+            try:
+                account = Account._by_name(username)
+            except NotFound:
+                account = None
+                pass
+
+            if account:
+                notify_accounts.add(account)
+                return True
+            else:
+                return False
+
+        def username_to_display_name(username):
+            try:
+                account = Account._by_name(username)
+            except NotFound:
+                account = None
+                pass
+
+            if account:
+                return account.registration_fullname
+            else:
+                return username
+
         should_ratelimit = True
         #check the parent type here cause we need that for the
         #ratelimit checks
@@ -1319,7 +1451,7 @@ class ApiController(RedditController, OAuth2ResourceController):
                 # newcomments_q, so if they refresh immediately they
                 # won't see their comment
 
-            # clean up the submission form and remove it from the DOM (if reply)
+            # Clean up the submission form and remove it from the DOM (if reply)
             t = commentform.find("textarea")
             t.attr('rows', 3).html("").val("")
             if isinstance(parent, (Comment, Message)):
@@ -1327,23 +1459,36 @@ class ApiController(RedditController, OAuth2ResourceController):
                 jquery.things(parent._fullname).set_html(".reply-button:first",
                                                          _("replied"))
 
-            # insert the new comment
+            # Insert the new comment
             jquery.insert_things(item)
 
-            # remove any null listings that may be present
+            # Remove any null listings that may be present
             jquery("#noresults").hide()
 
-            #update the queries
+            # Update the queries
             if is_message:
                 queries.new_message(item, inbox_rel)
             else:
                 queries.new_comment(item, inbox_rel)
 
-            # send the changed message
+            # Send the changed message
             changed(item)
 
+            # Check for notifications
+            set_username_callbacks(username_exists, username_to_display_name)
+            md = safemarkdown(comment)
 
-            #set the ratelimiter
+            # Handle any @user notifications...
+            if len(notify_accounts) > 0:
+
+                # Setup the title and URL link.
+                title = "comment by %s" % (c.user.registration_fullname)
+                url = item.make_permalink_slow()
+
+                # Send the notifications.
+                send_notification_message_to_users(c.user, notify_accounts, title, url, ip)
+
+            # Set the ratelimiter
             if should_ratelimit:
                 VRatelimit.ratelimit(rate_user=True, rate_ip = True,
                                      prefix = "rate_comment_")
