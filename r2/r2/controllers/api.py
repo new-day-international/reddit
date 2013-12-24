@@ -915,6 +915,31 @@ class ApiController(RedditController, OAuth2ResourceController):
         # invalidated.  drop a new cookie.
         self.login(c.user)
 
+
+    @validatedForm(VUser(),
+                   VModhash(),
+                   first_name = nop("first_name"),
+                   last_name = VLength("last_name", max_length = 100),
+                   country = VCountry("country_code"),
+                   city = VLength("city", max_length = 100),
+                   me_short = VMarkdown("me_short", max_length = 240),
+                   me_long = VMarkdown("me_long"),
+                   me_links = VMarkdown("me_links")
+                   )
+    @api_doc(api_section.account)
+    def POST_profupdate(self, form, jquery, first_name, last_name, country, city, me_short, me_long, me_links):
+        """Update profile info. Called by /profs/profedit"""
+        country_code,country_name = country
+        c.user.first_name = first_name
+        c.user.last_name = last_name
+        c.user.country_code = country_code
+        c.user.country = country
+        c.user.city = city
+        c.user.me_short = me_short
+        c.user.me_long = me_long
+        c.user.me_links = me_links
+        c.user._commit()
+
     @validatedForm(VUser('curpass', default = ''),
                    VModhash(),
                    email = ValidEmails("email", num = 1),

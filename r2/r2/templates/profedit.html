@@ -1,0 +1,140 @@
+## The contents of this file are subject to the Common Public Attribution
+## License Version 1.0. (the "License"); you may not use this file except in
+## compliance with the License. You may obtain a copy of the License at
+## http://code.reddit.com/LICENSE. The License is based on the Mozilla Public
+## License Version 1.1, but Sections 14 and 15 have been added to cover use of
+## software over a computer network and provide for limited attribution for the
+## Original Developer. In addition, Exhibit A has been modified to be
+## consistent with Exhibit B.
+##
+## Software distributed under the License is distributed on an "AS IS" basis,
+## WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+## the specific language governing rights and limitations under the License.
+##
+## The Original Code is reddit.
+##
+## The Original Developer is the Initial Developer.  The Initial Developer of
+## the Original Code is reddit Inc.
+##
+## All portions of the code written by reddit are Copyright (c) 2006-2013
+## reddit Inc. All Rights Reserved.
+###############################################################################
+
+<%!
+   from r2.lib.filters import safemarkdown
+%>
+<%namespace file="utils.html" import="error_field"/>
+<%namespace name="utils" file="utils.html"/>
+
+<h1>${_("Update your profile")}</h1>
+
+<form action="/post/profupdate" method="post"
+  onsubmit="${"return post_form(this, 'profupdate', function(x) {return '%s'})" % _("updating...")}" id="prof-update">
+
+<div class="spacer">
+  <%utils:round_field title="${_('picture')}" css_class="credentials">
+    <p>${_('Please select a recent photo which clearly shows your face.')}</p>
+    <div class="bootstrap">
+    <input id="profile_picture" type="hidden" name="test[image]">
+    <br/>
+    </div>
+  </%utils:round_field>
+</div>
+
+<div class="spacer">
+  <%utils:round_field title="${_('name')}" css_class="credentials">
+    <label for="first_name">${_("first name")}</label>
+    <input name="first_name" id="first_name" type="text" value="${c.user.first_name if hasattr(c.user,'first_name') else ''}" />
+    <label for="last_name">${_("last_name")}</label>
+    <input name="last_name" id="last_name" type="text" value="${c.user.last_name if hasattr(c.user,'last_name') else ''}" />
+  </%utils:round_field>
+</div>
+
+<div class="spacer">
+  <%utils:round_field title="${_('location')}" css_class="credentials">
+    <label for="country_code">${_("country")}</label>
+    <%utils:country_select country_code="${c.user.country_code if hasattr(c.user,'country_code') else ''}" />
+    <label for="city">${_("city")}</label>
+    <input name="city" id="city" type="text" value="${c.user.city if hasattr(c.user,'city') else ''}" />
+  </%utils:round_field>
+</div>
+  
+<div class="spacer">
+  <%utils:round_field title="${_('Me in 240 characters')}" description="(${_('optional')})">
+    <textarea name="me_short" id="me_short">${c.user.me_short if hasattr(c.user,'me_short') else ''}</textarea>
+    ${error_field("TOO_LONG", "me_short")}
+  </%utils:round_field>
+</div>
+
+<div class="spacer">
+  <%utils:round_field title="${_('Longer Bio')}" description="(${_('optional')})">
+    <textarea name="me_long" id="me_long" rows="5">${c.user.me_long if hasattr(c.user,'me_long') else ''}</textarea>
+  </%utils:round_field>
+</div>
+
+<div class="spacer">
+  <%utils:round_field title="${_('Links to other resources')}" description="(${_('optional')})">
+    <textarea name="me_links" id="me_links" rows="5">${c.user.me_links if hasattr(c.user,'me_links') else ''}</textarea>
+  </%utils:round_field>
+</div>
+
+<div class="spacer">
+  <button type="submit" class="btn">${_("save")}</button>
+  <span class="status"></span>
+  ${error_field("RATELIMIT", "vdelay")}
+</div>
+</form>
+
+<script src="/static/bootstrap/js/bootstrap.js"></script>
+<script src="/static/imgareaselect/scripts/jquery.imgareaselect.js"></script>
+<script src="/static/js/lib/jquery.awesome-cropper.js"></script>
+
+<%
+  if c.user_is_loggedin and c.user.profile_photo_uploaded:
+    image_source = "http://%s/u/%s/profile_photo.jpg" % (g.s3_user_files_host, c.user.name,)
+  else:
+    image_source = "http://%s/u/default_user/profile_photo.jpg" % (g.s3_user_files_host,)
+  endif
+%>
+
+<script>
+$(document).ready(function () {
+  $('#profile_picture').awesomeCropper({
+    image_source: "${image_source}",
+    max_original_width: 350,
+    width: 100,
+    height: 100,
+    debug: false,
+    promptText: "${_('Please crop a recent photo to show your face. We like faces!')}",
+    on_save: function(fileBlob) {
+
+      $.post('/api/user_upload_permission.json', {filename: 'profile_photo.jpg', use_xhr: true,}, function (responseObj) {
+        var fd = new FormData();
+
+        fd.append('AWSAccessKeyId', responseObj.aws_access_key);
+        fd.append('acl', 'public-read');
+        fd.append('key', responseObj.key);
+        fd.append('policy', responseObj.policy);
+        fd.append('signature',responseObj.signature);
+        fd.append('Content-Type', responseObj.content_type);
+        fd.append('file', fileBlob);
+
+        $.ajax({
+          url: responseObj.upload_url,
+          type: "POST",
+          data: fd,
+          processData: false,
+          contentType: false,
+          success: function(data, textStatus, jqXHR) {
+            $.post('/api/profile_photo_uploaded.json', {}, function (responseObj) { } );
+          },
+          error: function(jqXHR, textStatus, errorMessage) {
+            console.log(errorMessage);
+          }
+        });
+
+      });
+    }
+  });
+});
+</script>
