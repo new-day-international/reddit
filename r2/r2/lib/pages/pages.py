@@ -478,7 +478,6 @@ class Reddit(Templated):
         if c.site == Friends:
             return [
                 NamedButton('new', dest='', aliases=['/hot']),
-                NamedButton('comments')
             ]
         else:
             return [
@@ -486,7 +485,6 @@ class Reddit(Templated):
                 NamedButton('new'),
                 NamedButton('hot'),
                 NamedButton('top'),
-                NamedButton('comments'),
             ]
 
     def new_item_buttons(self):
@@ -506,8 +504,15 @@ class Reddit(Templated):
     def new_button(self):
         return NavMenu(self.new_item_buttons(), title="Add New", prefix_icon="glyphicon glyphicon-plus", css_class="btn-success", li_css_class="pull-right", type="bootstrap_drop_down_button")
 
-    def sort_menu(self):
-        return NavMenu(self.sort_buttons() + [self.new_button()], type="bootstrap_tabs")
+    def action_bar(self):
+        tabs = []
+        tabs.append(NavMenu(self.sort_buttons(), title="items", type="bootstrap_drop_down_tab", li_css_class="dropdown"))
+        tabs.append(NamedButton('comments'))
+        if c.site.__class__ is Subreddit:
+            tabs.append(NamedButton('files'))
+        tabs.append(NamedButton('wiki'))
+        tabs.append(self.new_button())
+        return NavMenu(tabs, type="bootstrap_tabs")
 
     def build_toolbars(self):
         """Sets the layout of the navigation topbar on a Reddit.  The result
@@ -767,7 +772,7 @@ class PrefsPage(Reddit):
                                             c.site.name.strip(' ')),
                         *a, **kw)
 
-    def sort_menu(self):
+    def action_bar(self):
         pass
 
     def build_toolbars(self):
@@ -847,7 +852,7 @@ class MessagePage(Reddit):
                                    self.infobar,
                                    self.nav_menu,
                                    self._content))
-    def sort_menu(self):
+    def action_bar(self):
         pass
 
     def build_toolbars(self):
@@ -899,7 +904,7 @@ class BoringPage(Reddit):
 
         Reddit.__init__(self, **context)
 
-    def sort_menu(self):
+    def action_bar(self):
         pass
 
     def build_toolbars(self):
@@ -1166,9 +1171,6 @@ class LinkInfoPage(Reddit):
         robots = "noindex,nofollow" if link._deleted else None
         Reddit.__init__(self, title = title, short_description=short_description, robots=robots, *a, **kw)
 
-    def sort_menu(self):
-        pass
-
     def build_toolbars(self):
         base_path = "/%s/%s/" % (self.link._id36, title_to_url(self.link.title))
         base_path = _force_utf8(base_path)
@@ -1421,7 +1423,7 @@ class EditReddit(Reddit):
 
         Reddit.__init__(self, title=title, *a, **kw)
 
-    def sort_menu(self):
+    def action_bar(self):
         pass
 
     def build_toolbars(self):
@@ -1430,7 +1432,7 @@ class EditReddit(Reddit):
         else:
             return []
 
-    def sort_menu(self):
+    def action_bar(self):
         return []
 
 class SubredditsPage(Reddit): # /spaces page
@@ -1475,11 +1477,11 @@ class SubredditsPage(Reddit): # /spaces page
             buttons.append(NamedButton("my_mod", dest='/spaces/mine/moderator'))
         return buttons
 
-    def sort_menu(self):
-        return NavMenu(self.sort_buttons() + [self.new_button()], type='bootstrap_tabs', title="")
-
     def new_button(self):
         return IconButton(title=_('Create Space'), dest='/spaces/create', icon_class="fa fa-plus", css_class="btn btn-success", li_css_class="pull-right", style="button")
+
+    def action_bar(self):
+        return NavMenu(self.sort_buttons() + [self.new_button()], type='bootstrap_tabs', title="")
 
     def build_toolbars(self):
         buttons =  [NavButton(menu.popular, ""),
@@ -1543,7 +1545,7 @@ class ProfilePage(Reddit):
         self.user     = user
         Reddit.__init__(self, *a, **kw)
 
-    def sort_menu(self):
+    def action_bar(self):
         pass
 
     def build_toolbars(self):
@@ -4103,7 +4105,7 @@ class PolicyPage(BoringPage):
                             content=content, **kw)
         self.welcomebar = None
 
-    def sort_menu(self):
+    def action_bar(self):
         pass
 
     def build_toolbars(self):
