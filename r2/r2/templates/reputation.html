@@ -1,0 +1,64 @@
+<%! 
+   from r2.lib.filters import unsafe, safemarkdown
+   from r2.lib.template_helpers import static, format_number
+%>
+<%namespace file="utils.html" import="plain_link, thing_timestamp"/>
+
+<!--borrowed from profilebar.html-->
+
+<span class="karma">${format_number(thing.user.safe_karma)}</span>
+&#32;
+${_("link karma")}
+
+<br/>
+<span class="karma comment-karma">${format_number(thing.user.comment_karma)}</span>
+&#32;
+${_("comment karma")}
+
+%if c.user_is_admin or c.user == thing.user:
+  <table id="per-sr-karma"
+    % if not c.user_is_admin:
+    class="more-karmas"
+    % endif
+    >
+   <thead>
+      <tr>
+        <th id="sr-karma-header">space</th>
+        <th>link</th>
+        <th>comment</th>
+      </tr>
+   </thead>
+   <%
+     karmas = thing.user.all_karmas()
+   %>
+   <tbody>
+   %for i, (label, title, lc, cc) in enumerate(karmas):
+      <tr
+      % if c.user_is_admin and i >= 5:
+        class="more-karmas"
+      % endif
+      >
+      % if title:
+        <th class="helpful" title="${title}"><span>${label}</span></th>
+      % else:
+        <th>${label}</th>
+      % endif
+        <td>${lc}</td>
+        <td>${cc}</td>
+      </tr>
+    %endfor
+    </tbody>
+  </table>
+  % if not c.user_is_admin or len(karmas) > 5:
+  <div class="karma-breakdown">
+    <a href="javascript:void(0)"
+       onclick="$('.more-karmas').show();$(this).hide();return false">
+       show karma breakdown by space
+    </a>
+  </div>
+  % endif
+%endif
+
+<span class="age">
+  ${_("lightnet user for")}&#32;${thing_timestamp(thing.user)}
+</span>

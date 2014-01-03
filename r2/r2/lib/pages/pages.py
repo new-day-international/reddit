@@ -799,7 +799,18 @@ class ProfEdit(Templated):
     """Editing one's profile"""
     def __init__(self):
         Templated.__init__(self)
-    
+
+class ProfShow(Templated):
+    """Show the public profile"""    
+    def __init__(self, user):
+        self.user = user
+        Templated.__init__(self)
+
+class Reputation(Templated):
+    """Show a person's reputation/karma"""    
+    def __init__(self, user):
+        self.user = user
+        Templated.__init__(self)
 
 class PrefFeeds(Templated):
     pass
@@ -1515,7 +1526,9 @@ class ProfilePage(Reddit):
 
     def build_toolbars(self):
         path = "/user/%s/" % self.user.name
-        main_buttons = [NavButton(menu.overview, '/', aliases = ['/overview']),
+        main_buttons = [NavButton(menu.profile, '/', aliases = ['/profile']),
+                   NavButton(menu.reputation, '/reputation'),
+                   NavButton(menu.overview, '/overview'),
                    NamedButton('comments'),
                    NamedButton('submitted')]
 

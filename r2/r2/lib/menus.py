@@ -153,6 +153,8 @@ menu =   MenuHandler(hot          = _('hot'),
                      info         = _("info"),
                      share        = _("share"),
 
+                     profile      = _('profile'),
+                     reputation   = _('reputation'),
                      overview     = _("overview"),
                      submitted    = _("submitted"),
                      liked        = _("liked"),

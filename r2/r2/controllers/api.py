@@ -933,7 +933,7 @@ class ApiController(RedditController, OAuth2ResourceController):
         c.user.first_name = first_name
         c.user.last_name = last_name
         c.user.country_code = country_code
-        c.user.country = country
+        c.user.country_name = country_name
         c.user.city = city
         c.user.me_short = me_short
         c.user.me_long = me_long
