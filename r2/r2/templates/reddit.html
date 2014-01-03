@@ -25,7 +25,7 @@
    from r2.lib.filters import unsafe
    from r2.lib.pages import SearchForm, ClickGadget, SideContentBox, Login
    from r2.lib import tracking
-   from pylons import request
+   from pylons import request, url
    from r2.lib.strings import strings
    from r2.models import make_feedurl, Sub, Subreddit
 %>
@@ -131,12 +131,24 @@
         <i class="glyphicon glyphicon-collapse-up"></i> 
       Multispaces
       </h4>
+      <%  
+          multispaces = [
+            ('subscribed', '/'),
+            ('all', '/space/all/'),
+            ('following', '/space/follow/'),
+            ('saved', '/saved'),
+            ('moderated', 'space/mod/') 
+          ]
+      %>
       <ul id="multispaces" class="collapse in space-list list-unstyled">
-        <li><a href="/">Subscribed</a></li>
-        <li><a href="/space/all/">All</a></li>
-        <li><a href="/space/follow/">Following</a></li>
-        <li><a href="/saved/">Saved</a></li>
-        <li><a href="/space/mod/">Moderated</a></li>
+        %for space in multispaces:
+          <%
+            is_current_space = ""
+            if space[1] in thing.canonical_link and space[1] != "/" or space[1] == thing.canonical_link:
+                is_current_space = "active"
+          %>
+            <li><a class="${is_current_space}" href="${space[1]}">${space[0]}</a></li>
+        %endfor
       </ul>
 
       <h4 class="collapsable" data-toggle="collapse" data-target="#subscribed-spaces"><i class="glyphicon glyphicon-collapse-down"></i><i class="glyphicon glyphicon-collapse-up"></i> Subscribed Spaces</h4>
@@ -149,13 +161,14 @@
           </li>
         <%subreddits = sorted(Subreddit.user_subreddits(c.user, ids=False, stale=True), key = lambda sr: sr.name.lower())%>
         %for sr in subreddits:
-          <% is_current_space = "" %>
-          <% href = "/space/" + sr.name + "/" %>
-          %if thing.canonical_link == href:
-            <% is_current_space = "active" %>
-          %endif
+          <%  
+              is_current_space = ""
+              space_link = "/space/" + sr.name + "/"
+              if space_link in thing.canonical_link:
+                  is_current_space = "active" 
+          %>
           <li>
-            <a href="${href}" class="${is_current_space}">${sr.name}</a>
+            <a href="${space_link}" class="${is_current_space}">${sr.name}</a>
           </li>
         %endfor
       </ul>
