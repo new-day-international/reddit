@@ -392,6 +392,8 @@ class Link(Thing, Printable):
                                 return_dict=True, stale=True)
 
         for item in wrapped:
+            print "here1", cls, wrapped
+
             show_media = False
             if not hasattr(item, "score_fmt"):
                 item.score_fmt = Score.number_only
@@ -580,9 +582,6 @@ class Link(Thing, Printable):
                 item.last_comment_body = last_comment.body
                 item.last_comment_author = authors[last_comment.author_id]
 
-            # If we're on the comments page, then the link should have the photo
-            # for the actual post author, otherwise use the last comment author.
-            #import pprint; pprint.pprint(item.author)
             item.photo_url = item.author.photo_url()
 
             # generate the appropriate tagline text
