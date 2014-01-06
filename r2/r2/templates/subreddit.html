@@ -31,7 +31,13 @@
 <%namespace file="utils.html" import="plain_link"/>
 
 <%def name="house_color_column()">
-  <div class="house_color" style=${"background-color:" + thing.get_house_color() + ";"}></div>
+  <% from r2.lib.pages import UserText %>
+  <div class="house_color" style=${"background-color:" + thing.get_house_color() + ";"}
+  data-toggle="popover" title="" role="button" data-original-title="${thing.get_house_description()} Rules">
+    <div class="popover_content_wrapper" style="display:none;">
+      ${UserText(thing, thing.get_house_rules(), have_form=False)}
+    </div>
+  </div>
 </%def>
 
 <%def name="numcol()">

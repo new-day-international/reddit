@@ -28,6 +28,14 @@ $(function () {
     $('.bottommenu .content').addClass('hide');
   })
   
+  $('.subreddit .house_color').popover({
+    trigger: 'hover',
+    placement: 'top',
+    html: true,
+    content: function() {
+      return $(this).find('.popover_content_wrapper').html();
+    }
+  });
   $('#access-help').popover({
       trigger: 'hover',
       placement: 'top',
