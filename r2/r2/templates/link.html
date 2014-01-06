@@ -262,10 +262,6 @@ ${parent.thing_data_attributes(what)} data-ups="${what.upvotes}" data-downs="${w
                               when=capture(thing_timestamp, thing, thing.timesince),
                               whenactive=capture(thing_timeactive, thing, thing.activesince),
                               author=WrappedUser(thing.author, thing.attribs, thing).render(),
-<<<<<<< Updated upstream
-=======
-                              #commentauthor=WrappedUser(thing.comment_author, thing.attribs, thing).render(),
->>>>>>> Stashed changes
                               lastedited=capture(edited, thing, thing.lastedited)
                               ))}
 </%def>

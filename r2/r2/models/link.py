@@ -392,8 +392,6 @@ class Link(Thing, Printable):
                                 return_dict=True, stale=True)
 
         for item in wrapped:
-            print "here1", cls, wrapped
-
             show_media = False
             if not hasattr(item, "score_fmt"):
                 item.score_fmt = Score.number_only
