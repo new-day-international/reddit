@@ -229,8 +229,7 @@ class Account(Thing):
         if prev_visit and current_time - prev_visit < timedelta(days=1):
             return
 
-        g.log.debug ("Updating last visit for %s from %s to %s" %
-                    (self.name, prev_visit, current_time))
+        g.log.debug("Updating last visit for %s from %s to %s", self.name, prev_visit, current_time)
 
         LastModified.touch(self._fullname, "Visit")
 
