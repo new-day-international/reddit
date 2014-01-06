@@ -512,10 +512,8 @@ class ProfileSortMenu(SortMenu):
 
 class CommentSortMenu(SortMenu):
     """Sort menu for comments pages"""
-    default   = 'confidence'
-    options   = ('confidence', 'top', 'new', 'hot', 'controversial', 'old',
-                 'random')
-    hidden_options = ('random',)
+    default   = 'new'
+    options   = ('confidence', 'new', 'old')
     use_post  = True
 
 class SearchSortMenu(SortMenu):

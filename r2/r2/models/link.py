@@ -588,8 +588,19 @@ class Link(Thing, Printable):
             # generate the appropriate tagline text
             taglinetext = ("<span>" +  _("%(author)s posted %(when)s ago") + "</span>")
 
-
             item.taglinetext = taglinetext
+
+            # generate the appropriate comment text
+            last_comment = ""
+
+            if item.comment_author_id:
+                last_comment += "<span class='comment_meta'>" 
+                last_comment += "<a class='commenter'>" + _("%(commentauthor)s") + "</a>"
+                last_comment += _("&nbsp;commented&nbsp;%(whenactive)s&nbsp;ago")
+                last_comment += "</span>"
+
+            item.last_comment = last_comment
+
 
             # add the house color and description
             item.house_color = item.subreddit.get_house_color()
