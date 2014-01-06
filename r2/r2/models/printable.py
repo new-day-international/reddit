@@ -37,7 +37,7 @@ class Printable(object):
     margin = 0
     is_focal = False
     childlisting = None
-    cache_ignore = set(['c', 'author', 'comment_author', 'score_fmt', 'child',
+    cache_ignore = set(['c', 'author', 'last_comment_author', 'score_fmt', 'child',
                         # displayed score is cachable, so remove score
                         # related fields.
                         'voting_score', 'display_score',

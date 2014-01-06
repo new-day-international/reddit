@@ -27,6 +27,9 @@
    from r2.lib.pages import WrappedUser
    from r2.lib.template_helpers import static
    from r2.lib.strings import Score, strings
+   from r2.lib.filters import safemarkdown
+
+
 %>
  
 <%inherit  file="printable.html"/>
@@ -130,27 +133,23 @@
 
   <p class="tagline">${self.tagline()}</p>
 
-  %if thing.comment_author_id:
-  <div class="last_comment">
-    ${self.last_comment()}
-    <p class="comment_text">
-      <%
-      photo_url = "http://%s/u/%s/profile_photo.jpg" % (g.s3_user_files_host, thing.comment_author.name,)
-      %>
-     <img src="${photo_url}">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam elementum auctor lacus nec imperdiet. Nunc mattis auctor metus non bibendum. Quisque id est non erat lobortis euismod in eu nunc. Integer sollicitudin felis sed risus dignissim, et sodales velit lobortis. Phasellus bibendum risus a odio sagittis tristique. Donec erat sapien, rhoncus mattis cursus eu, fringilla in metus. In hac habitasse platea dictumst. Maecenas sit amet blandit erat.
-
-
-    </p>
-  </div>
-  %endif
-  
   <% 
      child_content = ""
      if thing.link_child and thing.link_child.load:
        child_content = unsafe(thing.link_child.content())
      expand = thing.link_child and thing.link_child.expand
   %>
+
+    %if not expand and thing.last_comment_id:
+      <div class="last_comment">
+          <span class="comment_meta">
+              <a class="commenter">${WrappedUser(thing.last_comment_author, thing.attribs, thing).render()}</a> commented ${thing_timeactive(thing)}
+          </span>
+          <p class="comment_text">
+              <img src="${thing.last_comment_author.photo_url()}">${thing.last_comment_body} 
+          </p>
+      </div>
+    %endif
 
   ## if we're not on a permalink page we'll render the buttons on top
   %if not expand:
@@ -233,11 +232,8 @@ ${parent.thing_data_attributes(what)} data-ups="${what.upvotes}" data-downs="${w
 
 ## Removing Thumbnails for now since they're messing up the lines
 ## ${self.thumbnail()}
-<%
-   photo_url = "http://%s/u/%s/profile_photo.jpg" % (g.s3_user_files_host, thing.photo_name,)
-%>
   <a class="pull-left">
-   <img class="cropped-image-medium link_photo img-rounded media-object" width="46" height="46"  src="${photo_url}">
+   <img class="cropped-image-medium link_photo img-rounded media-object" width="46" height="46"  src="${thing.photo_url}">
   </a>
 </%def>
 
@@ -266,21 +262,6 @@ ${parent.thing_data_attributes(what)} data-ups="${what.upvotes}" data-downs="${w
                               when=capture(thing_timestamp, thing, thing.timesince),
                               whenactive=capture(thing_timeactive, thing, thing.activesince),
                               author=WrappedUser(thing.author, thing.attribs, thing).render(),
-                              commentauthor=WrappedUser(thing.comment_author, thing.attribs, thing).render(),
-                              lastedited=capture(edited, thing, thing.lastedited)
-                              ))}
-</%def>
-
-<%def name="last_comment()">
-  <%
-    last_comment = thing.last_comment
-  %>
-  ${unsafe(last_comment % dict(reddit=self.subreddit(),
-                              score=capture(self.score, thing, thing.likes, tag='span'),
-                              when=capture(thing_timestamp, thing, thing.timesince),
-                              whenactive=capture(thing_timeactive, thing, thing.activesince),
-                              author=WrappedUser(thing.author, thing.attribs, thing).render(),
-                              commentauthor=WrappedUser(thing.comment_author, thing.attribs, thing).render(),
                               lastedited=capture(edited, thing, thing.lastedited)
                               ))}
 </%def>

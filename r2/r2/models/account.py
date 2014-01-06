@@ -263,6 +263,15 @@ class Account(Thing):
 
         return ",".join((timestamp, signature))
 
+    def photo_url(self):
+        # Get the name for the item's photo column
+        if self.profile_photo_uploaded:
+            photo_name = self.name
+        else:
+            photo_name = "default_user"
+
+        return "http://%s/u/%s/profile_photo.jpg" % (g.s3_user_files_host, photo_name,)
+
     def needs_captcha(self):
         return not g.disable_captcha and self.link_karma < 1
 
