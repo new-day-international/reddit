@@ -18,8 +18,13 @@ $(function () {
     }
   });
 
-  $('.house-lightnet-rules').on('click', function(){
+  $('.house-lightnet-rules').on('focus', function(){
     $(this).addClass("nobg");
+  });
+  $('.house-lightnet-rules').on('blur', function(){
+    if ($(this).val() == "") {
+      $(this).removeClass("nobg");
+    }
   });
 
   $('.bottommenu .icon').on('mouseenter', function() {
