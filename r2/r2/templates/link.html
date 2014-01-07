@@ -143,7 +143,7 @@
     %if not expand and thing.last_comment_id:
       <div class="last_comment">
           <span class="comment_meta">
-              <a class="commenter">${WrappedUser(thing.last_comment_author, thing.attribs, thing).render()}</a> commented ${thing_timeactive(thing)}
+              <a class="commenter">${WrappedUser(thing.last_comment_author, thing.attribs, thing).render()}</a>&#32;commented&#32;${thing_timeactive(thing)}&#32;ago
           </span>
           <p class="comment_text">
               <img src="${thing.last_comment_author.photo_url()}">${thing.last_comment_body} 
