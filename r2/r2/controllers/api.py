@@ -1604,24 +1604,21 @@ class ApiController(RedditController, OAuth2ResourceController):
         #-- Notification of either a link or a space. So, we might come from either the the notify button under a link or from the invite field in the right sidebar
         if thing._fullname[0:2] == 't5':
             # A space
-            subject = "check out this space: %s" % (thing.title)
-            message = "check out this space: [%s](%s)" % (thing.title, thing.path)
+            subject = u"check out this space: %s" % (thing.title.decode('utf-8'))
+            message = u"check out this space: [%s](%s)" % (thing.title.decode('utf-8'), thing.path)
             notifyform.html("<div>space notifications have been sent</div><br>")
 
         elif thing._fullname[0:2] == 't6':
             # A post/link
             permalink = thing.make_permalink_slow()
-            subject = "check out this item: %s" % (thing.title)
-            message = "check out this item: [%s](%s)" % (thing.title, permalink)
+            subject = u"check out this item: %s" % (thing.title.decode('utf-8'))
+            message = u"check out this item: [%s](%s)" % (thing.title.decode('utf-8'), permalink)
             link = jquery.things(thing._fullname)
             link.set_html(".notify", _("notified"))
             notifyform.html("<div class='clearleft'></div>" 
                 "<p class='error'>%s</p>" % _("item notifications have been sent."))
 
-        print "sending message: %s " % (subject)
-        print "   message: %s" % (message)
-        import sys
-        sys.stdout.flush()
+        g.log.debug("posting notification subject: %r message: %r", subject, message)
 
         for target in users:
             # here we do something for each user
