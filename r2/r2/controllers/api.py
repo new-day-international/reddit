@@ -1602,13 +1602,13 @@ class ApiController(RedditController, OAuth2ResourceController):
                 ip = ValidIP())
     def POST_notify(self, notifyform, jquery, users, thing, ip):
         #-- Notification of either a link or a space. So, we might come from either the the notify button under a link or from the invite field in the right sidebar
-        if thing._fullname[0:2] == 't5':
+        if isinstance(thing, Subreddit):
             # A space
             subject = u"check out this space: %s" % (thing.title.decode('utf-8'))
             message = u"check out this space: [%s](%s)" % (thing.title.decode('utf-8'), thing.path)
             notifyform.html("<div>space notifications have been sent</div><br>")
 
-        elif thing._fullname[0:2] == 't6':
+        elif isinstance(thing, Link):
             # A post/link
             permalink = thing.make_permalink_slow()
             subject = u"check out this item: %s" % (thing.title.decode('utf-8'))
