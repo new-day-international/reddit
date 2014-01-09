@@ -4526,16 +4526,16 @@ var multinamepickerconfig = {
       },    
       autocomplete: {
           render: function(suggestion) {
-              var pic = 'http://' + s3_user_files_host + '/u/' + userhash[suggestion].pic + '/profile_photo.jpg';   
-              return '<img src="' + pic + '"> <div>' + userhash[suggestion].full + '</div>';
+              var pic = 'http://' + Namepicker.s3_user_files_host + '/u/' + Namepicker.userhash[suggestion].pic + '/profile_photo.jpg';   
+              return '<img src="' + pic + '"> <div>' + Namepicker.userhash[suggestion].full + '</div>';
           }
       },
       ext: {
           tags: {
               renderTag: function(tag) {
           		var self = this, node = $(self.opts('html.tag'));
-         		if (userhash[tag]) {
-          		    var full = userhash[tag].full.replace('_',' ');
+         		if (Namepicker.userhash[tag]) {
+          		    var full = Namepicker.userhash[tag].full.replace('_',' ');
           		    node.find('.text-label').text(full);
           		    node.data('text-tag', tag);
           		    return node;
@@ -4565,7 +4565,7 @@ function namepicker_init() {
       var textext = $(e.target).textext()[0];
       $(this).trigger(
           'setSuggestions',
-          { result : textext.itemManager().filter(spacenames, query) }
+          { result : textext.itemManager().filter(Namepicker.spacenames, query) }
       );
     }); 
 
@@ -4580,8 +4580,8 @@ function namepicker_init() {
         },    
         autocomplete: {
             render: function(suggestion) {
-                var pic = 'http://' + s3_user_files_host + '/u/' + userhash[suggestion].pic + '/profile_photo.jpg';   
-                return '<img src="' + pic + '"> <div>' + userhash[suggestion].full + '</div>';
+                var pic = 'http://' + Namepicker.s3_user_files_host + '/u/' + Namepicker.userhash[suggestion].pic + '/profile_photo.jpg';   
+                return '<img src="' + pic + '"> <div>' + Namepicker.userhash[suggestion].full + '</div>';
             }
         },
         ext: {
@@ -4597,7 +4597,7 @@ function namepicker_init() {
             itemManager: {
                   itemToString: function(item) {
                       cur_namepick_username = item;
-                      cur_namepick_realname = userhash[item].full.replace('_',' ')
+                      cur_namepick_realname = Namepicker.userhash[item].full.replace('_',' ')
                       return cur_namepick_realname;
                   },
               }
@@ -4608,7 +4608,7 @@ function namepicker_init() {
       var textext = $(e.target).textext()[0];
       $(this).trigger(
           'setSuggestions',
-          { result : textext.itemManager().filter(usernames, query) }
+          { result : textext.itemManager().filter(Namepicker.usernames, query) }
       );
     }); 
 
@@ -4618,19 +4618,19 @@ function namepicker_init() {
         var textext = $(e.target).textext()[0];
         $(this).trigger(
             'setSuggestions',
-            { result : textext.itemManager().filter(usernames, query) }
+            { result : textext.itemManager().filter(Namepicker.usernames, query) }
         );
       }); 
 
   $('.atnamepicker, .atnamepicker textarea').atwho('run').atwho({
         at: "@",
-        tpl: '<li data-value="@$'+'{name}"><img src="http://'+s3_user_files_host+'/u/$'+'{pic}/profile_photo.jpg"> <div>$'+'{full}</div></li>',
-        data: userdata
+        tpl: '<li data-value="@$'+'{name}"><img src="http://'+Namepicker.s3_user_files_host+'/u/$'+'{pic}/profile_photo.jpg"> <div>$'+'{full}</div></li>',
+        data: Namepicker.userdata
     });
   
 }
 
-$.getScript("/api/namepicker", function() {
+$.getScript("/api/namepicker", function(data, textStatus, jqxhr) {
     namepicker_init();
 });  
 
