@@ -3694,11 +3694,13 @@ class ApiController(RedditController, OAuth2ResourceController):
         expire_time = datetime.fromtimestamp(int(time.time())+60, g.tz)
         response.headers['expires'] = http_date_str(expire_time)
         response.headers['content-type'] = 'application/javascript'
-        output = "var s3_user_files_host = '%s';" % g.s3_user_files_host
-        output += "var usernames = " + json.dumps(sorted(names)) + ";"
-        output += "var userdata = " + json.dumps(sorted(data, key=lambda k: k['name'])) + ";"
-        output += "var userhash = " + json.dumps(hnames) + ";"
-        output += "var spacenames = " + json.dumps(sorted(spacenames)) + ";"
+        output =  "var Namepicker = {"
+        output += "  s3_user_files_host: '%s'," % g.s3_user_files_host
+        output += "  usernames: " + json.dumps(sorted(names)) + ","
+        output += "  userdata: " + json.dumps(sorted(data, key=lambda k: k['name'])) + ","
+        output += "  userhash: " + json.dumps(hnames) + ","
+        output += "  spacenames: " + json.dumps(sorted(spacenames)) + ","
+        output += "};"
         return output
 
     @json_validate(VUser())

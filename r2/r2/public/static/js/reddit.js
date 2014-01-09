@@ -360,7 +360,7 @@ function notify(elem) {
       var textext = $(e.target).textext()[0];
       $(this).trigger(
           'setSuggestions',
-          { result : textext.itemManager().filter(usernames, query) }
+          { result : textext.itemManager().filter(Namepicker.usernames, query) }
       );
     });
     $.request("new_captcha");
