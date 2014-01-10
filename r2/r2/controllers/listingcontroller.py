@@ -911,11 +911,7 @@ class MessageController(ListingController):
                 c.user.clear_notification_count()
             q = queries.get_unread_notifications(c.user)
         elif self.where == 'reset_message_counts':
-
-            print "resetting message count"
-            import sys
-            sys.stdout.flush()
-
+            g.log.debug("resetting message count")
             c.user.message_count = 2
             c.user.moderator_message_count = 1
             c.user.notification_count = 7

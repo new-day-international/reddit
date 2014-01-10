@@ -855,7 +855,6 @@ class MinimalController(BaseController):
         return request.method.upper() != "POST"
 
 def username_exists(username):
-    print "Checking existence of %s" % (username,)
     try:
         account = Account._by_name(username)
     except NotFound:
@@ -868,7 +867,6 @@ def username_exists(username):
         return False
 
 def username_to_display_name(username):
-    print "Getting display name for %s" % (username,)
     try:
         account = Account._by_name(username)
     except NotFound:

@@ -172,8 +172,7 @@ def send_queued_mail(test = False):
         except (smtplib.SMTPRecipientsRefused, smtplib.SMTPSenderRefused,
                 UnicodeDecodeError, AttributeError):
             # handle error and print, but don't stall the rest of the queue
-            g.log.info("Handled error sending mail (traceback to follow)")
-            traceback.print_exc(file = sys.stdout)
+            g.log.info("Handled error sending mail (traceback to follow)", exc_info=True)
             email.set_sent(rejected = True)
 
 

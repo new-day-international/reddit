@@ -126,10 +126,5 @@ def send_notification_message_to_users(user,to_users,title,url,ip):
 
     # Notify any @user_name users.
     for account in to_users:
-        print "sending message: %s " % (subject)
-        print "   message     : %s" % (message)
-        print "   to          : %s" % (account.registration_fullname,)
-        import sys
-        sys.stdout.flush()
-
+        g.log.info("sending message: To: %r\n Subject: %r\n message:%r\n",  (account.registration_fullname, subject, message)
         send_notification_message(user, account, subject, message, ip)
