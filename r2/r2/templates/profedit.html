@@ -45,7 +45,7 @@
   <%utils:round_field title="${_('name')}" css_class="credentials">
     <label for="first_name">${_("first name")}</label>
     <input name="first_name" id="first_name" type="text" value="${c.user.first_name if hasattr(c.user,'first_name') else ''}" />
-    <label for="last_name">${_("last_name")}</label>
+    <label for="last_name">${_("last name")}</label>
     <input name="last_name" id="last_name" type="text" value="${c.user.last_name if hasattr(c.user,'last_name') else ''}" />
   </%utils:round_field>
 </div>
