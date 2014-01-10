@@ -40,7 +40,6 @@
         <td>
           <textarea id="notify_to_${thing.link_name}" 
                     name="notify_to" rows="1" cols="80" style="width:500px">
-            ${unsafe('&#x0D;&#x0A;'.join(websafe(e) for e in thing.emails))}
           </textarea>
         </td>
         <td class="notify-to-errors">
