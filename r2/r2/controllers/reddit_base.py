@@ -57,6 +57,7 @@ from r2.lib.errors import (
     ForbiddenError,
     errors,
 )
+from r2.lib.snudown_callbacks import username_exists, username_to_display_name
 from r2.lib.filters import _force_utf8
 from r2.lib.strings import strings
 from r2.lib.template_helpers import add_sr, JSPreload
@@ -853,30 +854,6 @@ class MinimalController(BaseController):
             return c.update_last_visit
 
         return request.method.upper() != "POST"
-
-def username_exists(username):
-    try:
-        account = Account._by_name(username)
-    except NotFound:
-        account = None
-        pass
-
-    if account:
-        return True
-    else:
-        return False
-
-def username_to_display_name(username):
-    try:
-        account = Account._by_name(username)
-    except NotFound:
-        account = None
-        pass
-
-    if account:
-        return account.registration_fullname
-    else:
-        return username
 
 class RedditController(MinimalController):
 

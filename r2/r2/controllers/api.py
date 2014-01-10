@@ -26,8 +26,8 @@ from reddit_base import cross_domain, paginated_listing
 from pylons.i18n import _
 from pylons import c, g, request, response
 
-from snudown import set_username_callbacks
-
+import snudown
+from r2.lib.snudown_callbacks import make_username_exists_callback, username_to_display_name
 from r2.lib.validator import *
 
 from r2.models import *
@@ -285,33 +285,6 @@ class ApiController(RedditController, OAuth2ResourceController):
         """
         from r2.models.admintools import is_banned_domain
 
-        notify_accounts = set()
-
-        def username_exists(username):
-            try:
-                account = Account._by_name(username)
-            except NotFound:
-                account = None
-                pass
-
-            if account:
-                notify_accounts.add(account)
-                return True
-            else:
-                return False
-
-        def username_to_display_name(username):
-            try:
-                account = Account._by_name(username)
-            except NotFound:
-                account = None
-                pass
-
-            if account:
-                return account.registration_fullname
-            else:
-                return username
-
         if isinstance(url, (unicode, str)):
             #backwards compatability
             if url.lower() == 'self':
@@ -442,9 +415,12 @@ class ApiController(RedditController, OAuth2ResourceController):
         if kind == 'self':
             l.is_self = True
 
+        notify_accounts = set()
+        username_exists = make_username_exists_callback(notify_accounts)
+
         if selftext and selftext != '':
             # Check for notifications
-            set_username_callbacks(username_exists, username_to_display_name)
+            snudown.set_username_callbacks(username_exists, username_to_display_name)
             md = safemarkdown(selftext)
 
             # Setup the permalink
@@ -1235,38 +1211,15 @@ class ApiController(RedditController, OAuth2ResourceController):
     def POST_editusertext(self, form, jquery, ip, item, text):
         """Edit the body text of a comment or self-post."""
 
-        original_notify_accounts = set()
-        notify_accounts = set()
-        new_notify_accounts = set()
-
-        def username_exists(username):
-            try:
-                account = Account._by_name(username)
-            except NotFound:
-                account = None
-                pass
-
-            if account:
-                notify_accounts.add(account)
-                return True
-            else:
-                return False
-
-        def username_to_display_name(username):
-            try:
-                account = Account._by_name(username)
-            except NotFound:
-                account = None
-                pass
-
-            if account:
-                return account.registration_fullname
-            else:
-                return username
 
         if (not form.has_errors("text",
                                 errors.NO_TEXT, errors.TOO_LONG) and
             not form.has_errors("thing_id", errors.NOT_AUTHOR)):
+
+            notify_accounts = set()
+            new_notify_accounts = set()
+            username_exists = make_username_exists_callback(notify_accounts)
+            snudown.set_username_callbacks(username_exists, username_to_display_name)
 
             # Get the original text from the item.
             if isinstance(item, Comment):
@@ -1277,10 +1230,8 @@ class ApiController(RedditController, OAuth2ResourceController):
             # If the text changed...
             text_changed = False
             if text != original_text:
-
                 text_changed = True
 
-                set_username_callbacks(username_exists, username_to_display_name)
 
                 # Check for notifications using the original text...
                 notify_accounts.clear()
@@ -1360,33 +1311,6 @@ class ApiController(RedditController, OAuth2ResourceController):
         To start a new message thread, use [/api/compose](#POST_api_compose).
 
         """
-        notify_accounts = set()
-
-        def username_exists(username):
-            try:
-                account = Account._by_name(username)
-            except NotFound:
-                account = None
-                pass
-
-            if account:
-                notify_accounts.add(account)
-                return True
-            else:
-                return False
-
-        def username_to_display_name(username):
-            try:
-                account = Account._by_name(username)
-            except NotFound:
-                account = None
-                pass
-
-            if account:
-                return account.registration_fullname
-            else:
-                return username
-
         should_ratelimit = True
         #check the parent type here cause we need that for the
         #ratelimit checks
@@ -1474,8 +1398,11 @@ class ApiController(RedditController, OAuth2ResourceController):
             # Send the changed message
             changed(item)
 
+            notify_accounts = set()
+            username_exists = make_username_exists_callback(notify_accounts)
+
             # Check for notifications
-            set_username_callbacks(username_exists, username_to_display_name)
+            snudown.set_username_callbacks(username_exists, username_to_display_name)
             md = safemarkdown(comment)
 
             # Handle any @user notifications...

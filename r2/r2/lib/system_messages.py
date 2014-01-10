@@ -20,14 +20,13 @@
 # Inc. All Rights Reserved.
 ###############################################################################
 
-from pylons import request
+from pylons import request, g
 from pylons.i18n import N_
 
 from r2.models import Account, Message
 from r2.lib.db import queries
 
 from r2.lib import amqp
-
 
 user_added_messages = {
     "moderator_invite": {
@@ -126,5 +125,5 @@ def send_notification_message_to_users(user,to_users,title,url,ip):
 
     # Notify any @user_name users.
     for account in to_users:
-        g.log.info("sending message: To: %r\n Subject: %r\n message:%r\n",  (account.registration_fullname, subject, message)
+        g.log.info("sending message: To: %r\n Subject: %r\n message:%r\n", account.registration_fullname, subject, message)
         send_notification_message(user, account, subject, message, ip)
