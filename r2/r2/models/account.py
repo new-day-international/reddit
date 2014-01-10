@@ -56,7 +56,9 @@ class Account(Thing):
                                                'report_made', 'report_correct',
                                                'report_ignored', 'spammer',
                                                'reported', 'gold_creddits',
-                                               'cache_prefix',)
+                                               'cache_prefix',
+                                               'message_count','moderator_message_count',
+                                               'notification_count')
     _int_prop_suffix = '_karma'
     _essentials = ('name', )
     _defaults = dict(pref_numsites = 25,
@@ -139,25 +141,13 @@ class Account(Thing):
     # notifications - system generated messages
     #
     def message_added(self):
-        if not self._loaded:
-            self._load()
-
-        self.message_count += 1
-        self._commit()
+        self._incr('message_count')
 
     def moderator_message_added(self):
-        if not self._loaded:
-            self._load()
-
-        self.moderator_message_count += 1
-        self._commit()
+        self._incr('moderator_message_count')
 
     def notification_added(self):
-        if not self._loaded:
-            self._load()
-
-        self.notification_count += 1
-        self._commit()
+        self._incr('notification_count')
 
     def clear_message_count(self):
         self.message_count = 0
