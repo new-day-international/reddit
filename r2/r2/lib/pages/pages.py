@@ -57,7 +57,7 @@ from r2.lib.filters import (
 )
 from r2.lib.menus import NavButton, NamedButton, NavMenu, PageNameNav, JsButton
 from r2.lib.menus import SubredditButton, SubredditMenu, ModeratorMailButton
-from r2.lib.menus import OffsiteButton, menu, JsNavMenu, IconButton
+from r2.lib.menus import OffsiteButton, menu, JsNavMenu, IconButton, UnorderedList
 from r2.lib.strings import plurals, rand_strings, strings, Score
 from r2.lib.utils import title_to_url, query_string, UrlParser, vote_hash
 from r2.lib.utils import url_links_builder, make_offset_date, median, to36
@@ -424,7 +424,7 @@ class Reddit(Templated):
                     label = _('message the moderators')
                 helplink = ("/message/compose?to=%%2Fspace%%2F%s" % c.site.name,
                             label)
-                ps.append(SideContentBox(_('moderators'), moderators,
+                ps.append(SideContentBox(_('moderators'), [UnorderedList(moderators)],
                                          helplink = helplink, 
                                          more_href = mod_href,
                                          more_text = more_text))

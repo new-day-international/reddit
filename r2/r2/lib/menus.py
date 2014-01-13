@@ -187,6 +187,12 @@ menu =   MenuHandler(hot          = _('hot'),
 
                      )
 
+class UnorderedList(CachedTemplate):
+    def __init__(self, options, **kw):
+        self.options = options
+        CachedTemplate.__init__(self, **kw)
+
+
 def menu_style(type):
     """Simple manager function for the styled menus.  Returns a
     (style, css_class) pair given a 'type', defaulting to style =
