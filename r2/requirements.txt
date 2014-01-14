@@ -5,3 +5,4 @@ nosexcover==1.0.8
 pylint==1.0.0
 raven==3.5.0
 selenium==2.37.2
+invoke==0.6.1
