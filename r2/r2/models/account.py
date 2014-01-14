@@ -162,13 +162,13 @@ class Account(Thing):
         self._commit()
 
     def has_messages(self):
-        return message_count > 0
+        return self.message_count > 0
 
     def has_moderator_messages(self):
-        return moderator_message_count > 0
+        return self.moderator_message_count > 0
 
     def has_notifications(self):
-        return notification_count > 0
+        return self.notification_count > 0
 
     def has_interacted_with(self, sr):
         if not sr:
