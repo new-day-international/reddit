@@ -348,6 +348,28 @@ function unfriend(user_name, container_name, type) {
     }
 };
 
+function notify(elem) {
+    //printObject(elem);
+    $.request("new_captcha");
+    $(elem).new_thing_child($(".notifylink:first").clone(true)
+                            .attr("id", "notifylink_" + $(elem).thing_id()),
+                             false);
+    $('#notifylink_'+$(elem).thing_id()+' textarea').textext(multinamepickerconfig)
+    .bind('getSuggestions',function(e, data) {
+      var query = (data ? data.query : '') || '';
+      var textext = $(e.target).textext()[0];
+      $(this).trigger(
+          'setSuggestions',
+          { result : textext.itemManager().filter(Namepicker.usernames, query) }
+      );
+    });
+    $.request("new_captcha");
+};
+
+function cancelNotify(elem) {
+    return cancelToggleForm(elem, ".notifylink", ".notify-button");
+};
+
 function share(elem) {
     $.request("new_captcha");
     $(elem).new_thing_child($(".sharelink:first").clone(true)
@@ -838,6 +860,13 @@ function show_edit_usertext(form) {
         var new_height = Math.max(body_height, textarea.height());
         textarea.height(new_height);
     }
+    
+    // Add an @namepicker to the field
+    textarea.atwho('run').atwho({
+            at: "@",
+            tpl: '<li data-value="@$'+'{name}"><img src="http://'+Namepicker.s3_user_files_host+'/u/$'+'{pic}/profile_photo.jpg"> <div>$'+'{full}</div></li>',
+            data: Namepicker.userdata
+        });
 
     form
         .find(".cancel, .save").show().end()

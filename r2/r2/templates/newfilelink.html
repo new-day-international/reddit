@@ -91,14 +91,18 @@
   <div class="spacer">
     <input name="kind" value="${thing.kind}" type="hidden"/>
     <%utils:round_field title="${_('excerpt or summary')}" description="${_('(optional)')}">
-      ${UserText(None, text = thing.text, have_form = False, creating = True)}
+      ${UserText(None, text = thing.text, have_form = False, creating = True, extra_css = 'atnamepicker')}
       ${error_field("NO_SELFS", "sr")}
     </%utils:round_field>
   </div>
 
   <div class="spacer">
     <%utils:round_field title="${_('choose a space')}" id="reddit-field">
+      %if False:
       ${reddit_selector(thing.default_sr.name if thing.default_sr else None, thing.sr_searches, thing.spaces, required=True)}
+      %else:
+      <input type="text" name="sr" class="spacenamepicker" />
+      %endif
     </%utils:round_field>
   </div>
 
@@ -141,9 +145,6 @@
     ${error_field("INVALID_OPTION", "sr")}
   </div>
   </%utils:submit_form>
-
-
-
 
 <script src="/static/vendor/jQuery-File-Upload-8.8.2/js/vendor/jquery.ui.widget.js"></script>
 <script src="/static/vendor/jQuery-File-Upload-8.8.2/js/jquery.iframe-transport.js"></script>

@@ -172,8 +172,7 @@ def send_queued_mail(test = False):
         except (smtplib.SMTPRecipientsRefused, smtplib.SMTPSenderRefused,
                 UnicodeDecodeError, AttributeError):
             # handle error and print, but don't stall the rest of the queue
-            g.log.info("Handled error sending mail (traceback to follow)")
-            traceback.print_exc(file = sys.stdout)
+            g.log.info("Handled error sending mail (traceback to follow)", exc_info=True)
             email.set_sent(rejected = True)
 
 
@@ -320,7 +319,7 @@ def run_realtime_email_queue(limit=1, debug=False):
             if g.email_debug:
                 g.log.info('msg: %r', fullname)
             howold = (datetime.datetime.now() - msg.timestamp).total_seconds() 
-            if  howold < 120:
+            if  howold < 110:
                 # Wait until this item is 2 minutes old, to allow time for corrections
                 if g.email_debug:
                     g.log.info('waiting for a moment')

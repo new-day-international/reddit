@@ -35,7 +35,7 @@
     <input type="hidden" name="action" value="add">
     <input type="hidden" name="container" value="${container_name}">
     <input type="hidden" name="type" value="${add_type}">
-    <input type="text" name="name" id="name">
+    <input type="text" name="name" id="name" class="namepicker">
     %if add_type == "moderator_invite":
       ${ModeratorPermissions(None, 'moderator',
                              ModeratorPermissionSet(all=True),

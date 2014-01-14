@@ -598,6 +598,15 @@ def get_unread_selfreply(user):
     return rel_query(inbox_comment_rel, user, 'selfreply',
                           filters = [inbox_comment_rel.c.new == True])
 
+@cached_userrel_query
+def get_notifications(user):
+    return rel_query(inbox_message_rel, user, 'notifications')
+
+@cached_userrel_query
+def get_unread_notifications(user):
+    return rel_query(inbox_message_rel, user, 'notifications',
+                          filters = [inbox_comment_rel.c.new == True])
+
 def get_inbox(user):
     return merge_results(get_inbox_comments(user),
                          get_inbox_messages(user),

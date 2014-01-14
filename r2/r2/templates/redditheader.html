@@ -76,42 +76,65 @@
       %endif
     %else:
       <span class="user">
-         ${plain_link(c.user.name, "/user/%s/" % c.user.name, _sr_path=False)}
-         &nbsp;(<span class="userkarma" title="${_("link karma")}">${c.user.safe_karma}</span>)
+        ${plain_link(c.user.name, "/user/%s/" % c.user.name, _sr_path=False)}
+        &nbsp;(<span class="userkarma" title="${_("link karma")}">${c.user.safe_karma}</span>)
       </span>
-
       ${separator("|")}
 
       <%
-         if c.have_messages:
-           mail_img_class = 'havemail'
-           mail_img_title = "new mail!"
-           mail_path = "/message/unread/"
-         else:
-           mail_img_class = 'nohavemail'
-           mail_img_title = "no new mail"
-           mail_path = "/message/inbox/"
+        if c.user.message_count > 0:
+          mail_img_class = 'havemail'
+          mail_img_title = "new mail!"
+          mail_path = "/message/unread/"
+        else:
+          mail_img_class = 'nohavemail'
+          mail_img_title = "no new mail"
+          mail_path = "/message/inbox/"
        %>
+      %if c.user.message_count > 0:
+        <span class="circled_number">${c.user.message_count}</span>
+      %endif
       ${plain_link(_("messages"), path=mail_path,
                  title = mail_img_title, _sr_path = False,
                  _id = "mail", _class=mail_img_class)}
       ${separator("|")}
       %if c.show_mod_mail:
-         <%
-            if c.have_mod_messages:
-              mail_img_class = 'havemail'
-              mail_img_title = "new mod mail!"
-              mail_path = "/message/moderator/"
-            else:
-              mail_img_class = 'nohavemail'
-              mail_img_title = "no new mod mail"
-              mail_path = "/message/moderator/"
-          %>
-         ${plain_link(_("mod messages"), path=mail_path,
-                    title = mail_img_title, _sr_path = False,
-                    _id = "modmail", _class=mail_img_class)}
-         ${separator("|")}
+      <%
+        if c.user.moderator_message_count > 0:
+          mail_img_class = 'havemail'
+          mail_img_title = "new mod mail!"
+          mail_path = "/message/moderator/"
+        else:
+          mail_img_class = 'nohavemail'
+          mail_img_title = "no new mod mail"
+          mail_path = "/message/moderator/"
+      %>
+      %if c.user.moderator_message_count > 0:
+        <span class="circled_number">${c.user.moderator_message_count}</span>
       %endif
+      ${plain_link(_("mod"), path=mail_path,
+                title = mail_img_title, _sr_path = False,
+                _id = "modmail", _class=mail_img_class)}
+      ${separator("|")}
+      %endif
+
+      <%
+      if c.user.notification_count > 0:
+        notification_img_class = 'yes_notifications'
+        notification_img_title = "new notifications!"
+      else:
+        notification_img_class = 'no_notifications'
+        notification_img_title = "no new notifications"
+
+      notification_path = "/message/notifications/"
+       %>
+      %if c.user.notification_count > 0:
+         <span class="circled_number">${c.user.notification_count}</span>
+      %endif
+      ${plain_link(_("notifications"), path=notification_path,
+                 title = notification_img_title, _sr_path = False,
+                 _id = "notifications", _class=notification_img_class)}
+      ${separator("|")}
     %endif
     ${thing.corner_buttons()}
     %if c.user_is_loggedin and authentication.user_can_log_out():

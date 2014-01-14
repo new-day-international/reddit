@@ -1,0 +1,9 @@
+<form id="space_notify_form">
+  <div>
+  <input type="text" name="notify_to" class="multinamepicker" style="width:300px;padding:10px;margin-bottom:10px;border:1px solid #e3e3e3;font-size:14px;" placeholder="+ Invite People to Space" onkeydown="if (event.keyCode == 13) { return post_form($('#space_notify_form'), 'notify') }" />
+  </div>
+  <div id="space_notify_to_message" style="display:hidden"></div>
+  <br>
+  <input type="hidden" name="sr" value="${thing.sr._fullname}"/>
+  <input type="hidden" name="parent" value="${thing.sr._fullname}"/>
+</form>

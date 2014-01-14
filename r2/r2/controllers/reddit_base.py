@@ -44,6 +44,8 @@ from pylons.controllers.util import redirect_to
 from pylons.i18n import _
 from pylons.i18n.translation import LanguageError
 
+import snudown
+
 from r2.config.extensions import is_api
 from r2.lib import filters, pages, utils, hooks
 from r2.lib.authentication import authenticate_user
@@ -55,6 +57,7 @@ from r2.lib.errors import (
     ForbiddenError,
     errors,
 )
+from r2.lib.snudown_callbacks import username_exists, username_to_display_name
 from r2.lib.filters import _force_utf8
 from r2.lib.strings import strings
 from r2.lib.template_helpers import add_sr, JSPreload
@@ -82,6 +85,7 @@ from r2.lib.validator import (
     VTarget,
 )
 from r2.models import (
+    Account,
     All,
     AllMinus,
     DefaultSR,
@@ -851,7 +855,6 @@ class MinimalController(BaseController):
 
         return request.method.upper() != "POST"
 
-
 class RedditController(MinimalController):
 
     @staticmethod
@@ -885,6 +888,7 @@ class RedditController(MinimalController):
     @staticmethod
     def disable_admin_mode(user):
         c.cookies[g.admin_cookie] = Cookie(value='', expires=DELETE)
+
 
     def pre(self):
         record_timings = g.admin_cookie in request.cookies or g.debug
@@ -954,10 +958,7 @@ class RedditController(MinimalController):
             if not c.user._loaded:
                 c.user._load()
             c.modhash = c.user.modhash()
-            if hasattr(c.user, 'msgtime') and c.user.msgtime:
-                c.have_messages = c.user.msgtime
             c.show_mod_mail = Subreddit.reverse_moderator_ids(c.user)
-            c.have_mod_messages = getattr(c.user, "modmsgtime", False)
             c.user_is_admin = maybe_admin and c.user.name in g.admins
             c.user_special_distinguish = c.user.special_distinguish()
             c.user_is_sponsor = c.user_is_admin or c.user.name in g.sponsors
@@ -1047,6 +1048,9 @@ class RedditController(MinimalController):
             g.stats.end_logging_timings()
 
         hooks.get_hook("reddit.request.begin").call()
+
+        # Set the @username callbacks for the markdown processor.
+        snudown.set_username_callbacks(username_exists, username_to_display_name)
 
         c.request_timer.intermediate("base-pre")
 

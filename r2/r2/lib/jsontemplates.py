@@ -271,11 +271,11 @@ class AccountJsonTemplate(IdentityJsonTemplate):
     def thing_attr(self, thing, attr):
         if attr == "has_mail":
             if c.user_is_loggedin and thing._id == c.user._id:
-                return bool(c.have_messages)
+                return c.user.has_messages()
             return None
         if attr == "has_mod_mail":
             if c.user_is_loggedin and thing._id == c.user._id:
-                return bool(c.have_mod_messages)
+                return c.user.has_moderator_messages()
             return None
         if attr == "is_friend":
             return c.user_is_loggedin and thing._id in c.user.friends

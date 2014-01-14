@@ -797,9 +797,9 @@ class Comment(Thing, Printable):
         if to and ((not c._spam and author._id not in to.enemies)
             or to.name in g.admins):
             # When replying to your own comment, record the inbox
-            # relation, but don't give yourself an orangered
-            orangered = (to.name != author.name)
-            inbox_rel = Inbox._add(to, c, name, orangered=orangered)
+            # relation, but don't notify the recipient (since that's you)
+            notify_recipient = (to.name != author.name)
+            inbox_rel = Inbox._add(to, c, name, notify_recipient=notify_recipient)
 
         hooks.get_hook('comment.new').call(comment=c)
 
@@ -1235,7 +1235,7 @@ class Message(Thing, Printable):
 
     @classmethod
     def _new(cls, author, to, subject, body, ip, parent=None, sr=None,
-             from_sr=False):
+             from_sr=False, in_box='inbox'):
         m = Message(subject=subject, body=body, author_id=author._id, new=True,
                     ip=ip, from_sr=from_sr)
         m._spam = author._spam
@@ -1284,7 +1284,7 @@ class Message(Thing, Printable):
             # an initial message to an SR, add to the moderator inbox
             # (i.e., don't do it for automated messages from the SR)
             if parent or to_subreddit and not from_sr:
-                inbox_rel.append(ModeratorInbox._add(sr, m, 'inbox'))
+                inbox_rel.append(ModeratorInbox._add(sr, m, in_box))
             if author.name in g.admins:
                 m.distinguished = 'admin'
                 m._commit()
@@ -1301,17 +1301,21 @@ class Message(Thing, Printable):
                 # Record the inbox relation, but don't give the user
                 # an orangered, if they PM themselves.
                 # Don't notify on PMs from blocked users, either
-                orangered = (to.name != author.name and
-                             author._id not in to.enemies)
-                inbox_rel.append(Inbox._add(to, m, 'inbox',
-                                            orangered=orangered))
+                notify_recipient = (to.name != author.name and
+                             author._id not in to.enemies and
+                             in_box != 'notifications')
+                inbox_rel.append(Inbox._add(to, m, in_box,
+                                            notify_recipient=notify_recipient))
+                if in_box == 'notifications':
+                    to.notification_added()
+
             # find the message originator
             elif sr_id and m.first_message:
                 first = Message._byID(m.first_message, True)
                 orig = Account._byID(first.author_id, True)
                 # if the originator is not a moderator...
                 if not sr.is_moderator(orig) and orig._id != author._id:
-                    inbox_rel.append(Inbox._add(orig, m, 'inbox'))
+                    inbox_rel.append(Inbox._add(orig, m, in_box))
         return (m, inbox_rel)
 
     @property
@@ -1339,8 +1343,6 @@ class Message(Thing, Printable):
     def add_props(cls, user, wrapped):
         from r2.lib.db import queries
         #TODO global-ish functions that shouldn't be here?
-        #reset msgtime after this request
-        msgtime = c.have_messages
 
         # make sure there is a sr_id set:
         for w in wrapped:
@@ -1392,8 +1394,7 @@ class Message(Thing, Printable):
                 # and it is in the user's personal inbox
                 if (item.new and c.user.pref_mark_messages_read
                     and c.extension not in ("rss", "xml", "api", "json")):
-                    queries.set_unread(item.lookups[0],
-                                       c.user, False)
+                    queries.set_unread(item.lookups[0], c.user, False)
             else:
                 item.new = (item._fullname in mod_unread and not item.to_id)
 
@@ -1734,21 +1735,19 @@ class Inbox(MultiRelation('inbox',
     _defaults = dict(new=False)
 
     @classmethod
-    def _add(cls, to, obj, *a, **kw):
-        orangered = kw.pop("orangered", True)
-        i = Inbox(to, obj, *a, **kw)
-        i.new = True
-        i._commit()
+    def _add(cls, recipient, comment_or_message, *a, **kw):
 
-        if not to._loaded:
-            to._load()
+        # Create a new inbox item.
+        inbox_item = Inbox(recipient, comment_or_message, *a, **kw)
+        inbox_item.new = True
+        inbox_item._commit()
 
-        #if there is not msgtime, or it's false, set it
-        if orangered and (not hasattr(to, 'msgtime') or not to.msgtime):
-            to.msgtime = obj._date
-            to._commit()
+        # Notify the recipient if asked.
+        notify_recipient = kw.pop("notify_recipient", True)
+        if notify_recipient:
+            recipient.message_added()
 
-        return i
+        return inbox_item
 
     @classmethod
     def set_unread(cls, things, unread, to=None):
@@ -1764,49 +1763,47 @@ class Inbox(MultiRelation('inbox',
         else:
             inbox = inbox_rel._query(inbox_rel.c._thing2_id == thing_ids,
                                      eager_load=True)
-        res = []
-        for i in inbox:
-            if i:
-                i.new = unread
-                i._commit()
-                res.append(i)
-        return res
-
+        results = []
+        for inbox_item in inbox:
+            if inbox_item:
+                inbox_item.new = unread
+                inbox_item._commit()
+                results.append(inbox_item)
+        return results
 
 class ModeratorInbox(Relation(Subreddit, Message)):
     #TODO: shouldn't dupe this
     @classmethod
     def _add(cls, sr, obj, *a, **kw):
-        i = ModeratorInbox(sr, obj, *a, **kw)
-        i.new = True
-        i._commit()
+        inbox_item = ModeratorInbox(sr, obj, *a, **kw)
+        inbox_item.new = True
+        inbox_item._commit()
 
         if not sr._loaded:
             sr._load()
 
-        mod_perms = sr.moderators_with_perms()
-        mod_ids = set(mod_id for mod_id, perms in mod_perms.iteritems()
-                      if perms.get('mail', False))
-        moderators = Account._byID(mod_ids, data=True, return_dict=False)
-        for m in moderators:
-            if obj.author_id != m._id and not getattr(m, 'modmsgtime', None):
-                m.modmsgtime = obj._date
-                m._commit()
+        moderator_perms = sr.moderators_with_perms()
+        moderator_ids = set(moderator_id for moderator_id, permissions in moderator_perms.iteritems()
+                      if permissions.get('mail', False))
+        moderators = Account._byID(moderator_ids, data=True, return_dict=False)
+        for moderator in moderators:
+            if obj.author_id != moderator._id:
+                moderator.moderator_message_added()
 
-        return i
+        return inbox_item
 
     @classmethod
     def set_unread(cls, things, unread):
         things = tup(things)
         thing_ids = [x._id for x in things]
         inbox = cls._query(cls.c._thing2_id == thing_ids, eager_load=True)
-        res = []
-        for i in inbox:
-            if i:
-                i.new = unread
-                i._commit()
-                res.append(i)
-        return res
+        results = []
+        for inbox_item in inbox:
+            if inbox_item:
+                inbox_item.new = unread
+                inbox_item._commit()
+                results.append(inbox_item)
+        return results
 
 class CommentsByAccount(tdb_cassandra.DenormalizedRelation):
     _use_db = True

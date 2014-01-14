@@ -24,15 +24,17 @@ from reddit_base import RedditController, MinimalController, set_user_cookie
 from reddit_base import cross_domain, paginated_listing
 
 from pylons.i18n import _
-from pylons import c, request, response
+from pylons import c, g, request, response
 
+import snudown
+from r2.lib.snudown_callbacks import make_username_exists_callback, username_to_display_name
 from r2.lib.validator import *
 
 from r2.models import *
 
 from r2.lib import amqp
 
-from r2.lib.utils import get_title, sanitize_url, timeuntil, set_last_modified
+from r2.lib.utils import get_title, sanitize_url, timeuntil, set_last_modified, http_date_str
 from r2.lib.utils import query_string, timefromnow, randstr
 from r2.lib.utils import timeago, tup, filter_links, filename_to_link_title
 from r2.lib.pages import (EnemyList, FriendList, ContributorList, ModList,
@@ -64,22 +66,28 @@ from r2.controllers.api_docs import api_doc, api_section
 from r2.lib.search import SearchQuery
 from r2.controllers.oauth2 import OAuth2ResourceController, require_oauth2_scope
 from r2.lib.template_helpers import add_sr, get_domain
-from r2.lib.system_messages import notify_user_added
+from r2.lib.system_messages import notify_user_added, send_notification_message, send_notification_message_to_users
 from r2.controllers.ipn import generate_blob
 from r2.lib.lock import TimeoutExpired
 
-from r2.models import wiki
+from r2.models import wiki, Account
 from r2.lib.merge import ConflictException
+
+from r2.lib.base import abort
+from r2.lib.errors import reddit_http_error
 
 import mimetypes
 import pytz
 import csv
 from collections import defaultdict
 from datetime import datetime, timedelta
+import time
 import hashlib
 import re
 import urllib
 import urllib2
+
+from r2.lib.memoize import memoize
 
 def reject_vote(thing):
     voteword = request.params.get('dir')
@@ -229,7 +237,7 @@ class ApiController(RedditController, OAuth2ResourceController):
 
             m, inbox_rel = Message._new(c.user, to, subject, body, ip)
             form.set_html(".status", _("your message has been delivered"))
-            form.set_inputs(to = "", subject = "", text = "", captcha="")
+            form.set_inputs(to = "", subject = "", text = "", captcha = "", to_fld = "")
 
             amqp.add_item('new_message', m._fullname)
 
@@ -405,21 +413,34 @@ class ApiController(RedditController, OAuth2ResourceController):
             admintools.spam(l, banner = "domain (%s)" % banmsg)
 
         if kind == 'self':
-            l.url = l.make_permalink_slow()
             l.is_self = True
-            l.selftext = selftext
 
-            l._commit()
+        notify_accounts = set()
+        username_exists = make_username_exists_callback(notify_accounts)
+
+        if selftext and selftext != '':
+            # Check for notifications
+            snudown.set_username_callbacks(username_exists, username_to_display_name)
+            md = safemarkdown(selftext)
+
+            # Setup the permalink
+            l.url = l.make_permalink_slow()
             l.set_url_cache()
 
-        elif kind in ('link', 'file') and selftext and selftext != '':
+            # Remember the self text.
             l.selftext = selftext
-            l._commit()
+
+        # Commit the link changes.
+        l._commit()
 
         queries.queue_vote(c.user, l, True, ip,
                            cheater = (errors.CHEATER, None) in c.errors)
         if save:
             r = l._save(c.user)
+
+        # Handle any @user notifications...
+        if len(notify_accounts) > 0:
+            send_notification_message_to_users(c.user, notify_accounts, l.title, l.url, ip)
 
         #set the ratelimiter
         if should_ratelimit:
@@ -486,8 +507,6 @@ class ApiController(RedditController, OAuth2ResourceController):
                 # Allow funky clients to re-login as the current user.
                 c.errors.remove((errors.LOGGED_IN, None))
             else:
-                from r2.lib.base import abort
-                from r2.lib.errors import reddit_http_error
                 abort(reddit_http_error(409, errors.LOGGED_IN))
 
         if not (responder.has_errors("vdelay", errors.RATELIMIT) or
@@ -1185,21 +1204,58 @@ class ApiController(RedditController, OAuth2ResourceController):
     @require_oauth2_scope("edit")
     @validatedForm(VUser(),
                    VModhash(),
+                   ip = ValidIP(),
                    item = VByNameIfAuthor('thing_id'),
                    text = VSelfText('text'))
     @api_doc(api_section.links_and_comments)
-    def POST_editusertext(self, form, jquery, item, text):
+    def POST_editusertext(self, form, jquery, ip, item, text):
         """Edit the body text of a comment or self-post."""
+
+
         if (not form.has_errors("text",
                                 errors.NO_TEXT, errors.TOO_LONG) and
             not form.has_errors("thing_id", errors.NOT_AUTHOR)):
 
+            notify_accounts = set()
+            new_notify_accounts = set()
+            username_exists = make_username_exists_callback(notify_accounts)
+            snudown.set_username_callbacks(username_exists, username_to_display_name)
+
+            # Get the original text from the item.
+            if isinstance(item, Comment):
+                original_text = item.body
+            elif isinstance(item, Link):
+                original_text = item.selftext
+
+            # If the text changed...
+            text_changed = False
+            if text != original_text:
+                text_changed = True
+
+
+                # Check for notifications using the original text...
+                notify_accounts.clear()
+                md = safemarkdown(original_text)
+                original_notify_accounts = notify_accounts.copy()
+
+                # Now check for notifications using the new text...
+                notify_accounts.clear()
+                md = safemarkdown(text)
+
+                # We only want to send to new accounts that were not already
+                # notified of this message.
+                new_notify_accounts = notify_accounts.difference(original_notify_accounts)
+
             if isinstance(item, Comment):
                 item_kind = 'comment'
                 item.body = text
+                title = 'comment by ' % (c.user.registration_fullname)
+                url = item.url
             elif isinstance(item, Link):
                 item_kind = 'link'
                 item.selftext = text
+                title = item.title
+                url = item.url
             else:
                 g.log.warning("%s tried to edit usertext on %r", c.user, item)
                 return
@@ -1222,6 +1278,10 @@ class ApiController(RedditController, OAuth2ResourceController):
             if item_kind == 'link':
                 set_last_modified(item, 'comments')
                 LastModified.touch(item._fullname, 'Comments')
+
+            # Handle the @user notification changes
+            if text_changed and len(new_notify_accounts) > 0:
+                send_notification_message_to_users(c.user, new_notify_accounts, title, url, ip)
 
             wrapper = default_thing_wrapper(expand_children = True)
             jquery(".content").replace_things(item, True, True, wrap = wrapper)
@@ -1315,7 +1375,7 @@ class ApiController(RedditController, OAuth2ResourceController):
                 # newcomments_q, so if they refresh immediately they
                 # won't see their comment
 
-            # clean up the submission form and remove it from the DOM (if reply)
+            # Clean up the submission form and remove it from the DOM (if reply)
             t = commentform.find("textarea")
             t.attr('rows', 3).html("").val("")
             if isinstance(parent, (Comment, Message)):
@@ -1323,23 +1383,39 @@ class ApiController(RedditController, OAuth2ResourceController):
                 jquery.things(parent._fullname).set_html(".reply-button:first",
                                                          _("replied"))
 
-            # insert the new comment
+            # Insert the new comment
             jquery.insert_things(item)
 
-            # remove any null listings that may be present
+            # Remove any null listings that may be present
             jquery("#noresults").hide()
 
-            #update the queries
+            # Update the queries
             if is_message:
                 queries.new_message(item, inbox_rel)
             else:
                 queries.new_comment(item, inbox_rel)
 
-            # send the changed message
+            # Send the changed message
             changed(item)
 
+            notify_accounts = set()
+            username_exists = make_username_exists_callback(notify_accounts)
 
-            #set the ratelimiter
+            # Check for notifications
+            snudown.set_username_callbacks(username_exists, username_to_display_name)
+            md = safemarkdown(comment)
+
+            # Handle any @user notifications...
+            if len(notify_accounts) > 0:
+
+                # Setup the title and URL link.
+                title = "comment by %s" % (c.user.registration_fullname)
+                url = item.make_permalink_slow()
+
+                # Send the notifications.
+                send_notification_message_to_users(c.user, notify_accounts, title, url, ip)
+
+            # Set the ratelimiter
             if should_ratelimit:
                 VRatelimit.ratelimit(rate_user=True, rate_ip = True,
                                      prefix = "rate_comment_")
@@ -1444,6 +1520,36 @@ class ApiController(RedditController, OAuth2ResourceController):
             if should_ratelimit:
                 VRatelimit.ratelimit(rate_user=True, rate_ip = True,
                                      prefix = "rate_share_")
+
+    @validatedForm(VUser(),
+                VModhash(),
+                VCaptcha(),
+                users = ValidNamepickerUnames("notify_to"),
+                thing = VByName('parent'),
+                ip = ValidIP())
+    def POST_notify(self, notifyform, jquery, users, thing, ip):
+        #-- Notification of either a link or a space. So, we might come from either the the notify button under a link or from the invite field in the right sidebar
+        if isinstance(thing, Subreddit):
+            # A space
+            subject = u"check out this space: %s" % (thing.title.decode('utf-8'))
+            message = u"check out this space: [%s](%s)" % (thing.title.decode('utf-8'), thing.path)
+            notifyform.html("<div>space notifications have been sent</div><br>")
+
+        elif isinstance(thing, Link):
+            # A post/link
+            permalink = thing.make_permalink_slow()
+            subject = u"check out this item: %s" % (thing.title.decode('utf-8'))
+            message = u"check out this item: [%s](%s)" % (thing.title.decode('utf-8'), permalink)
+            link = jquery.things(thing._fullname)
+            link.set_html(".notify", _("notified"))
+            notifyform.html("<div class='clearleft'></div>" 
+                "<p class='error'>%s</p>" % _("item notifications have been sent."))
+
+        g.log.debug("posting notification subject: %r message: %r", subject, message)
+
+        for target in users:
+            # here we do something for each user
+            send_notification_message(c.user,target, subject, message, ip)
 
 
     @require_oauth2_scope("vote")
@@ -3483,6 +3589,46 @@ class ApiController(RedditController, OAuth2ResourceController):
 
         ret['policy'], ret['signature'] = s3_helpers.encode_and_sign_upload_policy(policy, s3_helpers.get_aws_secret_access_key())
         return ret
+
+    def GET_namepicker(self,**keywords):
+        # Return a json array of usernames for a name picker
+        c.allow_loggedin_cache = True
+        timehour = int(int(time.time())/3600)
+        new_etag = hashlib.md5(str(timehour)).hexdigest()
+        had_etag = request.headers.get("If-None-Match")
+        response.headers['etag'] = new_etag
+        if had_etag and had_etag == new_etag:
+            # If they got this within the last hour, pretend it hasn't changed
+            return abort(304, 'not modified')
+
+        names = []
+        hnames = {}
+        data  = []
+        result = Account._query(Account.c.name!='')
+        for row in result: 
+            names.append(row.name)
+            pic = row.name if row.profile_photo_uploaded else 'default_user'
+            data.append({'name':row.name, 'full':row.registration_fullname, 'pic':pic})
+            hnames[row.name] = {'name':row.name, 'full':row.registration_fullname, 'pic':pic}
+            
+        spacenames = []
+        result = Subreddit._query(Subreddit.c.name!='')  
+        for row in result:
+            if row.can_submit(c.user):
+                spacenames.append(row.name)
+            
+        response.headers['cache-control'] = 'max-age: 3600'
+        expire_time = datetime.fromtimestamp(int(time.time())+60, g.tz)
+        response.headers['expires'] = http_date_str(expire_time)
+        response.headers['content-type'] = 'application/javascript'
+        output =  "var Namepicker = {"
+        output += "  s3_user_files_host: '%s'," % g.s3_user_files_host
+        output += "  usernames: " + json.dumps(sorted(names)) + ","
+        output += "  userdata: " + json.dumps(sorted(data, key=lambda k: k['name'])) + ","
+        output += "  userhash: " + json.dumps(hnames) + ","
+        output += "  spacenames: " + json.dumps(sorted(spacenames)) + ","
+        output += "};"
+        return output
 
     @json_validate(VUser())
     def POST_profile_photo_uploaded(self, responder):

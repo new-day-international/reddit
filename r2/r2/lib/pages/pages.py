@@ -224,7 +224,7 @@ class Reddit(Templated):
                                comment=None,
                                clone_template=True,
                               )
-            self._content = PaneStack([ShareLink(), content, gold])
+            self._content = PaneStack([ShareLink(), NotifyLink(), content, gold])
         else:
             self._content = content
 
@@ -326,6 +326,9 @@ class Reddit(Templated):
 
         if self.searchbox:
             ps.append(SearchForm())
+            
+        if (not isinstance(c.site, FakeSubreddit)):    
+            ps.append(SpaceNotificationForm());    
 
         if not c.user_is_loggedin and self.loginbox and not g.read_only_mode:
             ps.append(LoginFormWide())
@@ -850,7 +853,7 @@ class MessagePage(Reddit):
     def build_toolbars(self):
         buttons =  [NamedButton('compose', sr_path = False),
                     NamedButton('inbox', aliases = ["/message/comments",
-                                                    "/message/uread",
+                                                    "/message/unread",
                                                     "/message/messages",
                                                     "/message/selfreply"],
                                 sr_path = False),
@@ -858,6 +861,7 @@ class MessagePage(Reddit):
         if c.show_mod_mail:
             buttons.append(ModeratorMailButton(menu.modmail, "moderator",
                                                sr_path = False))
+        buttons.append(NamedButton('notifications', sr_path = False))
         if not c.default_sr:
             buttons.append(ModeratorMailButton(
                 _("%(site)s mail") % {'site': c.site.name}, "moderator",
@@ -1090,6 +1094,12 @@ class CommentEmailCheck(Templated):
         from r2.models import SaveHide
         self.article = article
         self.email_thread = Link._somethinged(SaveHide, c.user, article, 'email')[c.user,article,'email'] if c.user_is_loggedin and c.user else False
+        Templated.__init__(self, *a, **kw)
+        
+class NamePickerLinks(Templated):
+    """Does nothing but linking in the namepicker js and css files        
+    """
+    def __init__(self, *a, **kw):
         Templated.__init__(self, *a, **kw)
 
 class LinkInfoPage(Reddit):
@@ -2175,6 +2185,14 @@ class SearchBar(Templated):
                            subreddit_search=subreddit_search, facets=facets,
                            sort=sort, recent=recent)
 
+class SpaceNotificationForm(Templated):
+   """Form for notifying other users of a space."""
+   def __init__(self):
+       self.sr = c.site
+       #sr_ids = Subreddit.user_subreddits(user)
+       #srs = Subreddit._byID(sr_ids, data=True, return_dict=False)
+       Templated.__init__(self)
+
 class Frame(Wrapped):
     """Frameset for the FrameToolbar used when a user hits /tb/. The
     top 30px of the page are dedicated to the toolbar, while the rest
@@ -2206,7 +2224,7 @@ class FrameToolbar(Wrapped):
 
         self.expanded = expanded
         self.user_is_loggedin = c.user_is_loggedin
-        self.have_messages = c.have_messages
+        self.have_messages = c.user.has_messages()
         self.user_name = c.user.name if self.user_is_loggedin else ""
         self.cname = c.cname
         self.site_name = c.site.name
@@ -2299,7 +2317,15 @@ class ShareLink(CachedTemplate):
         Templated.__init__(self, link_name = link_name,
                            emails = c.user.recent_share_emails())
 
+class NotifyLink(CachedTemplate):
+   def __init__(self, link_name = "", emails = None):
+       self.captcha = c.user.needs_captcha()
+       Templated.__init__(self, link_name = link_name,
+                          emails = c.user.recent_share_emails())
+
         
+class Notify(Templated):
+  pass
 
 class Share(Templated):
     pass

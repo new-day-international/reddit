@@ -1746,6 +1746,32 @@ class ValidEmailsOrExistingUnames(Validator):
                 self.set_error(errors.BAD_EMAILS,
                                {'emails': ', '.join(failures)})
 
+class ValidNamepickerUnames(Validator):
+   """Validates a list of usernames passed in as a list serialized
+   as a string. E.g. '["Flemming_Funch_1","Jim_Rutt_2"]'.
+   Returns a list of the user account objects)"""
+
+   def run(self, unames_string):
+       #import string
+       #unames_string = string.replace('&quot;','"',unames_string)
+       try:
+           unames = eval(unames_string)
+       except SyntaxError:       
+           unames = []
+           
+       users = set()
+       for uname in unames:
+           check = uname
+           if re.match('/u/', uname):
+               check = check[3:]
+           veu = VExistingUname(check)
+           account = veu.run(check)
+           if account:
+               users.add(account)  
+               
+       return users
+               
+
 class VCnameDomain(Validator):
     domain_re  = re.compile(r'\A([\w\-_]+\.)+[\w]+\Z')
 

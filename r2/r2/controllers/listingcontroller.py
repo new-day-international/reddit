@@ -775,12 +775,13 @@ class MessageController(ListingController):
     @property
     def menus(self):
         if c.default_sr and self.where in ('inbox', 'messages', 'comments',
-                          'selfreply', 'unread'):
+                          'selfreply', 'unread', 'notifications'):
             buttons = (NavButton(_("all"), "inbox"),
                        NavButton(_("unread"), "unread"),
                        NavButton(plurals.messages, "messages"),
                        NavButton(_("comment replies"), 'comments'),
-                       NavButton(_("post replies"), 'selfreply'))
+                       NavButton(_("post replies"), 'selfreply'),
+                       NavButton(_("notifications"), 'notifications') )
 
             return [NavMenu(buttons, base_path = '/message/',
                             default = 'inbox', type = "flatlist")]
@@ -827,7 +828,7 @@ class MessageController(ListingController):
         return w
 
     def builder(self):
-        if (self.where == 'messages' or
+        if (self.where in ('messages', 'notifications') or
             (self.where in ("moderator", "multi") and self.subwhere != "unread")):
             root = c.user
             message_cls = UserMessageBuilder
@@ -863,7 +864,7 @@ class MessageController(ListingController):
         return ListingController.builder(self)
 
     def listing(self):
-        if (self.where == 'messages' and 
+        if ((self.where == 'messages' or self.where == 'notifications') and
             (c.user.pref_threaded_messages or self.message)):
             return Listing(self.builder_obj).listing()
         pane = ListingController.listing(self)
@@ -900,18 +901,30 @@ class MessageController(ListingController):
             else:
                 q = queries.get_unread_subreddit_messages(c.site)
         elif self.where in ('moderator', 'multi'):
-            if c.have_mod_messages and self.mark != 'false':
-                c.user.modmsgtime = False
-                c.user._commit()
+            if self.mark != 'false':
+                c.user.clear_moderator_message_count()
+
             # the query is handled by the builder on the moderator page
             return
+        elif self.where == 'notifications':
+            if self.mark != 'false':
+                c.user.clear_notification_count()
+            q = queries.get_unread_notifications(c.user)
+        elif self.where == 'reset_message_counts':
+            g.log.debug("resetting message count")
+            c.user.message_count = 2
+            c.user.moderator_message_count = 1
+            c.user.notification_count = 7
+            c.user._commit()
+
+            q = queries.get_inbox(c.user)
         else:
             return self.abort404()
-        if self.where != 'sent':
-            #reset the inbox
-            if c.have_messages and self.mark != 'false':
-                c.user.msgtime = False
-                c.user._commit()
+
+        # Clear the message count under most circumstances...
+        if self.where not in ('sent', 'reset_message_counts', 'notifications'):
+            if self.mark != 'false':
+                c.user.clear_message_count()
 
         return q
 
@@ -936,6 +949,7 @@ class MessageController(ListingController):
         else:
             self.where = where
         self.subwhere = subwhere
+
         if mark is not None:
             self.mark = mark
         elif is_api():
@@ -944,7 +958,9 @@ class MessageController(ListingController):
             self.mark = 'false'
         else:
             self.mark = 'true'
+
         self.message = message
+
         return ListingController.GET_listing(self, **env)
 
     @validate(VUser(),

@@ -20,12 +20,13 @@
 # Inc. All Rights Reserved.
 ###############################################################################
 
-from pylons import request
+from pylons import request, g
 from pylons.i18n import N_
 
 from r2.models import Account, Message
 from r2.lib.db import queries
 
+from r2.lib import amqp
 
 user_added_messages = {
     "moderator_invite": {
@@ -108,3 +109,21 @@ def notify_user_added(rel_type, author, user, target):
         item, inbox_rel = Message._new(modmail_author, target, subject, msg,
                                        request.ip, sr=target)
         queries.new_message(item, inbox_rel)
+
+def send_notification_message(user, target, subject, message, ip):
+    m, inbox_rel = Message._new(user, target, subject, message, ip, in_box='notifications')
+    amqp.add_item('new_notification', m._fullname)
+    queries.new_message(m, inbox_rel)
+
+def send_notification_message_to_users(user,to_users,title,url,ip):
+    if len(to_users) <= 0:
+        return
+
+    # Compose the subject and message
+    subject = "check this out: %s" % (title)
+    message = "check out this item: [%s](%s)" % (title, url)
+
+    # Notify any @user_name users.
+    for account in to_users:
+        g.log.info("sending message: To: %r\n Subject: %r\n message:%r\n", account.registration_fullname, subject, message)
+        send_notification_message(user, account, subject, message, ip)

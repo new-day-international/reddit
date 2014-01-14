@@ -56,7 +56,9 @@ class Account(Thing):
                                                'report_made', 'report_correct',
                                                'report_ignored', 'spammer',
                                                'reported', 'gold_creddits',
-                                               'cache_prefix',)
+                                               'cache_prefix',
+                                               'message_count','moderator_message_count',
+                                               'notification_count')
     _int_prop_suffix = '_karma'
     _essentials = ('name', )
     _defaults = dict(pref_numsites = 25,
@@ -117,6 +119,9 @@ class Account(Thing):
                      state=0,
                      cache_prefix=0,
                      profile_photo_uploaded=False,
+                     message_count=0,
+                     moderator_message_count=0,
+                     notification_count=0,
                      )
 
     def __eq__(self, other):
@@ -127,6 +132,43 @@ class Account(Thing):
 
     def __ne__(self, other):
         return not self.__eq__(other)
+
+    # Messages come in three different flavors. Each user has a
+    # separate count for each of the flavors:
+    #
+    # messages - normal user generated content
+    # moderator messages - for all moderators of a given space
+    # notifications - system generated messages
+    #
+    def message_added(self):
+        self._incr('message_count')
+
+    def moderator_message_added(self):
+        self._incr('moderator_message_count')
+
+    def notification_added(self):
+        self._incr('notification_count')
+
+    def clear_message_count(self):
+        self.message_count = 0
+        self._commit()
+
+    def clear_moderator_message_count(self):
+        self.moderator_message_count = 0
+        self._commit()
+
+    def clear_notification_count(self):
+        self.notification_count = 0
+        self._commit()
+
+    def has_messages(self):
+        return message_count > 0
+
+    def has_moderator_messages(self):
+        return moderator_message_count > 0
+
+    def has_notifications(self):
+        return notification_count > 0
 
     def has_interacted_with(self, sr):
         if not sr:
