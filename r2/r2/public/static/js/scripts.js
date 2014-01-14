@@ -95,9 +95,7 @@ $(function () {
     }
   });
 
-  $(".item-reply").on("click", function(){
-    $("form.usertext.cloneable").toggleClass("show");
-  })
+
 
   // $(".dropdown-toggle").dropdown();
 });
