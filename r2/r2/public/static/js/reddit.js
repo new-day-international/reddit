@@ -860,6 +860,13 @@ function show_edit_usertext(form) {
         var new_height = Math.max(body_height, textarea.height());
         textarea.height(new_height);
     }
+    
+    // Add an @namepicker to the field
+    textarea.atwho('run').atwho({
+            at: "@",
+            tpl: '<li data-value="@$'+'{name}"><img src="http://'+Namepicker.s3_user_files_host+'/u/$'+'{pic}/profile_photo.jpg"> <div>$'+'{full}</div></li>',
+            data: Namepicker.userdata
+        });
 
     form
         .find(".cancel, .save").show().end()
