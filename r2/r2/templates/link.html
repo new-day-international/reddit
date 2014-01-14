@@ -93,9 +93,6 @@
 
 <%def name="entry()">
   <h4 class="title media-heading">
-    % if thing.different_sr:
-      <a href="${thing.subreddit_path}" class="label label-default">${thing.subreddit.name}</a>
-    % endif
     <%call expr="make_link('title', 'title')">
       ${thing.title}
     </%call>
@@ -131,7 +128,12 @@
          onclick="expando_child(this)"></div>
   %endif
 
-  <p class="tagline">${self.tagline()}</p>
+      
+<p class="tagline">
+% if thing.different_sr:
+  <a href="${thing.subreddit_path}" class="label label-default">${thing.subreddit.name}</a>&#32;
+% endif
+    ${self.tagline()}</p>
 
   <% 
      child_content = ""
