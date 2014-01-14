@@ -879,7 +879,7 @@ function edit_usertext(elem) {
 
 function cancel_usertext(elem) {
     var t = $(elem);
-    t.thing().find(".edit-usertext:first").parent("li").andSelf().show(); 
+    t.thing().find(".edit-usertext:first").parent("li").andSelf().show();
     hide_edit_usertext(t.closest(".usertext"));
 }
 
