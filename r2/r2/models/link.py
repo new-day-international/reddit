@@ -1041,7 +1041,7 @@ class Comment(Thing, Printable):
 
             #will get updated in builder
             item.num_children = 0
-            item.score_fmt = Score.points
+            item.score_fmt = Score.number_only
             item.permalink = item.make_permalink(item.link, item.subreddit)
 
             item.is_author = (user == item.author)

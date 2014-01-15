@@ -42,7 +42,12 @@
 </%def>
 
 <%def name="midcol(display=True, cls = '')">
-${parent.midcol(not thing.collapsed, cls = cls)}
+  <div class="midcol ${cls} unvoted vote-buttons text-center" 
+       ${not display and "style='display:none'" or ''}>
+    ${self.arrow(thing, 1, thing.likes)}
+    ${self.score(thing, thing.likes, tag='div')}
+    ${self.arrow(thing, 0, thing.likes == False)}
+  </div>
 </%def>
 
 <%def name="ParentDiv()">
@@ -119,15 +124,6 @@ ${parent.collapsed()}
   %if collapse and thing.collapsed and show:
     ${thing.collapsed_reason}
   %else:
-    %if show:
-      %if thing.score_hidden:
-        <span title="${_('this space hides comment scores for %d minutes') % thing.subreddit.comment_score_hide_mins}">
-          [${_("score hidden")}]
-        </span>&#32;
-      %else:
-        ${unsafe(self.score(thing, likes = thing.likes))}&#32;
-      %endif
-    %endif
     ${thing_timestamp(thing, thing.timesince)}&#32;${_("ago")}
     ${edited(thing, thing.lastedited)}
   %endif
