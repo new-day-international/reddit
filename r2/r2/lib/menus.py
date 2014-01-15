@@ -521,6 +521,7 @@ class CommentSortMenu(SortMenu):
     default   = 'new'
     options   = ('confidence', 'new', 'old')
     use_post  = True
+    type = 'bootstrap_drop_down_button'
 
 class SearchSortMenu(SortMenu):
     """Sort menu for search pages."""
