@@ -24,7 +24,7 @@
    from r2.lib.template_helpers import get_domain
    from r2.lib.template_helpers import s3_https_if_secure
    from r2.lib.pages.things import LinkButtons
-   from r2.lib.pages import WrappedUser
+   from r2.lib.pages import WrappedUser, CommentEmailCheck
    from r2.lib.template_helpers import static
    from r2.lib.strings import Score, strings
    from r2.lib.filters import safemarkdown
@@ -84,6 +84,7 @@
     ${self.admintagline()}
   </ul>
  </%def>
+
 
 <%def name="flair()">
   %if c.user.pref_show_link_flair and thing.flair_text:
@@ -184,6 +185,12 @@
   %endif
 
     ${self.link_at_domain()}
+
+
+    %if c.user_is_loggedin and expand:
+      ## Checkbox for whether the user wants to receive new comments in email
+      ${CommentEmailCheck(thing.lookups[0])}
+    %endif
 
 </%def>
 

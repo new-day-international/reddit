@@ -316,9 +316,7 @@ class FrontController(RedditController, OAuth2ResourceController):
                                         display=display,
                                         cloneable=True))
 
-        if c.user_is_loggedin:
-            # Checkbox for whether the user wants to receive new comments in email
-            displayPane.append(CommentEmailCheck(article))
+
 
         if previous_visits:
             # Confusing to new users.
