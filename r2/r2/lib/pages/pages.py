@@ -3540,8 +3540,12 @@ class UserText(CachedTemplate):
                  cloneable = False,
                  extra_css = '',
                  name = "text",
-                 expunged=False):
+                 expunged=False,
+                 rules = None,
+                 house = None):
 
+        self.rules = rules
+        self.house = house
         css_class = "usertext"
         if cloneable:
             css_class += " cloneable"

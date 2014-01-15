@@ -843,7 +843,7 @@ function show_edit_usertext(form) {
         .find(".cancel, .save").show().end()
         .find(".help-toggle").show().end();
 
-    textarea.focus();
+    // textarea.focus();
 }
 
 function hide_edit_usertext(form) {
