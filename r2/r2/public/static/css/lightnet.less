@@ -231,22 +231,22 @@ h4.collapsable {
   /*padding: 6px;*/
 }
 
-.theme-amelia #item-list>li:nth-child(odd) {
+.theme-amelia .item-list>li:nth-child(odd) {
   background-color: rgb(15, 127, 136);
 }
 
-.theme-slate #item-list>li:nth-child(odd) {
+.theme-slate .item-list>li:nth-child(odd) {
   background-color: rgb(53, 58, 65);
 }
 
-#item-list > li:nth-child(even) {
+.item-list > li:nth-child(even) {
   background-color: #eff7fc;
 }
 
-#item-list h4 {
+.item-list h4 {
   padding-bottom: 0px;
   }
-  #item-list h4.title a.label {
+  .item-list h4.title a.label {
     display: block; float: left;
     padding: 3px 6px; margin: 5px 5px 0 0;
     font-size: 12px;
@@ -254,49 +254,49 @@ h4.collapsable {
     background: #bbb;
   }
 
-  #item-list h4.title a.title {
+  .item-list h4.title a.title {
     color: black;
     }
-    #item-list h4.title a.title:visited {
+    .item-list h4.title a.title:visited {
       color: #777;
     }
 
-#item-list h4, .tagline {
+.item-list h4, .tagline {
 /*  overflow: hidden;
   text-overflow:ellipsis;
   white-space:nowrap; */
 }
-#item-list .entry:hover .flat-list a {
+.item-list .entry:hover .flat-list a {
   color: #000;
 }
-#item-list .flat-list a {
+.item-list .flat-list a {
   color: #ddd;
   font-weight: bold;
   }
-  #item-list .flat-list a.comments {
+  .item-list .flat-list a.comments {
     color: #000;
   }
-  #item-list .flat-list.btn-group li.btn-default {
+  .item-list .flat-list.btn-group li.btn-default {
     margin-top: 1px;
     border: none;
     background: none;
   }
 
-#item-list .media {
+.item-list .media {
   padding: 20px 0 20px 5px; margin: 0;
   border-radius: 4px;
 }
-#item-list .media .house_color {
+.item-list .media .house_color {
   float: left;
   width: 5px; height: 45px;
   margin-right: 5px;
 }
-#item-list .media p {
+.item-list .media p {
   padding-bottom: 0;
   margin-bottom: 0;
 }
 
-#item-list .media ul, span.domain {
+.item-list .media ul, span.domain {
   float: left;
   padding: 0;
 }
@@ -305,40 +305,40 @@ span.domain {
   margin: 0 0 5px 5px;
 }
 
-#item-list .media .minor {
+.item-list .media .minor {
   color: rgb(221, 221, 221);
 }
 
-#item-list .media:hover .minor {
+.item-list .media:hover .minor {
   color: rgb(47, 164, 231);
 }
-#item-list .media-object {
+.item-list .media-object {
 }
-#item-list .media-heading {
+.item-list .media-heading {
   margin: 0 0 0 0;
   font-size: 24px;
 }
-#item-list .media .vote-buttons {
+.item-list .media .vote-buttons {
   width: 25px;
 }
 
-#item-list .media .vote-buttons i {
+.item-list .media .vote-buttons i {
   font-size: 24px;
   color: rgb(221, 221, 221);
 
 }
-#item-list ol, #item-list ul {
+.item-list ol, .item-list ul {
     list-style: none outside none;
 }
 
-#item-list .media:hover .vote-buttons i {
+.item-list .media:hover .vote-buttons i {
   color: rgb(47, 164, 231);
 }
 
 
 
 /*** Post ***/
-.post #item-list .media p {
+.post .item-list .media p {
   margin: 5px;
 }
 .media-list {
@@ -589,7 +589,7 @@ h4.collapsable:not(.collapsed) .glyphicon-collapse-down {
     border-color: #333;
   }
 
-#item-list .media.subreddit {
+.item-list .media.subreddit {
   position: relative;
   float: left; clear: none;
   width: 300px; height: 370px;
@@ -597,61 +597,61 @@ h4.collapsable:not(.collapsed) .glyphicon-collapse-down {
   border: 1px solid black;
   overflow: visible;
   }
-  #item-list .media.subreddit p.tagline {
+  .item-list .media.subreddit p.tagline {
     margin: 5px auto 0;
     text-align: center;
     font-size: 13px;
     color: #000000 !important;
   }
-  #item-list .media.subreddit p.tagline span {
+  .item-list .media.subreddit p.tagline span {
     font-weight: normal !important;
     color: #000000 !important;
   }
-  #item-list .media.subreddit .toggle .btn-subtle {
+  .item-list .media.subreddit .toggle .btn-subtle {
     position: absolute;
     left: -150px; top: -6px;
   }
 
-  #item-list .media.subreddit .midcol {
+  .item-list .media.subreddit .midcol {
     position: absolute;
     bottom: 0px; left: 10px;
     text-align: center;
     width: 290px; height: 30px;
     }
-    #item-list .media.subreddit .midcol .fancy-toggle-button {
+    .item-list .media.subreddit .midcol .fancy-toggle-button {
       position: relative;
       margin: 0 auto;
     }
-    #item-list .media.subreddit .midcol .notifications {
+    .item-list .media.subreddit .midcol .notifications {
       position: absolute;
       left: 97px; top: -21px;
       }
-      #item-list .media.subreddit .midcol .checkbox {
+      .item-list .media.subreddit .midcol .checkbox {
         text-align: left;
         margin-bottom: 2px;
       }
-  #item-list .media.subreddit .house_color {
+  .item-list .media.subreddit .house_color {
     display: block; position: absolute;
     width: 298px; height: 14px;
     left: 0px; top: 0px;
     border-radius: 3px 3px 0 0;
     border-bottom: 1px solid #000000;
   }
-  #item-list .media.subreddit p.titlerow a.title {
+  .item-list .media.subreddit p.titlerow a.title {
     height: 0px;
   }
-  #item-list .media.subreddit h3 {
+  .item-list .media.subreddit h3 {
     margin: 0; padding: 0;
     text-align: center;
     text-transform: capitalize;
   }
-  #item-list .media.subreddit a.title {
+  .item-list .media.subreddit a.title {
     display: block;
     height: 32px;
     margin: 0 10px; padding: 0;
     text-align: center;
   }
-  #item-list .media.subreddit .description {
+  .item-list .media.subreddit .description {
     display: block;
     height: 220px;
     margin: 0 10px;
@@ -659,12 +659,12 @@ h4.collapsable:not(.collapsed) .glyphicon-collapse-down {
     text-align: left;
     text-indent: 20px;
   }
-  #item-list .media.subreddit .description img {
+  .item-list .media.subreddit .description img {
     display: block; clear: both;
     height: 80px;
     margin: 10px auto;
   }
-  #item-list .media.subreddit .checkbox {
+  .item-list .media.subreddit .checkbox {
     margin-left: -5px;
   }
   p.nextprev {
@@ -730,13 +730,13 @@ h4.collapsable:not(.collapsed) .glyphicon-collapse-down {
   margin-left: 5px;
 }
 
-#item-list .media:hover .vote-buttons i {
+.item-list .media:hover .vote-buttons i {
   color: #888888;
   }
-  #item-list .arrow:focus {
+  .item-list .arrow:focus {
     outline: none !important;
   }
-  #item-list .media .vote-buttons i:focus {
+  .item-list .media .vote-buttons i:focus {
     outline: none;
   }
 
