@@ -138,9 +138,11 @@
 
   <% 
      child_content = ""
-     if thing.link_child and thing.link_child.load:
+     if thing.link_child:
        child_content = unsafe(thing.link_child.content())
+       child_text = unsafe(thing.link_child.text())
      expand = thing.link_child and thing.link_child.expand
+     print thing.link_child.__class__
   %>
 
     %if not expand and thing.last_comment_id:
@@ -151,6 +153,13 @@
           <p class="comment_text">
               <img src="${thing.last_comment_author.photo_url()}">${thing.last_comment_body} 
           </p>
+      </div>
+    %elif not expand:
+      <div class="last_comment">
+        <span class="comment_meta"></span>
+        <p class="comment_text">
+          ${child_text}
+        </p>
       </div>
     %endif
 

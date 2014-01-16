@@ -3526,6 +3526,9 @@ class SelfTextChild(LinkChild):
                      expunged=self.link.expunged)
         return u.render()
 
+    def text(self):
+      return self.link.selftext
+
 class UserText(CachedTemplate):
     def __init__(self,
                  item,
