@@ -515,7 +515,6 @@ class SortMenu(SimplePostMenu):
 class ProfileSortMenu(SortMenu):
     default   = 'new'
     options   = ('hot', 'new', 'top', 'controversial')
-    type = 'bootstrap_drop_down_button'
 
 class CommentSortMenu(SortMenu):
     """Sort menu for comments pages"""
@@ -558,7 +557,6 @@ class TimeMenu(SimplePostMenu):
     name      = 't'
     default   = 'all'
     options   = ('hour', 'day', 'week', 'month', 'year', 'all')
-    type = 'bootstrap_drop_down_button'
 
     def __init__(self, **kw):
         kw['title'] = _("links from")
