@@ -65,9 +65,13 @@
       <div class="usertext-edit"
            style="${"" if thing.creating else 'display: none'}">
         ##this div prevents IE7 from adding extra margin to the textarea.
-        <div>
-          <textarea rows="4" cols="1" class="form-control house-lightnet-rules"
+        <div class="comment-box">
+          <textarea rows="4" cols="1" class="form-control"
                     name="${thing.name}">${keep_space(thing.text)}</textarea>
+          <div class="house-lightnet-rules">
+            <h3>Rules for ${thing.house}</h3>
+            ${unsafe(safemarkdown(thing.rules))}
+          </div>
         </div>
 
         <div class="bottom-area">

@@ -3526,6 +3526,9 @@ class SelfTextChild(LinkChild):
                      expunged=self.link.expunged)
         return u.render()
 
+    def text(self):
+      return self.link.selftext
+
 class UserText(CachedTemplate):
     def __init__(self,
                  item,
@@ -3540,8 +3543,12 @@ class UserText(CachedTemplate):
                  cloneable = False,
                  extra_css = '',
                  name = "text",
-                 expunged=False):
+                 expunged=False,
+                 rules = None,
+                 house = None):
 
+        self.rules = rules
+        self.house = house
         css_class = "usertext"
         if cloneable:
             css_class += " cloneable"

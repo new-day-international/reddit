@@ -314,11 +314,11 @@ class FrontController(RedditController, OAuth2ResourceController):
             displayPane.append(UserText(item=article, creating=True,
                                         post_form='comment',
                                         display=display,
-                                        cloneable=True))
+                                        cloneable=True, 
+                                        rules=article.subreddit_slow.get_house_rules(),
+                                        house=article.subreddit_slow.get_house_description()))
 
-        if c.user_is_loggedin:
-            # Checkbox for whether the user wants to receive new comments in email
-            displayPane.append(CommentEmailCheck(article))
+
 
         if previous_visits:
             # Confusing to new users.

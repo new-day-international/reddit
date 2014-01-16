@@ -24,7 +24,7 @@
    from r2.lib.template_helpers import get_domain
    from r2.lib.template_helpers import s3_https_if_secure
    from r2.lib.pages.things import LinkButtons
-   from r2.lib.pages import WrappedUser
+   from r2.lib.pages import WrappedUser, CommentEmailCheck
    from r2.lib.template_helpers import static
    from r2.lib.strings import Score, strings
    from r2.lib.filters import safemarkdown
@@ -85,6 +85,7 @@
   </ul>
  </%def>
 
+
 <%def name="flair()">
   %if c.user.pref_show_link_flair and thing.flair_text:
     <span class="linkflairlabel" title="${thing.flair_text}">${thing.flair_text}</span>
@@ -137,8 +138,10 @@
 
   <% 
      child_content = ""
-     if thing.link_child and thing.link_child.load:
+     child_text = ""
+     if thing.link_child:
        child_content = unsafe(thing.link_child.content())
+       child_text = unsafe(thing.link_child.text())
      expand = thing.link_child and thing.link_child.expand
   %>
 
@@ -150,6 +153,13 @@
           <p class="comment_text">
               <img src="${thing.last_comment_author.photo_url()}">${thing.last_comment_body} 
           </p>
+      </div>
+    %elif not expand:
+      <div class="last_comment">
+        <span class="comment_meta"></span>
+        <p class="comment_text">
+          ${child_text}
+        </p>
       </div>
     %endif
 
@@ -184,6 +194,12 @@
   %endif
 
     ${self.link_at_domain()}
+
+
+    %if c.user_is_loggedin and expand:
+      ## Checkbox for whether the user wants to receive new comments in email
+      ${CommentEmailCheck(thing.lookups[0])}
+    %endif
 
 </%def>
 
