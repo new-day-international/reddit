@@ -3604,12 +3604,13 @@ class ApiController(RedditController, OAuth2ResourceController):
         names = []
         hnames = {}
         data  = []
-        result = Account._query(Account.c.name!='')
+        result = Account._query(Account.c.name!='' and Account.c._deleted==False and Account.c._spam==False)
         for row in result: 
-            names.append(row.name)
-            pic = row.name if row.profile_photo_uploaded else 'default_user'
-            data.append({'name':row.name, 'full':row.registration_fullname, 'pic':pic})
-            hnames[row.name] = {'name':row.name, 'full':row.registration_fullname, 'pic':pic}
+            if row.name != c.user.name:
+                names.append(row.name)
+                pic = row.name if row.profile_photo_uploaded else 'default_user'
+                data.append({'name':row.name, 'full':row.registration_fullname, 'pic':pic})
+                hnames[row.name] = {'name':row.name, 'full':row.registration_fullname, 'pic':pic}
             
         spacenames = []
         result = Subreddit._query(Subreddit.c.name!='')  
