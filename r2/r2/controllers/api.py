@@ -1736,7 +1736,12 @@ class ApiController(RedditController, OAuth2ResourceController):
                    domain = VCnameDomain("domain"),
                    public_description = VMarkdown("public_description", max_length = 500),
                    prev_public_description_id = VLength('prev_public_description_id', max_length = 36),
+                   sidebar_title = VLength("sidebar_title", max_length = 25),
+                   sidebar_title_2 = VLength("sidebar_title_2", max_length = 25),
+                   sidebar_title_3 = VLength("sidebar_title_3", max_length = 25),
                    description = VMarkdown("description", max_length = 5120),
+                   description_2 = VMarkdown("description_2", max_length = 5120),
+                   description_3 = VMarkdown("description_3", max_length = 5120),
                    space_is_house = VBoolean('space_is_house'),
                    use_rules_from_space = VHouse('use_rules_from_space'),
                    house_rules = VMarkdown("house_rules", max_length = 500),
@@ -1795,7 +1800,10 @@ class ApiController(RedditController, OAuth2ResourceController):
 
         redir = False
         kw = dict((k, v) for k, v in kw.iteritems()
-                  if k in ('name', 'title', 'domain', 'description',
+                  if k in ('name', 'title', 'domain',
+                           'sidebar_title', 'description',
+                           'sidebar_title_2', 'description_2',
+                           'sidebar_title_3', 'description_3',
                            'show_media', 'exclude_banned_modqueue',
                            'show_cname_sidebar', 'type',
                            'link_type', 'allow_user_uploads', 'submit_link_label', 

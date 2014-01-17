@@ -80,27 +80,43 @@
     ${error_field("CONFLICT", "public_description")}
   </%utils:line_field>
 
-  <%utils:line_field title="${_('sidebar')}" css_class="usertext"
-                     description="${_('shown in the sidebar of your space. 5120 characters max.')}">
-    %if thing.site and thing.site.description:
-     ${UserText(None, text=thing.site.description or "", editable=True, creating=True, name="description", have_form=False)}
-    %else:
-     ${UserText(None, text="", creating=True, name="description", have_form=False)}
-    %endif
-    <div id="description_conflict_box" style="display: none">
-        <div id="description_conflict_diff"></div>
-        ${UserText(None, text="", editable=True, creating=True, name="description_conflict_old", have_form=False)}
-    </div>
-    ${error_field("CONFLICT", "description")}
-  </%utils:line_field>
+<%
+    sidebar_title = thing.site.sidebar_title if thing.site and thing.site.sidebar_title else ""
+    sidebar_text = thing.site.description if thing.site and thing.site.description else ""
+    sidebar_title_2 = thing.site.sidebar_title_2 if thing.site and thing.site.sidebar_title_2 else ""
+    sidebar_text_2 = thing.site.description_2 if thing.site and thing.site.description_2 else ""
+    sidebar_title_3 = thing.site.sidebar_title_3 if thing.site and thing.site.sidebar_title_3 else ""
+    sidebar_text_3 = thing.site.description_3 if thing.site and thing.site.description_3 else ""
+%>
 
-  <%
-     if thing.site:
-        if thing.site.space_is_house:
-            display_rules = True
-        else:
-            display_rules = False
-  %>
+<%def name="sidebar_editarea(ordinal, sidebar_title, sidebar_text, sidebar_title_name, sidebar_text_name)">
+  <%utils:line_field title="${_(ordinal + ' sidebar box')}" css_class="usertext">
+    <div class="delete-field">
+      <ul class="list-unstyled">
+        <li>
+          <span class="gray">${_('title for ' + ordinal + ' sidebar box')}</span>
+          <input id="sidebar_title" type="text" name="${sidebar_title_name}" class="text form-control" value="${sidebar_title}"/>
+        </li>
+        <li>
+          <span class="gray">${_(ordinal + ' sidebar text (5120 characters max.)')}</span>
+          ${UserText(None, text=sidebar_text, editable=True, creating=True, name=sidebar_text_name, have_form=False)}
+        </li>
+      </ul>
+    </div>
+  </%utils:line_field>
+</%def>
+
+  ${sidebar_editarea("first", sidebar_title, sidebar_text, "sidebar_title", "description")}
+  ${sidebar_editarea("second", sidebar_title_2, sidebar_text_2, "sidebar_title_2", "description_2")}
+  ${sidebar_editarea("third", sidebar_title_3, sidebar_text_3, "sidebar_title_3", "description_3")}
+
+<%
+    if thing.site and thing.site.space_is_house:
+        display_rules = True
+    else:
+        display_rules = False
+%>
+
 
   <%utils:line_field title="${_('house rules')}" css_class="usertext"
                      description="${_('define the norms and expectations for your space')}">

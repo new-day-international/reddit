@@ -102,7 +102,6 @@ class Subreddit(Thing, Printable):
                      flair_self_assign_enabled = False,
                      link_flair_self_assign_enabled = False,
                      use_quotas = True,
-                     description = "",
                      public_description = "",
                      prev_description_id = "",
                      prev_public_description_id = "",
@@ -111,6 +110,12 @@ class Subreddit(Thing, Printable):
                      house_color = "#FFFFFF",
                      use_rules_from_space = "lightnet",
                      allow_comment_gilding=True,
+                     sidebar_title = "",
+                     sidebar_title_2 = "",
+                     sidebar_title_3 = "",
+                     description = "",
+                     description_2 = "",
+                     description_3 = "",
                      )
     _essentials = ('type', 'name', 'lang','use_rules_from_space')
     _data_int_props = Thing._data_int_props + ('mod_actions', 'reported',
