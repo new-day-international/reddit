@@ -1499,7 +1499,7 @@ class SubredditsPage(Reddit): # /spaces page
                 NavMenu(buttons, base_path = '/spaces', type="tabmenu")]
 
     def content(self):
-        return self.content_stack((self.searchbar, self.nav_menu, self.sr_infobar, self._content,))
+        return self.content_stack((self.interestbar, self.nav_menu, self._content,))
 
     def rightbox(self):
         ps = Reddit.rightbox(self)
