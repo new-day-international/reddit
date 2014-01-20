@@ -129,16 +129,22 @@
       <h4 class="collapsable" data-toggle="collapse" data-target="#multispaces">
         <i class="glyphicon glyphicon-collapse-down"></i>
         <i class="glyphicon glyphicon-collapse-up"></i> 
-      Multispaces
+        Multispaces
       </h4>
-      <%  
-          multispaces = [
-            ('subscribed', '/'),
-            ('all', '/space/all/'),
-            ('following', '/space/follow/'),
-            ('saved', '/saved'),
-            ('moderated', 'space/mod/') 
-          ]
+      <%
+          if c.user_is_loggedin:
+              multispaces = [
+                ('subscribed', '/'),
+                ('all', '/space/all/'),
+                ('following', '/space/follow/'),
+                ('saved', '/saved'),
+                ('moderated', 'space/mod/')
+              ]
+          else:
+              multispaces = [
+                ('popular spaces', '/'),
+                ('all', '/space/all/'),
+              ]
       %>
       <ul id="multispaces" class="collapse in space-list list-unstyled">
         %for space in multispaces:
@@ -151,15 +157,28 @@
         %endfor
       </ul>
 
-      <h4 class="collapsable" data-toggle="collapse" data-target="#subscribed-spaces"><i class="glyphicon glyphicon-collapse-down"></i><i class="glyphicon glyphicon-collapse-up"></i> Subscribed Spaces</h4>
+      <h4 class="collapsable" data-toggle="collapse" data-target="#subscribed-spaces">
+        <i class="glyphicon glyphicon-collapse-down"></i>
+        <i class="glyphicon glyphicon-collapse-up"></i>
+
+        %if c.user_is_loggedin:
+          Subscribed Spaces
+        %else:
+          Popular Spaces
+        %endif
+      </h4>
       <ul id="subscribed-spaces" class="collapse in space-list list-unstyled">
-        <li>
-          <a class="btn btn-action btn-sm" href="/spaces/mine/">
-            <i class="fa fa-cogs"></i> 
-            Manage your Spaces
-          </a>
+        %if c.user_is_loggedin:
+          <li>
+            <a class="btn btn-action btn-sm" href="/spaces/mine/">
+              <i class="fa fa-cogs"></i>
+              Manage your Spaces
+            </a>
           </li>
-        <%subreddits = sorted(Subreddit.user_subreddits(c.user, ids=False, stale=True), key = lambda sr: sr.name.lower())%>
+          <%subreddits = sorted(Subreddit.user_subreddits(c.user, ids=False, stale=True), key = lambda sr: sr.name.lower())%>
+        %else:
+          <%subreddits = sorted(Subreddit.default_subreddits(ids=False), key = lambda sr: sr.name.lower())%>
+        %endif
         %for sr in subreddits:
           <%  
               is_current_space = ""
