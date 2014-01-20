@@ -693,6 +693,24 @@ class Account(Thing):
         '''
         return setattr(self, 'received_trophy_%s' % uid, trophy_id)
 
+    @classmethod
+    def multi_spaces_for_current_user(cls):
+        if c.user_is_loggedin:
+            multispaces = [
+                ('subscribed', '/'),
+                ('all', '/space/all/'),
+                ('following', '/space/follow/'),
+                ('saved', '/saved'),
+                ('moderated', 'space/mod/')
+            ]
+        else:
+            multispaces = [
+                ('popular spaces', '/'),
+                ('all', '/space/all/'),
+            ]
+
+        return multispaces
+
 class FakeAccount(Account):
     _nodb = True
     pref_no_profanity = True

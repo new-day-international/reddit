@@ -27,7 +27,7 @@
    from r2.lib import tracking
    from pylons import request, url
    from r2.lib.strings import strings
-   from r2.models import make_feedurl, Sub, Subreddit
+   from r2.models import make_feedurl, Sub, Subreddit, Account
 %>
 <%namespace file="framebuster.html" import="framebuster"/>
 <%namespace file="less.html" import="less_js, less_stylesheet"/>
@@ -132,19 +132,7 @@
         Multispaces
       </h4>
       <%
-          if c.user_is_loggedin:
-              multispaces = [
-                ('subscribed', '/'),
-                ('all', '/space/all/'),
-                ('following', '/space/follow/'),
-                ('saved', '/saved'),
-                ('moderated', 'space/mod/')
-              ]
-          else:
-              multispaces = [
-                ('popular spaces', '/'),
-                ('all', '/space/all/'),
-              ]
+          multispaces = Account.multi_spaces_for_current_user()
       %>
       <ul id="multispaces" class="collapse in space-list list-unstyled">
         %for space in multispaces:
