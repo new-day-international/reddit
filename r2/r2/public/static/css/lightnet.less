@@ -859,16 +859,19 @@ h4.collapsable:not(.collapsed) .glyphicon-collapse-down {
   }
 }
 
+.main-list .bootstrap_drop_down_button form,
 .commentarea .bootstrap_drop_down_button form {
   display: inline;
 }
 
+.main-list .bootstrap_drop_down_button + .dropdown-menu,
 .commentarea .bootstrap_drop_down_button + .dropdown-menu {
   margin-top: -1px;
   border-top-right-radius: 0;
   border-top-left-radius: 0;
 }
 
+.main-list .bootstrap_drop_down_button + .dropdown-menu > li > form a,
 .commentarea .bootstrap_drop_down_button + .dropdown-menu > li > form a {
   display: block;
   padding: 3px 20px;
@@ -882,6 +885,15 @@ h4.collapsable:not(.collapsed) .glyphicon-collapse-down {
     text-decoration: none;
     color: #262626;
     background-color: #f5f5f5;
+  }
+}
+
+.menuarea {
+  clear: both;
+
+  .btn-group {
+    float: left;
+    margin-right: 15px;
   }
 }
 

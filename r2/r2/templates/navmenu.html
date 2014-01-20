@@ -204,10 +204,18 @@
         %if thing.prefix_icon:
           <span class="${thing.prefix_icon}"></span>
         %endif
+
         %if thing.title:
           ${thing.title}
         %endif
-      <strong>${thing.selected}</strong> <span class="caret"></span>
+      
+        %if thing.title == "sorted by" or thing.title == "links from":
+          <strong>
+            ${plain_link(thing.selected.title, thing.selected.path, _sr_path = thing.selected.sr_path, _class=_class)}
+          </strong> <span class="caret"></span>
+        %else:
+          <strong>${thing.selected}</strong> <span class="caret"></span>
+        %endif
       </button>
       <ul class="dropdown-menu" role="menu">
         %for i, option in enumerate(thing):
@@ -222,7 +230,12 @@
               li_classes.extend(option.li_css_class)
           %>
           <li ${classes(*li_classes)}>
-            ${option}
+            %if thing.use_post:
+               ${post_link(option.title, option.base_path, option.path,
+                           option.action_params, _sr_path=option.sr_path, _class=_class)}
+            %else:
+               ${plain_link(option.title, option.path, _sr_path = option.sr_path, _class=_class)}
+            %endif
           </li>
         %endfor
       </ul>
