@@ -338,7 +338,7 @@ def run_realtime_email_queue(limit=1, debug=False):
                 kind = Email.Kind.REALTIME_COMMENT
                 template = 'email_realtime_comment.html'
                 link = Link._byID(comment.link_id, data=True)  
-                subject = u'Re: %s' % link.title.decode('utf-8')
+                subject = 'Re: %s' % link.title
                 sr_id = comment.sr_id
                 
             elif fullname_type == 't6':
