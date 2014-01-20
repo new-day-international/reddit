@@ -3600,6 +3600,8 @@ class ApiController(RedditController, OAuth2ResourceController):
         if had_etag and had_etag == new_etag:
             # If they got this within the last hour, pretend it hasn't changed
             return abort(304, 'not modified')
+        elif not c.user_is_loggedin:
+            return abort(403, 'forbidden')    
 
         names = []
         hnames = {}

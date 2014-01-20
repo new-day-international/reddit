@@ -183,8 +183,10 @@
   %endif
   ${framebuster()}
   <p class="bottommenu debuginfo"><span class="icon">&pi;</span>&nbsp;<span class="content">Rendered by PID ${g.reddit_pid} on ${g.reddit_host} at ${c.start_time} running ${g.short_version}.</span></p>
+  %if c.user_is_loggedin:
   <link rel="stylesheet" type="text/css" href="/static/css/namepicker.css" />
   <script src="/static/js/lib/namepicker.js"></script>
+  %endif
 </%def>
 
 <%def name="sidebar(content=None)">
