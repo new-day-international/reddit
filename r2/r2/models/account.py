@@ -66,9 +66,9 @@ class Account(Thing):
                      pref_frame_commentspanel = False,
                      pref_newwindow = False,
                      pref_clickgadget = 5,
-                     pref_public_votes = False,
+                     pref_public_votes = True,
                      pref_hide_from_robots = False,
-                     pref_research = False,
+                     pref_research = True,
                      pref_hide_ups = False,
                      pref_hide_downs = False,
                      pref_min_link_score = -4,
@@ -122,6 +122,9 @@ class Account(Thing):
                      message_count=0,
                      moderator_message_count=0,
                      notification_count=0,
+                     leftbar_expanded = True,
+                     first_name="No First Name",
+                     last_name="No Last Name"
                      )
 
     def __eq__(self, other):
@@ -269,8 +272,7 @@ class Account(Thing):
         if prev_visit and current_time - prev_visit < timedelta(days=1):
             return
 
-        g.log.debug ("Updating last visit for %s from %s to %s" %
-                    (self.name, prev_visit, current_time))
+        g.log.debug("Updating last visit for %s from %s to %s", self.name, prev_visit, current_time)
 
         LastModified.touch(self._fullname, "Visit")
 
@@ -303,6 +305,15 @@ class Account(Thing):
         signature = hmac.new(g.SECRET, ','.join([timestamp] + secrets), hashlib.sha1).hexdigest()
 
         return ",".join((timestamp, signature))
+
+    def photo_url(self):
+        # Get the name for the item's photo column
+        if self.profile_photo_uploaded:
+            photo_name = self.name
+        else:
+            photo_name = "default_user"
+
+        return "http://%s/u/%s/profile_photo.jpg" % (g.s3_user_files_host, photo_name,)
 
     def needs_captcha(self):
         return not g.disable_captcha and self.link_karma < 1
@@ -724,6 +735,24 @@ class Account(Thing):
 
         '''
         return setattr(self, 'received_trophy_%s' % uid, trophy_id)
+
+    @classmethod
+    def multi_spaces_for_current_user(cls):
+        if c.user_is_loggedin:
+            multispaces = [
+                ('subscribed', '/'),
+                ('all', '/space/all/'),
+                ('following', '/space/follow/'),
+                ('saved', '/saved'),
+                ('moderated', 'space/mod/')
+            ]
+        else:
+            multispaces = [
+                ('popular spaces', '/'),
+                ('all', '/space/all/'),
+            ]
+
+        return multispaces
 
 class FakeAccount(Account):
     _nodb = True

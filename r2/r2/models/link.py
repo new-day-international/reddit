@@ -29,7 +29,7 @@ from subreddit import Subreddit, DomainSR
 from printable import Printable
 from r2.config import cache, extensions
 from r2.lib.memoize import memoize
-from r2.lib.filters import _force_utf8, _force_unicode
+from r2.lib.filters import _force_utf8, _force_unicode, safemarkdown
 from r2.lib import hooks, utils
 from r2.lib.log import log_text
 from mako.filters import url_escape
@@ -78,6 +78,7 @@ class Link(Thing, Printable):
                      skip_commentstree_q="",
                      ignore_reports=False,
                      comment_author_id=None,
+                     last_comment_id=None,
                      )
     _essentials = ('sr_id', 'author_id')
     _nsfw = re.compile(r"\bnsfw\b", re.I)
@@ -381,8 +382,12 @@ class Link(Thing, Printable):
         else:
             saved = hidden = clicked = {}
 
+        # get the last comments 
+        last_comment_ids = set(l.last_comment_id for l in wrapped if l.last_comment_id)
+        comments = Comment._byID(last_comment_ids, data=True,
+                                return_dict=True, stale=True)
         # get the comment authors
-        author_ids = set(l.comment_author_id for l in wrapped if l.comment_author_id)
+        author_ids = set(c.author_id for c in comments.values())
         authors = Account._byID(author_ids, data=True,
                                 return_dict=True, stale=True)
 
@@ -570,47 +575,17 @@ class Link(Thing, Printable):
             item.editted = getattr(item, "editted", False)
 
             # Get the comment author
-            if item.comment_author_id and not is_comments:
-                item.comment_author = authors[item.comment_author_id]
-            else:
-                item.comment_author = item.author
+            if item.last_comment_id:
+                last_comment = comments[item.last_comment_id]
+                item.last_comment_body = last_comment.body
+                item.last_comment_author = authors[last_comment.author_id]
 
-            # If we're on the comments page, then the link should have the photo
-            # for the actual post author, otherwise use the last comment author.
-            if is_comments:
-                photo_author = item.author
-            else:
-                photo_author = item.comment_author
-
-            # Get the name for the item's photo column
-            if photo_author.profile_photo_uploaded:
-                item.photo_name = photo_author.name
-            else:
-                item.photo_name = "default_user"
+            item.photo_url = item.author.photo_url()
 
             # generate the appropriate tagline text
-            taglinetext = ''
-            if item.score_fmt == Score.points:
-                taglinetext = ("<span>" +  _("%(score)s added %(when)s ago") + "</span>")
-                if item.different_sr:
-                    taglinetext += "<span>" + _("by %(author)s to %(reddit)s") + "</span>"
-                else:
-                    taglinetext += "<span>" + _("by %(author)s") + "</span>"
+            taglinetext = ("<span>" +  _("%(author)s posted %(when)s ago") + "</span>")
 
-            else:
-                # note the last comment author and item creator as appropriate
-                if item.comment_author_id:
-                    taglinetext = _("last comment %(whenactive)s ago by %(commentauthor)s, "
-                                    "started %(when)s ago by %(author)s")
-                else:
-                    taglinetext = _("added %(when)s ago by %(author)s")
-
-                # note the reddit if appropriate
-                if item.different_sr:
-                    if item.comment_author_id:
-                        taglinetext += _(" in %(reddit)s")
-                    else:
-                        taglinetext += _(" to %(reddit)s")
+            commentlinetext = ("<span>" +  _("%(author)s posted %(when)s ago") + "</span>")
 
             item.taglinetext = taglinetext
 
@@ -771,11 +746,6 @@ class Comment(Thing, Printable):
 
         link._incr('num_comments', 1)
 
-        # Update the link's active date and comment_author
-        link.comment_author_id = author._id
-        link._active = c._date
-        link._commit()
-
         to = None
         name = 'inbox'
         if parent:
@@ -785,6 +755,12 @@ class Comment(Thing, Printable):
             name = 'selfreply'
 
         c._commit()
+
+        # Update the link's active date and comment_author
+        link.comment_author_id = author._id
+        link.last_comment_id = c._id
+        link._active = c._date
+        link._commit()
 
         changed(link, True)  # link's number of comments changed
 
@@ -1065,7 +1041,7 @@ class Comment(Thing, Printable):
 
             #will get updated in builder
             item.num_children = 0
-            item.score_fmt = Score.points
+            item.score_fmt = Score.number_only
             item.permalink = item.make_permalink(item.link, item.subreddit)
 
             item.is_author = (user == item.author)

@@ -20,26 +20,18 @@
 ## reddit Inc. All Rights Reserved.
 ###############################################################################
 
-<div class="sr-interest-bar">
-  <div class="bubble">
-    <%
-        if thing.has_subscribed:
-            msg = _("ready for something new? %s subscribe %s to some new spaces.")
-        else:
-            msg = _("it looks like you haven't %s subscribed %s to any spaces yet. want some ideas?")
-
-        pre, sub, post = msg.split("%s")
-    %>
-    <p class="caption">${pre}&#32;<span class="subscribe">${sub}</span>&#32;${post}</p>
-    <p class="error-caption"></p>
-    <div class="query-box"><input class="query" placeholder="${_('what are you interested in?')}"><div class="throbber"></div></div>
-    <ul class="results">
-      <li>${_('try these:')}</li>
-      <li>
-        <a href="/space/random" class="random" target="_blank">
-          <span class="name">${_("serendipity")}</span>
-        </a>
-      </li>
-    </ul>
+<div class="sr-interest-bar well row">
+  <%
+      if thing.has_subscribed:
+          msg = _("Enter 1 to 3 words that describe your interests")
+      else:
+          msg = _("it looks like you haven't %s subscribed %s to any spaces yet. want some ideas?")
+  %>
+  <p class="error-caption"></p>
+  <div class="query-box col-md-6 col-md-offset-3">
+    <h4 class="caption">${msg}</h4>
+    <input class="query form-control" placeholder="${_('Search Spaces')}">
+    <div class="throbber"></div>
   </div>
+  <br class="clearfix" />
 </div>

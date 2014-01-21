@@ -30,7 +30,7 @@
 <%namespace file="utils.html" import="error_field, md"/>
 
 <%def name="action_button(name, btn_type, onclick, display)">
-  <button type="${btn_type}" onclick="${onclick}" class="${name}"
+  <button type="${btn_type}" onclick="${onclick}" class="btn ${name}"
           ${"style='display:none'" if not display else ""}>
     ${name}
   </button>
@@ -65,17 +65,21 @@
       <div class="usertext-edit"
            style="${"" if thing.creating else 'display: none'}">
         ##this div prevents IE7 from adding extra margin to the textarea.
-        <div>
-          <textarea rows="1" cols="1"
+        <div class="comment-box">
+          <textarea rows="4" cols="1" class="form-control"
                     name="${thing.name}">${keep_space(thing.text)}</textarea>
+          <div class="house-lightnet-rules">
+            <h3>Rules for ${thing.house}</h3>
+            ${unsafe(safemarkdown(thing.rules))}
+          </div>
         </div>
 
         <div class="bottom-area">
-          ${toggle_button("help-toggle", _("formatting help"), _("hide help"),
+          ${toggle_button("help-toggle btn pull-right", _("formatting help"), _("hide help"),
                           "helpon", "helpoff",
                            style = "" if thing.creating else "display: none")}
 
-          <a href="/wiki/etiquette" class="reddiquette" target="_blank" tabindex="100">${_('lightnet etiquette')}</a>
+          <a href="/wiki/etiquette" class="reddiquette btn pull-right" target="_blank" tabindex="100">${_('lightnet etiquette')}</a>
 
           ${error_field("TOO_LONG", thing.name, "span")}
           ${error_field("RATELIMIT", "ratelimit", "span")}

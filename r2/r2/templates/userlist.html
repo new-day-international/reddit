@@ -27,24 +27,25 @@
   <% from r2.models import ModeratorPermissionSet %>
   <% from r2.lib.pages import ModeratorPermissions %>
   <form action="/post/${dest}"
-        method="post" class="pretty-form medium-text"
+        method="post" class="pretty-form medium-text form-inline"
         onsubmit="return post_form(this, '${dest}')"
-        id="${add_type}">
-    <h1>${title}</h1>
+        id="${add_type}" role="form">
 
     <input type="hidden" name="action" value="add">
     <input type="hidden" name="container" value="${container_name}">
     <input type="hidden" name="type" value="${add_type}">
-    <input type="text" name="name" id="name" class="namepicker">
-    %if add_type == "moderator_invite":
-      ${ModeratorPermissions(None, 'moderator',
-                             ModeratorPermissionSet(all=True),
-                             editable=True, embedded=True)}
-      &#32;
-      <span class="permissions-edit">
-        (<a href="javascript:void(0)">${_('change')}</a>)
-      </span>
-    %endif
+    <div class="form-group">
+      <input type="text" name="name" id="name" class="namepicker" placeholder="follow someone new">
+      %if add_type == "moderator_invite":
+        ${ModeratorPermissions(None, 'moderator',
+                               ModeratorPermissionSet(all=True),
+                               editable=True, embedded=True)}
+        &#32;
+        <span class="permissions-edit">
+          (<a href="javascript:void(0)">${_('change')}</a>)
+        </span>
+      %endif
+    </div>
     <button class="btn" type="submit">${verb or _("add")}</button>
     <span class="status"></span>
     ${error_field("USER_DOESNT_EXIST", "name")}
@@ -56,33 +57,37 @@
 
 <%def name="userlist(title, row_type, rows, headers=None)">
   <div class="${row_type}-table" style="${'display:none' if not rows else ''}">
-    <h1>
+    <h3>
       ${title}
-    </h1>
+    </h3>
 
-    <table>
+    <table class="table table-striped">
       %if headers:
-        <tr>
-        %for header in headers:
-           <th>${header}</th>
-        %endfor
-        </tr>
+        <thead>
+          <tr>
+          %for header in headers:
+             <th>${header}</th>
+          %endfor
+          </tr>
+        </thead>
       %endif
-      %if rows:
-        %for item in rows:
-          ${item}
-        %endfor
-      %else:
-        <tr><td></td></tr>
-      %endif
+      <tbody>
+        %if rows:
+          %for item in rows:
+            ${item}
+          %endfor
+        %else:
+          <tr><td></td></tr>
+        %endif
+      </tbody>
     </table>
   </div>
 </%def>
 
 <div class="${thing._class} usertable">
+  ${userlist(thing.table_title, thing.type, thing.user_rows, thing.table_headers)}
+  
   %if thing.addable:
     ${add_form(thing.form_title, thing.destination, thing.type, thing.container_name)}
   %endif
-
-  ${userlist(thing.table_title, thing.type, thing.user_rows, thing.table_headers)}
 </div>

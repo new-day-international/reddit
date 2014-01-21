@@ -29,11 +29,11 @@
    _id = ("_%s" % thing.parent_name) if hasattr(thing, 'parent_name') else ''
    cls = thing.lookups[0].__class__.__name__.lower()
  %>
-<div id="siteTable${_id}" class="sitetable ${cls}">
+<ul id="siteTable${_id}" class="sitetable${_id} ${cls} media-list item-list">
   %for a in thing.things:
       ${a}
   %endfor
-</div>
+</ul>
 
 %if thing.nextprev and (thing.prev or thing.next):
   <p class="nextprev"> ${_("view more:")}&#32;

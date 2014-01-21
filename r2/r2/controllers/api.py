@@ -37,7 +37,7 @@ from r2.lib import amqp
 from r2.lib.utils import get_title, sanitize_url, timeuntil, set_last_modified, http_date_str
 from r2.lib.utils import query_string, timefromnow, randstr
 from r2.lib.utils import timeago, tup, filter_links, filename_to_link_title
-from r2.lib.pages import (EnemyList, FriendList, ContributorList, ModList,
+from r2.lib.pages import (EnemyList, SmallerFriendList, ContributorList, ModList,
                           BannedList, WikiBannedList, WikiMayContributeList,
                           BoringPage, FormPage, CssError, UploadedImage,
                           ClickGadget, UrlParser, WrappedUser)
@@ -839,7 +839,7 @@ class ApiController(RedditController, OAuth2ResourceController):
             c.user.friend_rels_cache(_update=True)
             c.user.add_friend_note(friend, note or '')
 
-        cls = dict(friend=FriendList,
+        cls = dict(friend=SmallerFriendList,
                    moderator=ModList,
                    moderator_invite=ModList,
                    contributor=ContributorList,
@@ -894,6 +894,14 @@ class ApiController(RedditController, OAuth2ResourceController):
         elif post_or_comment == 'comments':
             r.email_comments = want
         r._commit()     
+
+    @noresponse(VUser(),
+                VModhash(),
+                expanded = VBoolean('expanded'))
+    def POST_leftbar_expanded(self, expanded):
+        # remember if the left bar is expanded or not
+        c.user.leftbar_expanded = expanded
+        c.user._commit()
         
     @noresponse(VUser(),
                 VModhash(),
@@ -1865,7 +1873,12 @@ class ApiController(RedditController, OAuth2ResourceController):
                    domain = VCnameDomain("domain"),
                    public_description = VMarkdown("public_description", max_length = 500),
                    prev_public_description_id = VLength('prev_public_description_id', max_length = 36),
+                   sidebar_title = VLength("sidebar_title", max_length = 25),
+                   sidebar_title_2 = VLength("sidebar_title_2", max_length = 25),
+                   sidebar_title_3 = VLength("sidebar_title_3", max_length = 25),
                    description = VMarkdown("description", max_length = 5120),
+                   description_2 = VMarkdown("description_2", max_length = 5120),
+                   description_3 = VMarkdown("description_3", max_length = 5120),
                    space_is_house = VBoolean('space_is_house'),
                    use_rules_from_space = VHouse('use_rules_from_space'),
                    house_rules = VMarkdown("house_rules", max_length = 500),
@@ -1924,7 +1937,10 @@ class ApiController(RedditController, OAuth2ResourceController):
 
         redir = False
         kw = dict((k, v) for k, v in kw.iteritems()
-                  if k in ('name', 'title', 'domain', 'description',
+                  if k in ('name', 'title', 'domain',
+                           'sidebar_title', 'description',
+                           'sidebar_title_2', 'description_2',
+                           'sidebar_title_3', 'description_3',
                            'show_media', 'exclude_banned_modqueue',
                            'show_cname_sidebar', 'type',
                            'link_type', 'allow_user_uploads', 'submit_link_label', 

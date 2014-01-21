@@ -93,7 +93,7 @@ ${self.RenderPrintable()}
    else:
       selflink = ""
  %>
-<div class="${self.thing_css_class(thing)} ${self.thing_css_rowclass(thing)} ${unsafe(cls)} ${selflink}"
+<li class="media ${self.thing_css_class(thing)} ${self.thing_css_rowclass(thing)} ${unsafe(cls)} ${selflink}"
     ${thing.display} onclick="click_thing(this)"
     ${unsafe(self.thing_data_attributes(thing))}>
   <p class="parent">
@@ -109,13 +109,12 @@ ${self.RenderPrintable()}
          like_cls = "dislikes"
    %>
   ${self.midcol(cls = like_cls)}
-  <div class="entry ${like_cls}">
+  <div class="entry media-body ${like_cls}">
     ${self.entry()}
   </div>
   ${self.Child()}
-  <div class="clearleft"><!--IE6sux--></div>
-</div>
-<div class="clearleft"><!--IE6sux--></div>
+</li>
+
 </%def>
 
 <%def name="buttons(ban=True)">
@@ -148,9 +147,9 @@ ${self.RenderPrintable()}
 %>
   <div class="arrow ${_class} login-required"
        %if getattr(thing, "votable", True):
-         onclick="$(this).vote('${thing.votehash}', null, event)"
+         onclick="$(this).vote('${thing.votehash}', null, event);"
        %else:
-         onclick="$(this).show_unvotable_message()"
+         onclick="$(this).show_unvotable_message();"
        %endif
        role="button"
        % if dir > 0:
@@ -160,6 +159,11 @@ ${self.RenderPrintable()}
        % endif
        tabindex="0"
        >
+       % if dir > 0:
+          <i class="fa fa-sort-up"></i>
+       % else:
+          <i class="fa fa-sort-down"></i>
+       % endif
   </div>
 </%def>
 
@@ -177,7 +181,7 @@ ${self.RenderPrintable()}
 
 
 <%def name="midcol(display=True, cls = '')">
-  <div class="midcol ${cls}" 
+  <div class="midcol ${cls} unvoted vote-buttons text-center" 
        ${not display and "style='display:none'" or ''}>
     ${self.arrow(thing, 1, thing.likes)}
     ${self.arrow(thing, 0, thing.likes == False)}

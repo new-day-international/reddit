@@ -28,14 +28,13 @@
      </a>
   %endif
   <div class="title">
-    <h1>${thing.title.upper()}</h1>
+    <h2>${thing.title}</h2>
     %if thing.collapsible:
       <span class="collapse-button">-</span>
     %endif
   </div>
-  <ul class="content">
     %for c in thing.content:
-      <li>${c}</li>
+      ${c}
     %endfor
 
     %if thing.more_href:

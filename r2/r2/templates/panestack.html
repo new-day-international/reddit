@@ -28,7 +28,6 @@
 
   %if thing.title:
     <div class="panestack-title">
-      <span class="title">${thing.title}</span>
       %for link_text, link, link_class in thing.title_buttons:
          <a href="${link}" class="title-button ${link_class}">${link_text}</a>
       %endfor

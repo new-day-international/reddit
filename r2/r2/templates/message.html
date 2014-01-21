@@ -75,27 +75,26 @@ ${parent.thing_css_class(what)} ${"new" if thing.new else ""} ${"was-comment" if
 </%def>
 
 <%def name="subject()">
-<p class="subject">
-  %if getattr(thing, "is_parent", False):
-     %if thing.sr_id:
-       <span class="correspondent reddit rounded">
-         <a href="${thing.subreddit.path}message/moderator/inbox">
-           /space/${thing.subreddit.name}
-         </a>
-       </span>
-     %else:
-       <span class="correspondent rounded">
-         <%
-            corr = thing.author if thing.recipient else thing.to
-          %>
-         ${WrappedUser(corr)}
-       </span>
-     %endif
-  %endif
-
-  ${thing.subject}
+  <p class="subject">
+    %if getattr(thing, "is_parent", False):
+       %if thing.sr_id:
+         <span class="correspondent reddit rounded">
+           <a href="${thing.subreddit.path}message/moderator/inbox">
+             /space/${thing.subreddit.name}
+           </a>
+         </span>
+       %else:
+         <span class="correspondent rounded btn pull-left">
+           <%
+              corr = thing.author if thing.recipient else thing.to
+            %>
+           ${WrappedUser(corr)}
+         </span>
+       %endif
+    %endif
+    <span class="label label-default">${thing.subject}</span>
   %if thing.was_comment:
-    <a href="${thing.link_permalink}" class="title">${thing.link_title}</a>
+    <h4><a href="${thing.link_permalink}" class="title">${thing.link_title}</a></h4>
   %elif getattr(thing, "is_parent", False):
     <br/>
       <a class="expand-btn" href="#" onclick="return show_all_messages(this)">

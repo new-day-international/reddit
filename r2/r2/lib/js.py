@@ -361,6 +361,8 @@ module["reddit-init"] = Module("reddit-init.js",
     "jquery.reddit.js",
     "reddit.js",
     "spotlight.js",
+    "scripts.js",
+    "../bower_components/bootstrap/dist/js/bootstrap.js",
 )
 
 module["reddit"] = LocalizedModule("reddit.js",
@@ -440,7 +442,7 @@ module["highlight"] = Module("highlight.js",
 )
 
 module["less"] = Module('less.js',
-    'lib/less-1.3.0.min.js',
+    'lib/less-1.5.1.min.js',
     should_compile=False,
 )
 

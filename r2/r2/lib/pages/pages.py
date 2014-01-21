@@ -57,7 +57,7 @@ from r2.lib.filters import (
 )
 from r2.lib.menus import NavButton, NamedButton, NavMenu, PageNameNav, JsButton
 from r2.lib.menus import SubredditButton, SubredditMenu, ModeratorMailButton
-from r2.lib.menus import OffsiteButton, menu, JsNavMenu
+from r2.lib.menus import OffsiteButton, menu, JsNavMenu, IconButton, UnorderedList
 from r2.lib.strings import plurals, rand_strings, strings, Score
 from r2.lib.utils import title_to_url, query_string, UrlParser, vote_hash
 from r2.lib.utils import url_links_builder, make_offset_date, median, to36
@@ -160,6 +160,9 @@ class Reddit(Templated):
         self.show_wiki_actions = show_wiki_actions
         self.loginbox       = True
         self.show_sidebar   = show_sidebar
+        # Hack! Not sure, can't seem to set show_sidebar in class SubredditsPage
+        if "SubredditsPage" in self.render_class.__name__:
+            self.show_sidebar = False
         self.space_compress = space_compress and not g.template_debug
         # instantiate a footer
         self.footer         = RedditFooter() if footer else None
@@ -224,7 +227,7 @@ class Reddit(Templated):
                                comment=None,
                                clone_template=True,
                               )
-            self._content = PaneStack([ShareLink(), NotifyLink(), content, gold])
+            self._content = PaneStack([ShareLink(), NotifyLink(), content])
         else:
             self._content = content
 
@@ -324,11 +327,8 @@ class Reddit(Templated):
 
         ps = PaneStack(css_class='spacer')
 
-        if self.searchbox:
-            ps.append(SearchForm())
-            
-        if (not isinstance(c.site, FakeSubreddit)):    
-            ps.append(SpaceNotificationForm());    
+        if not isinstance(c.site, FakeSubreddit):
+            ps.append(SpaceNotificationForm())
 
         if not c.user_is_loggedin and self.loginbox and not g.read_only_mode:
             ps.append(LoginFormWide())
@@ -337,6 +337,10 @@ class Reddit(Templated):
             ps.append(SponsorshipBox())
 
         user_banned = c.user_is_loggedin and c.site.is_banned(c.user)
+
+        if c.site == Friends:
+            ps.append(FriendsInfoBar(c.site, c.user))
+            ps.append(SmallerFriendList())
 
         if (self.submit_box
                 and (c.user_is_loggedin or not g.read_only_mode)
@@ -364,13 +368,6 @@ class Reddit(Templated):
             else:
                 fake_sub = isinstance(c.site, FakeSubreddit)
 
-                # Add Edit Follow List
-                if c.site == Friends:
-                    ps.append(SideBox(title=strings.manage_follow_label,
-                                      css_class="submit manage-follow",
-                                      link="/prefs/follow",
-                                      sr_path=None,
-                                      show_cover=True))
                 # Add a button for managing subscriptions
                 if fake_sub and c.site.name.strip() == g.default_sr:
                     ps.append(SideBox(title=strings.manage_subscriptions_label,
@@ -378,41 +375,6 @@ class Reddit(Templated):
                                       link="/spaces",
                                       sr_path=None,
                                       show_cover=True))
-                if c.site != Friends: 
-                    # Add button for submitting links
-                    if c.site.link_type != 'self':
-                        ps.append(SideBox(title=c.site.submit_link_label or
-                                                strings.submit_link_label,
-                                          css_class="submit submit-link",
-                                          link="/submit",
-                                          sr_path=not fake_sub,
-                                          show_cover=True))
-
-                    # Add button for submitting text items
-                    if c.site.link_type != 'link':
-                        ps.append(SideBox(title=c.site.submit_text_label or
-                                                strings.submit_text_label,
-                                          css_class="submit submit-text",
-                                          link="/submit?selftext=true",
-                                          sr_path=not fake_sub,
-                                          show_cover=True))
-                    # Add button for submitting files
-                    if c.site.allow_user_uploads:
-                        ps.append(SideBox(title=c.site.submit_file_label or
-                                                strings.submit_file_label,
-                                          css_class="submit submit-file",
-                                          link="/submit/file",
-                                          sr_path=not fake_sub,
-                                          show_cover=True))
-
-                    if self.create_reddit_box:
-                        delta = datetime.datetime.now(g.tz) - c.user._date
-                        if delta.days >= g.min_membership_create_community:
-                            ps.append(SideBox(title=_('Create your own space'),
-                                              link='/spaces/create',
-                                              css_class='submit create-space',
-                                              show_cover = True, nocname=True))
-
         no_ads_yet = True
         show_adbox = (c.user.pref_show_adbox or not c.user.gold) and not g.disable_ads
         if isinstance(c.site, (MultiReddit, ModSR)) and c.user_is_loggedin:
@@ -430,9 +392,6 @@ class Reddit(Templated):
 
         if isinstance(c.site, AllSR):
             ps.append(AllInfoBar(c.site, c.user))
-
-        if c.site == Friends:
-            ps.append(FriendsInfoBar(c.site, c.user))
 
         # don't show the subreddit info bar on cnames unless the option is set
         if not isinstance(c.site, FakeSubreddit) and (not c.cname or c.site.show_cname_sidebar):
@@ -468,23 +427,19 @@ class Reddit(Templated):
                     label = _('message the moderators')
                 helplink = ("/message/compose?to=%%2Fspace%%2F%s" % c.site.name,
                             label)
-                ps.append(SideContentBox(_('moderators'), moderators,
+                ps.append(SideContentBox(_('moderators'), [UnorderedList(moderators)],
                                          helplink = helplink, 
                                          more_href = mod_href,
                                          more_text = more_text))
 
-        if no_ads_yet and show_adbox:
-            ps.append(Ads())
-            if g.live_config["goldvertisement_blurbs"]:
-                ps.append(Goldvertisement())
+        ##if no_ads_yet and show_adbox:
+        ##    ps.append(Ads())
+        ##    if g.live_config["goldvertisement_blurbs"]:
+        ##        ps.append(Goldvertisement())
 
-        if c.user.pref_clickgadget and c.recent_clicks:
-            ps.append(SideContentBox(_("Recently viewed links"),
-                                     [ClickGadget(c.recent_clicks)]))
-
-        if c.user_is_loggedin:
-            activity_link = AccountActivityBox()
-            ps.append(activity_link)
+        ##if c.user.pref_clickgadget and c.recent_clicks:
+        ##    ps.append(SideContentBox(_("Recently viewed links"),
+        ##                             [ClickGadget(c.recent_clicks)]))
 
         return ps
 
@@ -522,19 +477,53 @@ class Reddit(Templated):
                                  css_class = "pref-lang")]
         return NavMenu(buttons, base_path = "/", type = "flatlist")
 
+    def sort_buttons(self):
+        if c.site == Friends:
+            return [
+                NamedButton('new', dest='', aliases=['/hot']),
+            ]
+        else:
+            return [
+                NamedButton('active', dest='', aliases=['/active']),
+                NamedButton('new'),
+                NamedButton('hot'),
+                NamedButton('top'),
+            ]
+
+    def new_item_buttons(self):
+        ret = []
+        # Add button for submitting links
+        if c.site.link_type != 'self':
+            ret.append(IconButton(icon_class="fa fa-link", title=_("link"), dest="submit"))                        
+
+        # Add button for submitting text items
+        if c.site.link_type != 'link':
+            ret.append(IconButton(icon_class="fa fa-file-text-o", title=_("post"), dest="submit?selftext=true"))
+        # Add button for submitting files
+        if c.site.allow_user_uploads:
+            ret.append(IconButton(icon_class="fa fa-paperclip", title=_("file"), dest="submit/file"))                        
+        return ret
+
+    def new_button(self):
+        return NavMenu(self.new_item_buttons(), title="Add New", prefix_icon="glyphicon glyphicon-plus", css_class="btn-success", li_css_class="pull-right", type="bootstrap_drop_down_button")
+
+    def action_bar(self):
+        tabs = []
+        tabs.append(NavMenu(self.sort_buttons(), title="items", type="bootstrap_drop_down_tab", li_css_class="dropdown"))
+        tabs.append(NamedButton('comments'))
+        if c.site.__class__ is Subreddit:
+            tabs.append(NamedButton('files'))
+        tabs.append(NamedButton('wiki'))
+        tabs.append(self.new_button())
+        return NavMenu(tabs, type="bootstrap_tabs")
+
     def build_toolbars(self):
         """Sets the layout of the navigation topbar on a Reddit.  The result
         is a list of menus which will be rendered in order and
         displayed at the top of the Reddit."""
-        if c.site == Friends:
-            main_buttons = [NamedButton('new', dest='', aliases=['/hot']),
-                            NamedButton('comments')]
-        else:
-            main_buttons = [NamedButton('active', dest='', aliases=['/active']),
-                            NamedButton('new'),
-                            NamedButton('hot'),
-                            NamedButton('top'),
-                            ]
+        main_buttons = self.sort_buttons()[:]
+        
+        if c.site != Friends:
             # files only available if in a space and uploads are turned on                
             if c.site.__class__ is Subreddit and c.site.allow_user_uploads:
                 main_buttons.append(NamedButton('files'))
@@ -571,21 +560,26 @@ class Reddit(Templated):
                 promote_buttons.append(NavButton(menu.promote, 'promoted', False))
                 toolbar.append(NavMenu(promote_buttons, type='tabmenu'))
 
+        toolbar.insert(0, self.page_name_nav())
+
+        return toolbar
+
+    def __repr__(self):
+        return "<Reddit>"
+
+    def page_name_nav(self):
         # Add the page title item in the first position
         if isinstance(c.site, DefaultSR):
             if c.user_is_loggedin:
                 front_page_title = _("my subscribed spaces")
             else:
                 front_page_title = _("popular spaces")
-            toolbar.insert(0, PageNameNav('nomenu', title=front_page_title))
+            ret = PageNameNav('nomenu', title=front_page_title)
         else:
             if not c.cname:
-                toolbar.insert(0, PageNameNav('subreddit'))
+                ret = PageNameNav('subreddit')
+        return ret
 
-        return toolbar
-
-    def __repr__(self):
-        return "<Reddit>"
 
     @staticmethod
     def content_stack(panes, css_class = None):
@@ -757,10 +751,19 @@ class SideBox(CachedTemplate):
                            show_cover = show_cover, nocname=nocname,
                            disabled=disabled, show_icon=show_icon)
 
+class ButtonGroup(Templated):
+    """
+    Bootstrap button group
+    """
+    def __init__(self, css_class='', buttons=[]):
+        self.buttons = list(buttons)
+        Templated.__init__(self, css_class = css_class)
+
+    def append(self, button):
+        self.buttons.append(button)
 
 class PrefsPage(Reddit):
     """container for pages accessible via /prefs.  No extension handling."""
-
     extension_handling = False
     extra_stylesheets = ["bootstrap.less",
                 "bootstraptheme.less",
@@ -771,6 +774,9 @@ class PrefsPage(Reddit):
                         title = "%s (%s)" %(_("preferences"),
                                             c.site.name.strip(' ')),
                         *a, **kw)
+
+    def action_bar(self):
+        pass
 
     def build_toolbars(self):
         buttons = [NavButton(menu.options, ''),
@@ -867,6 +873,8 @@ class MessagePage(Reddit):
                                    self.infobar,
                                    self.nav_menu,
                                    self._content))
+    def action_bar(self):
+        pass
 
     def build_toolbars(self):
         buttons =  [NamedButton('compose', sr_path = False),
@@ -917,6 +925,9 @@ class BoringPage(Reddit):
             context['title'] = "%s: %s" % (name, pagename)
 
         Reddit.__init__(self, **context)
+
+    def action_bar(self):
+        pass
 
     def build_toolbars(self):
         if not isinstance(c.site, (DefaultSR, SubSR)) and not c.cname:
@@ -1438,14 +1449,20 @@ class EditReddit(Reddit):
                      _('about %(site)s') % dict(site=c.site.name))
 
         Reddit.__init__(self, title=title, *a, **kw)
-    
+
+    def action_bar(self):
+        pass
+
     def build_toolbars(self):
         if not c.cname:
             return [PageNameNav('subreddit', title=self.title)]
         else:
             return []
 
-class SubredditsPage(Reddit):
+    def action_bar(self):
+        return []
+
+class SubredditsPage(Reddit): # /spaces page
     """container for rendering a list of reddits.  The corner
     searchbox is hidden and its functionality subsumed by an in page
     SearchBar for searching over reddits.  As a result this class
@@ -1453,6 +1470,7 @@ class SubredditsPage(Reddit):
     self.searchbar"""
     searchbox    = False
     submit_box   = False
+    show_sidebar = False # Isn't changing the value in the Reddit class
     def __init__(self, prev_search = '', num_results = 0, elapsed_time = 0,
                  title = '', loginbox = True, infotext = None, show_interestbar=False,
                  search_params = {}, *a, **kw):
@@ -1461,7 +1479,7 @@ class SubredditsPage(Reddit):
         self.searchbar = SearchBar(prev_search = prev_search,
                                    elapsed_time = elapsed_time,
                                    num_results = num_results,
-                                   header = _('search spaces by name'),
+                                   header = '',
                                    search_params = {},
                                    simple=True,
                                    subreddit_search=True
@@ -1469,6 +1487,28 @@ class SubredditsPage(Reddit):
         self.sr_infobar = InfoBar(message = strings.sr_subscribe)
 
         self.interestbar = InterestBar(True) if show_interestbar else None
+
+
+    def sort_buttons(self):
+        buttons = [
+            NamedButton('popular', dest='/spaces'),
+            #NavButton(menu.popular, ""),
+            NamedButton("new", dest='/spaces/new')
+        ]
+        if c.user_is_loggedin:
+            #add the aliases to "my reddits" stays highlighted
+            buttons.append(NamedButton("mine", dest='/spaces/mine'))#,
+            #                           aliases=['/spaces/mine/subscriber',
+            #                                    '/spaces/mine/contributor',
+            #                                    '/spaces/mine/moderator']))
+            buttons.append(NamedButton("my_mod", dest='/spaces/mine/moderator'))
+        return buttons
+
+    def new_button(self):
+        return IconButton(title=_('Create Space'), dest='/spaces/create', icon_class="fa fa-plus", css_class="btn btn-success", li_css_class="pull-right", style="button")
+
+    def action_bar(self):
+        return NavMenu(self.sort_buttons() + [self.new_button()], type='bootstrap_tabs', title="")
 
     def build_toolbars(self):
         buttons =  [NavButton(menu.popular, ""),
@@ -1478,18 +1518,16 @@ class SubredditsPage(Reddit):
 
         if c.user_is_loggedin:
             #add the aliases to "my reddits" stays highlighted
-            buttons.append(NamedButton("mine",
-                                       aliases=['/spaces/mine/subscriber',
-                                                '/spaces/mine/contributor',
-                                                '/spaces/mine/moderator']))
+            buttons.append(NamedButton("mine"))#,
+                                       #aliases=['/spaces/mine/subscriber',
+                                       #         '/spaces/mine/contributor',
+                                       #         '/spaces/mine/moderator']))
 
         return [PageNameNav('spaces'),
                 NavMenu(buttons, base_path = '/spaces', type="tabmenu")]
 
     def content(self):
-        return self.content_stack((self.interestbar, self.searchbar,
-                                   self.nav_menu, self.sr_infobar,
-                                   self._content))
+        return self.content_stack((self.interestbar, self.nav_menu, self._content,))
 
     def rightbox(self):
         ps = Reddit.rightbox(self)
@@ -1506,7 +1544,7 @@ class MySubredditsPage(SubredditsPage):
     """Same functionality as SubredditsPage, without the search box."""
     
     def content(self):
-        return self.content_stack((self.nav_menu, self.infobar, self._content))
+        return self.content_stack((self.infobar, self._content))
 
 def votes_visible(user):
     """Determines whether to show/hide a user's votes.  They are visible:
@@ -1533,6 +1571,9 @@ class ProfilePage(Reddit):
     def __init__(self, user, *a, **kw):
         self.user     = user
         Reddit.__init__(self, *a, **kw)
+
+    def action_bar(self):
+        pass
 
     def build_toolbars(self):
         path = "/user/%s/" % self.user.name
@@ -2646,6 +2687,7 @@ class WrappedUser(CachedTemplate):
 
         CachedTemplate.__init__(self,
                                 name = user.name,
+                                registration_fullname = user.registration_fullname,
                                 force_show_flair = force_show_flair,
                                 has_flair = has_flair,
                                 flair_enabled = flair_enabled,
@@ -3000,13 +3042,14 @@ class UserList(Templated):
 class FriendList(UserList):
     """Friend list on /pref/friends"""
     type = 'friend'
-
+    cells = ('user', 'sendmessage', 'note', 'age', 'remove')
+    table_headers = (_('user'), '', _('note'), _('following'), '')
+    
     def __init__(self, editable = True):
-        if c.user.gold:
-            self.friend_rels = c.user.friend_rels()
-            self.cells = ('user', 'sendmessage', 'note', 'age', 'remove')
-            self._class = "gold-accent rounded"
-            self.table_headers = (_('user'), '', _('note'), _('following'), '')
+        self.friend_rels = c.user.friend_rels()
+        #self.cells = ('user', 'sendmessage', 'note', 'age', 'remove')
+        self._class = "gold-accent rounded"
+        #self.table_headers = (_('user'), '', _('note'), _('following'), '')
 
         UserList.__init__(self)
 
@@ -3032,6 +3075,16 @@ class FriendList(UserList):
     @property
     def container_name(self):
         return c.user._fullname
+
+class SmallerFriendList(FriendList):
+    cells = ('user', 'age', 'remove')
+    table_headers = (_('user'), _('following'), '')
+
+    def __init__(self, editable = True):
+        self.friend_rels = c.user.friend_rels()
+        self._class = "gold-accent rounded"
+
+        FriendList.__init__(self)
 
 
 class EnemyList(UserList):
@@ -3519,6 +3572,9 @@ class SelfTextChild(LinkChild):
                      expunged=self.link.expunged)
         return u.render()
 
+    def text(self):
+      return self.link.selftext
+
 class UserText(CachedTemplate):
     def __init__(self,
                  item,
@@ -3533,8 +3589,12 @@ class UserText(CachedTemplate):
                  cloneable = False,
                  extra_css = '',
                  name = "text",
-                 expunged=False):
+                 expunged=False,
+                 rules = None,
+                 house = None):
 
+        self.rules = rules
+        self.house = house
         css_class = "usertext"
         if cloneable:
             css_class += " cloneable"
@@ -4096,6 +4156,9 @@ class PolicyPage(BoringPage):
         BoringPage.__init__(self, pagename=pagename, show_sidebar=False,
                             content=content, **kw)
         self.welcomebar = None
+
+    def action_bar(self):
+        pass
 
     def build_toolbars(self):
         toolbars = BoringPage.build_toolbars(self)

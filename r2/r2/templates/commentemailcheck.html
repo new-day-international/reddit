@@ -1,2 +1,4 @@
-<div style="padding:2px 0 7px 5px;font-size:12px;"><input type="checkbox" id="email_posts_check" ${"checked" if thing.email_thread else ""} onclick="return thread_email_click(this,'${thing.article._id}');">&nbsp;&nbsp;email me new comments in this thread</div>
-
+<label class="email-subscribe">
+    <input type="checkbox" id="email_posts_check" ${"checked" if thing.email_thread else ""} onclick="return thread_email_click(this,'${thing.article._id}');">
+    email me new comments in this thread
+</label>

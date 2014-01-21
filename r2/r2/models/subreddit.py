@@ -102,7 +102,6 @@ class Subreddit(Thing, Printable):
                      flair_self_assign_enabled = False,
                      link_flair_self_assign_enabled = False,
                      use_quotas = True,
-                     description = "",
                      public_description = "",
                      prev_description_id = "",
                      prev_public_description_id = "",
@@ -111,6 +110,12 @@ class Subreddit(Thing, Printable):
                      house_color = "#FFFFFF",
                      use_rules_from_space = "lightnet",
                      allow_comment_gilding=True,
+                     sidebar_title = "",
+                     sidebar_title_2 = "",
+                     sidebar_title_3 = "",
+                     description = "",
+                     description_2 = "",
+                     description_3 = "",
                      )
     _essentials = ('type', 'name', 'lang','use_rules_from_space')
     _data_int_props = Thing._data_int_props + ('mod_actions', 'reported',
@@ -609,26 +614,15 @@ class Subreddit(Thing, Printable):
             else:
                 item.public_description_usertext = None
 
-            house_rules = '#### [](#h4-green)\n> ## [House Rules](#icon-information)\n'
+            house_rules = ''
             if not item.space_is_house:
                 rules_from = item.use_rules_from_space if item.use_rules_from_space else ""
-                house_rules += ">House Rules from **[" + rules_from + "]"
+                house_rules += "House Rules from **[" + rules_from + "]"
                 house_rules += "(http://" + g.domain + "/space/" + rules_from + ")"
-                house_rules += "\:**\n\n>"
-                house_rules += "\n\n>"
-            house_rules += item.get_house_rules().replace('\n','\n\n>')
-            house_rules += "\n\n>House Color for **"
-            if item.space_is_house:
-                house_rules += item.name
-            else:
-                rules_from = item.use_rules_from_space if item.use_rules_from_space else item.name
-                house_rules += "[" + rules_from  + "]"
-                house_rules += "(http://" + g.domain + "/space/" + rules_from + ")"
-            house_rules += "\:**"
-            house_rules += "\n\n><div class=\"house_color\" "
-            house_rules += "style=\"width:265px; background-color: "
-            house_rules += item.get_house_color()
-            house_rules += "; float: left; margin-left: 10px; margin-top: 4px; height: 20px\"></div>&nbsp;"
+                house_rules += "\:**\n\n"
+                house_rules += "\n\n"
+            house_rules += item.get_house_rules().replace('\n','\n\n')
+            
 
             item.house_rules_usertext = UserText(   item,
                                                     house_rules,

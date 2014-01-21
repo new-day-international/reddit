@@ -25,14 +25,15 @@
    from r2.lib.filters import unsafe
    from r2.lib.pages import SearchForm, ClickGadget, SideContentBox, Login
    from r2.lib import tracking
-   from pylons import request
+   from pylons import request, url
    from r2.lib.strings import strings
-   from r2.models import make_feedurl, Sub
+   from r2.models import make_feedurl, Sub, Subreddit, Account
 %>
 <%namespace file="framebuster.html" import="framebuster"/>
 <%namespace file="less.html" import="less_js, less_stylesheet"/>
 <%namespace file="utils.html" import="tags, classes"/>
 <%namespace file="adminbar.html" import="adminbar_stylesheet"/>
+<%namespace file="leftbarcssclasses.html" import="left_sidebar_css_classes, main_list_css_classes, tall_collapse_button_css_classes"/>
 <%inherit file="base.html"/>
 
 <%def name="Title()">
@@ -44,31 +45,15 @@
 </%def>
 
 <%def name="global_stylesheets()">
-  %if c.lang_rtl:
-    <link rel="stylesheet" href="${static(g.stylesheet_rtl)}"
-          type="text/css" />
-    %if c.site.stylesheet_rtl:
-      <link rel="stylesheet" href="${static(c.site.stylesheet_rtl)}"
-            type="text/css" />
-    %endif
-  %else:
-    ${less_stylesheet(g.stylesheet)}
-    %if c.site.stylesheet:
-    <link rel="stylesheet" href="${static(c.site.stylesheet)}"
-          type="text/css" >
-    %endif
-  %endif
+    ${less_stylesheet('lightnet.less')}
 
-  <!--[if lt IE 7]>
-    <link rel="stylesheet" href="${static('reddit-ie6-hax.css')}"
-          type="text/css" />
-  <![endif]-->
+<!--   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" type="text/css" />
+ --><!--   <link rel="stylesheet" href="//http://netdna.bootstrapcdn.com/bootswatch/3.0.2/spacelab/bootstrap.min.css" type="text/css" />
+ -->  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.2/css/font-awesome.min.css">
 
-  <!--[if lt IE 8]>
-    <link rel="stylesheet" href="${static('reddit-ie7-hax.css')}"
-          type="text/css" />
-  <![endif]-->
-</%def>
+<!--   <link rel="stylesheet" href="${static('style.css')}" type="text/css" />
+ -->
+ </%def>
 
 <%def name="sr_stylesheets()">
   %if c.can_apply_styles and c.allow_styles and c.site.stylesheet_hash:
@@ -136,39 +121,120 @@
 <%def name="bodyContent()">
   <%include file="adminbar.html"/>
   <%include file="redditheader.html"/>
+  
+  <div class="row" id="content-row">
+    <div id="left-sidebar" class="${left_sidebar_css_classes()} col-fixed">
+      ${SearchForm()}
 
-  %if thing.show_sidebar:
-    <div class="side">
-      ${sidebar(content = thing.rightbox())}
+      <h4 class="collapsable" data-toggle="collapse" data-target="#multispaces">
+        <i class="glyphicon glyphicon-collapse-down"></i>
+        <i class="glyphicon glyphicon-collapse-up"></i> 
+        Multispaces
+      </h4>
+      <%
+          multispaces = Account.multi_spaces_for_current_user()
+      %>
+      <ul id="multispaces" class="collapse in space-list list-unstyled">
+        %for space in multispaces:
+          <%
+            is_current_space = ""
+            if space[1] in thing.canonical_link and space[1] != "/" or space[1] == thing.canonical_link:
+                is_current_space = "active"
+          %>
+            <li><a class="${is_current_space}" href="${space[1]}">${space[0]}</a></li>
+        %endfor
+      </ul>
+
+      <h4 class="collapsable" data-toggle="collapse" data-target="#subscribed-spaces">
+        <i class="glyphicon glyphicon-collapse-down"></i>
+        <i class="glyphicon glyphicon-collapse-up"></i>
+
+        %if c.user_is_loggedin:
+          Subscribed Spaces
+        %else:
+          Popular Spaces
+        %endif
+      </h4>
+      <ul id="subscribed-spaces" class="collapse in space-list list-unstyled">
+        %if c.user_is_loggedin:
+          <li>
+            <a class="btn btn-action btn-sm" href="/spaces/mine/">
+              <i class="fa fa-cogs"></i>
+              Manage your Spaces
+            </a>
+          </li>
+          <%subreddits = sorted(Subreddit.user_subreddits(c.user, ids=False, stale=True), key = lambda sr: sr.name.lower())%>
+        %else:
+          <%subreddits = sorted(Subreddit.default_subreddits(ids=False), key = lambda sr: sr.name.lower())%>
+        %endif
+        %for sr in subreddits:
+          <%  
+              is_current_space = ""
+              space_link = "/space/" + sr.name + "/"
+              if space_link in thing.canonical_link:
+                  is_current_space = "active" 
+          %>
+          <li>
+            <a href="${space_link}" class="${is_current_space}">${sr.name}</a>
+          </li>
+        %endfor
+      </ul>
+
+
     </div>
-  %endif
+
 
   <% content = getattr(self, "content", None) or thing.content %>
   %if content:
     ##<div class="fixedwidth"><!--IE6sux--></div>
     ##<div class="clearleft"><!--IE6sux--></div>
     <a name="content"></a>
-    <div ${tags(id=thing.content_id)} ${classes("content", thing.css_class)} role="main">
+    <div ${tags(id=thing.content_id)} class="content main-list ${thing.css_class} ${main_list_css_classes(rightbar=thing.show_sidebar)}" role="main">
+      <div class="tall-collapse-button ${tall_collapse_button_css_classes()}" style=""></div>
+      <div class="row action-bar">
+        ${thing.action_bar()}
+      </div>
+      <br />
+
       ${content()}
     </div>
   %endif
 
+    %if thing.show_sidebar:
+      <div id="right-sidebar" class="side col-md-3">
+        ${sidebar(content = thing.rightbox())}  
+      </div>
+    %endif
+    </div>
+  </div>
+
+  <div class="row">
   %if thing.footer:
 
     ${thing.footer}
-
+    </div>
     %if not c.user_is_loggedin and not g.read_only_mode:
       %if thing.enable_login_cover:
-      <div class="login-popup cover-overlay" style="display: none">
-        <div class="cover" onclick="return hidecover(this)"></div>
-        <div class="popup">
-          <a href="#" onclick="return hidecover(this)" class="hidecover">
-            ${_("close this window")}
-          </a>
-          <h1 class="cover-msg">${strings.cover_msg}</h1>
-          ${Login(is_popup=True)}
+      <div class="login-popup cover-overlay modal" id="registrationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title" id="myModalLabel">${strings.cover_msg}</h4>
+            </div>
+            <div class="modal-body">
+              ${Login(is_popup=True)}
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div><!-- /.modal -->
+        <!-- <div class="popup">
+          <h1 class="cover-msg"></h1>
         </div>
-      </div>
+      </div> remnants -->
       %endif
       <div class="lang-popup cover-overlay" style="display: none">
         <div class="cover" onclick="return hidecover(this)"></div>
@@ -182,7 +248,8 @@
     %endif
   %endif
   ${framebuster()}
-  <p class="bottommenu debuginfo"><span class="icon">&pi;</span>&nbsp;<span class="content">Rendered by PID ${g.reddit_pid} on ${g.reddit_host} at ${c.start_time} running ${g.short_version}.</span></p>
+  <p class="bottommenu debuginfo col-md-7 col-md-offset-2"><span class="icon">&pi;</span>&nbsp;<span class="content hide">Rendered by PID ${g.reddit_pid} on ${g.reddit_host} at ${c.start_time} running ${g.short_version}.</span></p>
+
   %if c.user_is_loggedin:
   <link rel="stylesheet" type="text/css" href="/static/css/namepicker.css" />
   <script src="/static/js/lib/namepicker.js"></script>

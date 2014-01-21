@@ -51,10 +51,8 @@ function admincheck(elem) {
 </script>
 
 <div class="spacer">
-  <%utils:round_field title="${_('to')}", 
-                      description="${_('(username, or /space/name for that space\'s mods)')}">
-    <input type="text" name="to" id="to_fld" class="namepicker" value="${thing.to or ''}"
-           onchange="admincheck(this)"/>
+  <%utils:round_field title="${_('to')}", description="${_('(username, or /space/name for that space\'s mods)')}">
+    <input class="form-control namepicker" type="text" name="to" value="${thing.to or ''}" onchange="admincheck(this)" />
     ${error_field("NO_USER", "to")}
     ${error_field("USER_DOESNT_EXIST", "to")}
     ${error_field("SUBREDDIT_NOEXIST", "to")}
@@ -64,7 +62,7 @@ function admincheck(elem) {
 
 <div class="spacer">
   <%utils:round_field title="${_('subject')}">
-    <input type="text" name="subject" value="${thing.subject or ''}"/>
+    <input type="text" name="subject" class="form-control" value="${thing.subject or ''}"/>
     ${error_field("NO_SUBJECT", "subject", "span")}
     ${error_field("TOO_LONG", "subject", "span")}
   </%utils:round_field>
@@ -143,7 +141,7 @@ function admincheck(elem) {
   ${thing.captcha}
 </div>
 
-<button id="send" name="send" type="submit">${_("send")}</button>
+<button id="send" name="send" type="submit" class="btn btn-primary">${_("send")}</button>
 <span class="status"></span>
 
 </%utils:submit_form>

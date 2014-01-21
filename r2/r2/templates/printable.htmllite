@@ -93,7 +93,7 @@ ${self.Child()}
 </%def>
 
 <%def name="real_arrows(thing)">
-  <div class="midcol ${thing.like_cls}" ${optionalstyle("width: 15px")}>
+  <div class="midcol ${thing.like_cls} vote-buttons text-center" ${optionalstyle("width: 15px")}>
     ${arrow(thing, 1, thing.likes)}
     ${arrow(thing, 0, thing.likes == False)}
  </div>

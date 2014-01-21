@@ -1,24 +1,35 @@
 (function (tree) {
 
-tree.URL = function (val, paths) {
-    if (val.data) {
-        this.attrs = val;
-    } else {
-        // Add the base path if the URL is relative and we are in the browser
-        if (typeof(window) !== 'undefined' && !/^(?:https?:\/\/|file:\/\/|data:|\/)/.test(val.value) && paths.length > 0) {
-            val.value = paths[0] + (val.value.charAt(0) === '/' ? val.value.slice(1) : val.value);
-        }
-        this.value = val;
-        this.paths = paths;
-    }
+tree.URL = function (val, currentFileInfo) {
+    this.value = val;
+    this.currentFileInfo = currentFileInfo;
 };
 tree.URL.prototype = {
-    toCSS: function () {
-        return "url(" + (this.attrs ? 'data:' + this.attrs.mime + this.attrs.charset + this.attrs.base64 + this.attrs.data
-                                    : this.value.toCSS()) + ")";
+    type: "Url",
+    accept: function (visitor) {
+        this.value = visitor.visit(this.value);
     },
+    genCSS: function (env, output) {
+        output.add("url(");
+        this.value.genCSS(env, output);
+        output.add(")");
+    },
+    toCSS: tree.toCSS,
     eval: function (ctx) {
-        return this.attrs ? this : new(tree.URL)(this.value.eval(ctx), this.paths);
+        var val = this.value.eval(ctx), rootpath;
+
+        // Add the base path if the URL is relative
+        rootpath = this.currentFileInfo && this.currentFileInfo.rootpath;
+        if (rootpath && typeof val.value === "string" && ctx.isPathRelative(val.value)) {
+            if (!val.quote) {
+                rootpath = rootpath.replace(/[\(\)'"\s]/g, function(match) { return "\\"+match; });
+            }
+            val.value = rootpath + val.value;
+        }
+
+        val.value = ctx.normalizePath(val.value);
+
+        return new(tree.URL)(val, null);
     }
 };
 

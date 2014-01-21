@@ -24,9 +24,12 @@
    from r2.lib.template_helpers import get_domain
    from r2.lib.template_helpers import s3_https_if_secure
    from r2.lib.pages.things import LinkButtons
-   from r2.lib.pages import WrappedUser
+   from r2.lib.pages import WrappedUser, CommentEmailCheck
    from r2.lib.template_helpers import static
    from r2.lib.strings import Score, strings
+   from r2.lib.filters import safemarkdown
+
+
 %>
  
 <%inherit  file="printable.html"/>
@@ -34,7 +37,7 @@
 <%namespace file="printablebuttons.html" import="toggle_button" />
 
 <%def name="house_color_column()">
-  <div title="${thing.house_description}" class="house_color" style="width:5px; background-color: ${thing.house_color}; float: left; height: 70px">
+  <div title="${thing.house_description}" class="house_color" style="background-color: ${thing.house_color};">
   </div>
 </%def>
 
@@ -68,7 +71,7 @@
 </%def>
 
 <%def name="bottom_buttons()">
-  <ul class="flat-list buttons">
+  <ul class="flat-list buttons btn-group btn-group-xs">
     %if thing.nsfw:
      <li class="rounded nsfw-stamp stamp">
        <acronym title="${_('Adult content: Not Safe For Work')}">
@@ -77,9 +80,11 @@
      </li>
     %endif
     ${self.buttons()}
+    <li class="btn btn-primary btn-xs item-reply" onclick="return reply(this)">reply</li>
     ${self.admintagline()}
   </ul>
  </%def>
+
 
 <%def name="flair()">
   %if c.user.pref_show_link_flair and thing.flair_text:
@@ -88,13 +93,15 @@
 </%def>
 
 <%def name="entry()">
-  <p class="title">
-    %if c.site.link_flair_position == 'left':
-      <%call expr="flair()" />
-    %endif
+  <h4 class="title media-heading">
     <%call expr="make_link('title', 'title')">
       ${thing.title}
     </%call>
+  </h4>
+
+    %if c.site.link_flair_position == 'left':
+      <%call expr="flair()" />
+    %endif
     %if c.site.link_flair_position == 'right':
       <%call expr="flair()" />
     %endif
@@ -107,14 +114,12 @@
     %endif
     &#32;
 
-    ${self.link_at_domain()}
 
     %if c.user_is_admin:
         %for link_note in thing.link_notes:
            &#32;<span class="link-note">[${link_note}]</span>
         %endfor
     %endif
-  </p>
 
   ##the expando button
   <% selftext_hide = thing.is_self and not thing.selftext %>
@@ -124,16 +129,36 @@
          onclick="expando_child(this)"></div>
   %endif
 
-  <p class="tagline">
-    ${self.tagline()}
-  </p>
+      
+<p class="tagline">
+% if thing.different_sr:
+  <a href="${thing.subreddit_path}" class="label label-default">${thing.subreddit.name}</a>&#32;
+% endif
+    ${self.tagline()}</p>
 
   <% 
      child_content = ""
-     if thing.link_child and thing.link_child.load:
+     child_text = ""
+     if thing.link_child:
        child_content = unsafe(thing.link_child.content())
+       child_text = unsafe(thing.link_child.text())
      expand = thing.link_child and thing.link_child.expand
   %>
+
+    %if not expand and thing.last_comment_id:
+      <div class="last_comment">
+          <span class="comment_meta">
+              <a class="commenter">${WrappedUser(thing.last_comment_author, thing.attribs, thing).render()}</a>&#32;commented&#32;${thing_timeactive(thing)}&#32;ago
+          </span>
+          <p class="comment_text">
+              <img src="${thing.last_comment_author.photo_url()}">${thing.last_comment_body} 
+          </p>
+      </div>
+    %elif not expand:
+      <div class="last_comment">
+          ${child_content}
+      </div>
+    %endif
 
   ## if we're not on a permalink page we'll render the buttons on top
   %if not expand:
@@ -164,6 +189,15 @@
       cache["${thing._fullname}_cache"] = "${websafe(child_content)}";
     </script>
   %endif
+
+    ${self.link_at_domain()}
+
+
+    %if c.user_is_loggedin and expand:
+      ## Checkbox for whether the user wants to receive new comments in email
+      ${CommentEmailCheck(thing.lookups[0])}
+    %endif
+
 </%def>
 
 <%def name="thing_css_class(what)" buffered="True">
@@ -185,37 +219,46 @@ ${parent.thing_data_attributes(what)} data-ups="${what.upvotes}" data-downs="${w
 </%def>
 
 <%def name="midcol(display=True, cls = '')">
+  
   %if thing.pref_compress:
-    <div class="midcol ${cls}"
-  %else:
-    <div class="midcol ${cls}" style="width:${thing.midcolmargin};" 
+    <div class="midcol pull-left ${cls} vote-buttons text-center"
+  %else: # TODO: Add class below
+    <div class="midcol pull-left ${cls} vote-buttons text-center" 
   %endif
-       ${not display and "style='display:none'" or ''}>
+
+    ${not display and "style='display:none'" or ''}>
+
     ${self.arrow(thing, 1, thing.likes)}
+
     %if thing.pref_compress:
       <div class="score-placeholder"></div>
     %elif thing.hide_score:
-      <div class="score likes">&bull;</div> 
-      <div class="score unvoted">&bull;</div> 
+      <div class="score likes">&bull;</div>
+      <div class="score unvoted">&bull;</div>
       <div class="score dislikes">&bull;</div> 
     %else:
       ${self.score(thing, thing.likes, tag='div')}
     %endif
+
     ${self.arrow(thing, 0, thing.likes == False)}
-  </div>
+
+    </div>
+
+
 ## Removing Thumbnails for now since they're messing up the lines
 ## ${self.thumbnail()}
-<%
-   photo_url = "http://%s/u/%s/profile_photo.jpg" % (g.s3_user_files_host, thing.photo_name,)
-%>
-   <img class="cropped-image-medium link_photo" src="${photo_url}">
+  <a class="pull-left">
+   <img class="cropped-image-medium link_photo img-rounded media-object" width="46" height="46"  src="${thing.photo_url}">
+  </a>
 </%def>
 
 <%def name="link_at_domain()">
   %if (not thing.is_self) or c.user_is_admin:
     <span class="domain">
       %if not thing.is_self:
-        (${plain_link(thing.domain_link_text, thing.url, _sr_path = False, target = '_blank')})
+        <span class="btn btn-default btn-xs">
+          <i class="fa fa-external-link"></i> ${plain_link(thing.domain_link_text, thing.url, _sr_path = False, target = '_blank')}
+        </span>
       %endif
       %if c.user_is_admin:
         &#32;
@@ -234,7 +277,6 @@ ${parent.thing_data_attributes(what)} data-ups="${what.upvotes}" data-downs="${w
                               when=capture(thing_timestamp, thing, thing.timesince),
                               whenactive=capture(thing_timeactive, thing, thing.activesince),
                               author=WrappedUser(thing.author, thing.attribs, thing).render(),
-                              commentauthor=WrappedUser(thing.comment_author, thing.attribs, thing).render(),
                               lastedited=capture(edited, thing, thing.lastedited)
                               ))}
 </%def>
@@ -258,7 +300,7 @@ ${parent.thing_data_attributes(what)} data-ups="${what.upvotes}" data-downs="${w
             else:
                 size_str = ""
         %>
-        <img src="${s3_https_if_secure(thing.thumbnail)}" ${size_str} alt=""/>
+        <img src="${s3_https_if_secure(thing.thumbnail)}" width="50" height="50" ${size_str} alt="" class="pull-left media-object" />
     % endif
   </%call>
   %endif

@@ -27,7 +27,9 @@ import urllib
 import tempfile
 import urlparse
 from threading import Lock
+import glob
 
+from paste.reloader import watch_file
 from paste.cascade import Cascade
 from paste.registry import RegistryManager
 from paste.urlparser import StaticURLParser
@@ -218,7 +220,7 @@ class SubredditMiddleware(object):
         if sr:
             environ['subreddit'] = sr.groups()[0]
             environ['PATH_INFO'] = self.sr_pattern.sub('', path) or '/'
-        elif path.startswith(('/spaces', '/spaces')):
+        elif path.startswith('/spaces'):
             environ['subreddit'] = 'space'
         return self.app(environ, start_response)
 
@@ -488,4 +490,7 @@ def make_app(global_conf, full_stack=True, **app_conf):
         static_fallback = StaticTestMiddleware(static_app, g.config['static_path'], g.config['static_domain'])
         app = Cascade([static_fallback, app])
 
+    if g.config['debug']:
+        for fn in glob.glob('./r2/*/*.html'):
+            watch_file(fn)
     return app

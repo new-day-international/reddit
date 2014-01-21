@@ -95,7 +95,7 @@ clean_ini:
 
 #################### CSS file lists
 SPRITED_STYLESHEETS += reddit.less compact.css
-LESS_STYLESHEETS := goldinfo.less wiki.less adminbar.less policies.less bootstrap.less bootstraptheme.less
+LESS_STYLESHEETS := goldinfo.less wiki.less adminbar.less policies.less lightnet.less
 OTHER_STYLESHEETS := reddit-ie6-hax.css reddit-ie7-hax.css mobile.css highlight.css
 
 #################### Static Files
@@ -113,7 +113,7 @@ clean_static:
 	rm -rf $(STATIC_BUILDSTAMP) $(STATIC_BUILD_DIR) $(PLUGIN_BUILDSTAMPS) $(MANGLE_BUILDSTAMP)
 
 $(STATIC_BUILDSTAMP): $(STATIC_FILES)
-	cp -ruTL $(STATIC_ROOT) $(STATIC_BUILD_ROOT)
+	cp -ruT $(STATIC_ROOT) $(STATIC_BUILD_ROOT)
 	touch $@
 
 #################### Plugin static files

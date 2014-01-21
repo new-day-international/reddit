@@ -23,18 +23,52 @@
 <%!
    from r2.lib.strings import strings, Score
    from r2.lib.pages import WrappedUser, ModList
+   from r2.models.subreddit import DefaultSR
+   from r2.models import Account
  %>
 
-<%namespace file="utils.html" import="plain_link, thing_timestamp, text_with_links"/>
+<%namespace file="utils.html" import="plain_link, thing_timestamp, text_with_links, md"/>
 <%namespace file="subreddit.html" import="addremove_button" />
 <%namespace file="printablebuttons.html" import="ynbutton, state_button" />
+<%namespace file="printablebuttons.html" import="ynbutton, state_button" />
 
-<div class="titlebox">
-  <h1 class="hover redditname">
+<div class="spacetitlebox">
+  <h2 class="hover redditname">
     ${plain_link(thing.sr.name, thing.sr.path, _sr_path=False, _class="hover")}
-  </h1>
+  </h2>
+
+  %if thing.sr.header:
+    <img src="${thing.sr.header}" />
+  %else:
+    <img src="/static/default_space.png" />
+  %endif
+
+  %if thing.sr.public_description:
+    <p>${thing.sr.public_description}</p>
+  %endif
+
+  <div class="clearfix"></div>
 
   ${addremove_button(thing.sr)}
+
+  <div class="clearfix"></div>
+
+  <h5>
+    Access: ${thing.sr.type}
+    <i  id="access-help" 
+        class="fa fa-question-circle"
+        data-toggle="popover" title=""
+        role="button" data-original-title="Space Access"></i>
+  </h5>
+  <h5>${thing.sr.score} subscribers</h5>
+
+  %if thing.sr.author:
+    <h5>${unsafe(_("Created by&#32;%(user)s") % dict(user = unsafe(WrappedUser(thing.sr.author).render())))}
+    </h5>
+  %endif
+  <h5>
+    ${_("A community for")}&#32;${thing_timestamp(thing.sr)}
+  </h5>
 
   %if thing.sr.moderator:
     <div class="leavemoderator">
@@ -62,21 +96,13 @@
     ${thing.flair_prefs}
   %endif
 
-  ${thing.sr.house_rules_usertext}
-
-  %if thing.sr.description:
-    ${thing.sr.description_usertext}
-  %endif
-
-  <div class="bottom">
-    %if thing.sr.author:
-      ${unsafe(_("created by&#32;%(user)s") % dict(user = unsafe(WrappedUser(thing.sr.author).render())))}
-    %endif
-    
-    <span class="age">
-      ${_("a community for")}&#32;${thing_timestamp(thing.sr)}
-    </span>  
-  </div>
+  <h2 id="house-name">
+    ${thing.sr.get_house_description()}<i class="fa fa-sort-asc"></i>
+  </h2>
+    ${thing.sr.house_rules_usertext}
+  <h2 style="background-color: ${thing.sr.get_house_color()} !important;" class="house-color">
+    &nbsp;
+  </h2>
 
   %if c.user_is_admin:
     %if thing.sr._spam:
@@ -94,8 +120,21 @@
     %endif
   %endif
 
-  <div class="clear"> </div>
-  
+  %if thing.sr:
+    %if thing.sr.description and thing.sr.sidebar_title:
+      <h2 id="sidebar-title">${thing.sr.sidebar_title}</h2>
+      ${md(thing.sr.description)}
+    %endif
+
+    %if thing.sr.description_2 and thing.sr.sidebar_title_2:
+      <h2 id="sidebar-title-2">${thing.sr.sidebar_title_2}</h2>
+      ${md(thing.sr.description_2)}
+    %endif
+
+    %if thing.sr.description_3 and thing.sr.sidebar_title_3:
+      <h2 id="sidebar-title-3">${thing.sr.sidebar_title_3}</h2>
+      ${md(thing.sr.description_3)}
+    %endif
+  %endif
 
 </div>
-

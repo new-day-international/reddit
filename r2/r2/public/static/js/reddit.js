@@ -872,7 +872,7 @@ function show_edit_usertext(form) {
         .find(".cancel, .save").show().end()
         .find(".help-toggle").show().end();
 
-    textarea.focus();
+    // textarea.focus();
 }
 
 function hide_edit_usertext(form) {
@@ -908,7 +908,7 @@ function edit_usertext(elem) {
 
 function cancel_usertext(elem) {
     var t = $(elem);
-    t.thing().find(".edit-usertext:first").parent("li").andSelf().show(); 
+    t.thing().find(".edit-usertext:first").parent("li").andSelf().show();
     hide_edit_usertext(t.closest(".usertext"));
 }
 

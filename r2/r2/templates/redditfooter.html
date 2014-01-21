@@ -26,13 +26,14 @@
    import datetime
 %>
 <%namespace file="utils.html" import="text_with_links"/>
+<%namespace file="leftbarcssclasses.html" import="footer_parent_css_classes"/>
 
-<div class="footer-parent">
-  %for toolbar in thing.nav:
-      <div class="col">
-        ${toolbar}
-      </div>
-  %endfor
+<div class="footer-parent ${footer_parent_css_classes()}">
+##  %for toolbar in thing.nav:
+##      <div class="col">
+##        ${toolbar}
+##      </div>
+##  %endfor
   %if not g.domain.endswith("reddit.com"):
     <!-- http://code.reddit.com/LICENSE see Exhibit B -->
     <a href="http://www.reddit.com/code/" style="text-align:center;display:block">

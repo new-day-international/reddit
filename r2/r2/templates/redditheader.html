@@ -24,122 +24,119 @@
    from r2.lib.template_helpers import static, s3_https_if_secure, add_sr
    from r2.models import Sub, FakeSubreddit
    from r2.models.subreddit import DefaultSR
-   from r2.lib.pages import SearchForm
    from r2.lib import authentication
 %>
 <%namespace file="utils.html" import="plain_link, img_link, text_with_links, separator, logout"/>
 
-<div id="header" role="banner">
-  <a tabindex="1" href="#content" id="jumpToContent">${_('jump to content')}</a>
-  ${thing.srtopbar}
-  <div id="header-bottom-${'right' if c.lang_rtl else 'left'}">
-    <%
-        header_title = c.site.header_title
-        d = DefaultSR()
-        if c.site.header and c.can_apply_styles and c.allow_styles:
-            header_img = c.site.header
-            header_size = c.site.header_size
-        else:
-            header_img = d.header
-            header_size = d.header_size
-            header_title = d.header_title
-    %>
-    
-    % if header_img != g.default_header_url:
-        ${img_link(c.site.name, s3_https_if_secure(header_img),
-            '/', _id="header-img-a", img_id='header-img',
-            title=header_title, size=header_size)}
-    % else:
-        <a href="/" id="header-img" class="default-header" title="${header_title}"></a>
-    % endif
-    
-    ##keeps the height of the header from varying when there isnt any content
-    &nbsp;
+<script>
+var Reddit = {};
+Reddit.modhash = "${c.modhash}";
+</script>
 
-    %for toolbar in thing.toolbars:
-      ${toolbar}
-    %endfor
-  </div>
+<div id="header" role="banner" class="navbar navbar-default navbar-fixed-top">
+  <div class="">
+    <ul class="nav navbar-nav">
+      <li class="${'active' if not request.path.startswith(("/spaces", "/people",)) else ''}" id="header-bottom-${'right' if c.lang_rtl else 'left'}">
+        <a href="/" id="header-img" class="default-header navbar-brand" title="lightnet">lightnet</a>
+      </li>
+      <li class="${'active' if request.path.startswith("/spaces") else ''}" ><a href="/spaces/">Spaces</a></li>
+      <li class="${'class="active"' if request.path.startswith("/people") else ''}" ><a href="/people/">People</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      %if not c.user_is_loggedin:
+        %if thing.enable_login_cover and not g.read_only_mode:
+          <%
+            base = g.https_endpoint if not c.cname else ""
+            login_url = add_sr(base + "/login", sr_path=False)
+          %>
+          <li class="" id="header-bottom-${'left' if c.lang_rtl else 'right'}">
+            <a class="register login-required" data-toggle="modal" data-target="#registrationModal">register</a>
+          </li>
+        %endif
+      %else:
+        <li>
+          <%
+           if c.user.notification_count > 0:
+             mail_img_class = 'havemail'
+             mail_img_title = "new mail!"
+             mail_path = "/message/unread/"
+           else:
+             mail_img_class = 'nohavemail'
+             mail_img_title = "no new mail"
+             mail_path = "/message/inbox/"
+          %>
+          <a href="${mail_path}" class="ping ${mail_img_class}" title="${mail_img_title}">
+            <!-- <i class="fa fa-envelope-o fa-emx"></i> --><span>Notifcations</span>
+            %if c.user.notification_count > 0:
+              <span class="badge label-danger">${c.user.notification_count}</span>
+            %endif
+          </a>
+        </li>
+        <li>
+          <a href="#" class="ping" title="Notifications">
+            <!-- <i class="fa fa-exclamation-circle fa-emx"></i> --><span>Notifications</span>
+          </a>
+        </li>
+        <li>
+          <%
+           if c.user.message_count > 0:
+             mail_img_class = 'havemail'
+             mail_img_title = "new mail!"
+             mail_path = "/message/unread/"
+           else:
+             mail_img_class = 'nohavemail'
+             mail_img_title = "no new mail"
+             mail_path = "/message/inbox/"
+          %>
+          <a href="${mail_path}" class="ping ${mail_img_class}" title="${mail_img_title}">
+            <!-- <i class="fa fa-envelope-o fa-emx"></i> --><span>Messages</span>
+            %if c.have_messages:
+              <span class="badge label-danger">${c.user.message_count}</span>
+            %endif
+          </a>
+        </li>
+        %if c.show_mod_mail:
+          <li>
+             <%
+                if c.user.moderator_message_count > 0:
+                  mail_img_class = 'havemail'
+                  mail_img_title = "new mod mail!"
+                  mail_path = "/message/moderator/"
+                else:
+                  mail_img_class = 'nohavemail'
+                  mail_img_title = "no new mod mail"
+                  mail_path = "/message/moderator/"
+              %>
+            <a href="${mail_path}" class="ping ${mail_img_class}" title="${mail_img_title}">
+              <!-- <i class="fa fa-gavel fa-emx"></i> --><span>Moderator</span>
+              %if c.have_mod_messages:
+                <span class="badge label-danger">${c.user.moderator_message_count}</span>
+              %endif
+            </a>
+          </li>
+        %endif
 
-  <div id="header-bottom-${'left' if c.lang_rtl else 'right'}">
-    %if not c.user_is_loggedin:
-      %if thing.enable_login_cover and not g.read_only_mode:
-      <span class="user">
-        <%
-          base = g.https_endpoint if not c.cname else ""
-          login_url = add_sr(base + "/login", sr_path=False)
-        %>
-        ${text_with_links(_("want to join? %(login_or_register)s in seconds"),
-            login_or_register = dict(link_text=_("register"), path=login_url, _class="register login-required"))}
-      </span>
-      ${separator("|")}
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <%
+               photo_url = "http://%s/u/%s/profile_photo.jpg" % (g.s3_user_files_host, c.user.name,)
+            %>
+            <img class="cropped-image-medium link_photo media-object pull-left img-rounded" src="${photo_url}" height="40" width="40" />${c.user.registration_fullname} <b class="caret"></b>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="/account-activity/">recent activity</a></li>
+            <li><a href="/prefs">options</a></li>
+            <li><a href="#">password/email</a></li>
+            <li><a href="#">two-factor authentication</a></li>
+            <li class="divider"></li>
+            <li>
+              %if c.user_is_loggedin and authentication.user_can_log_out():
+                <a href="/logout" class="postlink" data-action="/logout">${_("logout")}</a>
+              %endif
+            </li>
+          </ul>
+        </li>
       %endif
-    %else:
-      <span class="user">
-        ${plain_link(c.user.name, "/user/%s/" % c.user.name, _sr_path=False)}
-        &nbsp;(<span class="userkarma" title="${_("link karma")}">${c.user.safe_karma}</span>)
-      </span>
-      ${separator("|")}
-
-      <%
-        if c.user.message_count > 0:
-          mail_img_class = 'havemail'
-          mail_img_title = "new mail!"
-          mail_path = "/message/unread/"
-        else:
-          mail_img_class = 'nohavemail'
-          mail_img_title = "no new mail"
-          mail_path = "/message/inbox/"
-       %>
-      %if c.user.message_count > 0:
-        <span class="circled_number">${c.user.message_count}</span>
-      %endif
-      ${plain_link(_("messages"), path=mail_path,
-                 title = mail_img_title, _sr_path = False,
-                 _id = "mail", _class=mail_img_class)}
-      ${separator("|")}
-      %if c.show_mod_mail:
-      <%
-        if c.user.moderator_message_count > 0:
-          mail_img_class = 'havemail'
-          mail_img_title = "new mod mail!"
-          mail_path = "/message/moderator/"
-        else:
-          mail_img_class = 'nohavemail'
-          mail_img_title = "no new mod mail"
-          mail_path = "/message/moderator/"
-      %>
-      %if c.user.moderator_message_count > 0:
-        <span class="circled_number">${c.user.moderator_message_count}</span>
-      %endif
-      ${plain_link(_("mod"), path=mail_path,
-                title = mail_img_title, _sr_path = False,
-                _id = "modmail", _class=mail_img_class)}
-      ${separator("|")}
-      %endif
-
-      <%
-      if c.user.notification_count > 0:
-        notification_img_class = 'yes_notifications'
-        notification_img_title = "new notifications!"
-      else:
-        notification_img_class = 'no_notifications'
-        notification_img_title = "no new notifications"
-
-      notification_path = "/message/notifications/"
-       %>
-      %if c.user.notification_count > 0:
-         <span class="circled_number">${c.user.notification_count}</span>
-      %endif
-      ${plain_link(_("notifications"), path=notification_path,
-                 title = notification_img_title, _sr_path = False,
-                 _id = "notifications", _class=notification_img_class)}
-      ${separator("|")}
-    %endif
-    ${thing.corner_buttons()}
-    %if c.user_is_loggedin and authentication.user_can_log_out():
-      ${separator("|")}
-      ${logout()}
-    %endif
+    </ul>
   </div>
 </div>

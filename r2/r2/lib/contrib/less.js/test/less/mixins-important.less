@@ -1,10 +1,17 @@
-
+.submixin(@a) {
+  border-width: @a;
+}
 .mixin (9) {
   border: 9 !important;  
 }
 .mixin (@a: 0) {
   border: @a;
   boxer: @a;
+  .inner {
+    test: @a;
+  }
+  // comment
+  .submixin(@a);
 }
 
 .class {

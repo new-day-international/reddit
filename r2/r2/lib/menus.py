@@ -99,7 +99,7 @@ menu =   MenuHandler(hot          = _('hot'),
                      options      = _('options'),
                      apps         = _("apps"),
                      feeds        = _("RSS feeds"),
-                     friends      = _("follow"),
+                     friends      = _("following"),
                      update       = _("password/email"),
                      delete       = _("delete"),
                      otp          = _("two-factor authentication"),
@@ -111,7 +111,7 @@ menu =   MenuHandler(hot          = _('hot'),
                      notifications= _("notifications"),
 
                      # comments
-                     comments     = _("comments {toolbar}"),
+                     comments     = _("latest comments"),
                      related      = _("related"),
                      details      = _("details"),
                      duplicates   = _("other discussions (%(num)s)"),
@@ -142,6 +142,7 @@ menu =   MenuHandler(hot          = _('hot'),
                      popular      = _("popular"),
                      create       = _("create"),
                      mine         = _("my subscribed spaces"),
+                     my_mod       = _("my moderated spaces"),
 
                      i18n         = _("help translate"),
                      errors       = _("errors"),
@@ -183,8 +184,18 @@ menu =   MenuHandler(hot          = _('hot'),
                      languages = _('languages'),
                      adverts = _('adverts'),
 
-                     whitelist = _("whitelist")
+                     whitelist = _("whitelist"),
+
+                     # for action bar
+                     items = _('items'),
+
                      )
+
+class UnorderedList(CachedTemplate):
+    def __init__(self, options, **kw):
+        self.options = options
+        CachedTemplate.__init__(self, **kw)
+
 
 def menu_style(type):
     """Simple manager function for the styled menus.  Returns a
@@ -199,6 +210,9 @@ def menu_style(type):
              tabmenu = ('tabmenu', ''),
              formtab = ('tabmenu', 'formtab'),
              flat_vert = ('flatlist', 'flat-vert'),
+             bootstrap_drop_down_button = ('bootstrap_drop_down_button', 'bootstrap_drop_down_button'),
+             bootstrap_tabs = ('bootstrap_tabs', 'bootstrap_tabs'),
+             bootstrap_drop_down_tab = ('bootstrap_drop_down_tab', 'bootstrap_drop_down_tab'),
              )
     return d.get(type, default)
 
@@ -209,11 +223,16 @@ class NavMenu(Styled):
     can be used to set individualized CSS."""
 
     use_post = False
+    
+    # does the parent think this one is active
+    active = False
 
     def __init__(self, options, default = None, title = '', type = "dropdown",
-                 base_path = '', separator = '|', **kw):
+                 base_path = '', separator = '|', prefix_icon = None, li_css_class="", **kw):
         self.options = options
         self.base_path = base_path
+        self.prefix_icon = prefix_icon
+        self.li_css_class = li_css_class
 
         #add the menu style, but preserve existing css_class parameter
         style, css_class = menu_style(type)
@@ -233,6 +252,8 @@ class NavMenu(Styled):
         # (possibly None)
         self.default = default
         self.selected = self.find_selected()
+        if hasattr(self.selected, 'active'):
+            self.selected.active = True
         self.is_dropdown = (style == "dropdown")
 
         Styled.__init__(self, title = title, **kw)
@@ -254,11 +275,26 @@ class NavMenu(Styled):
         for opt in self.options:
             yield opt
 
+    # added so a NavMenu can have a NavMenu inside of it
+    def build(self, base_path):
+        self.base_path = base_path
+        for o in self.options:
+            o.build(self.base_path)
+
+    # added so a NavMenu can have a NavMenu inside of it
+    def is_selected(self):
+        # if one of our options is selected, then we are selected
+        return self.selected is not None
+
 class NavButton(Styled):
     """Smallest unit of site navigation.  A button once constructed
     must also have its build() method called with the current path to
     set self.path.  This step is done automatically if the button is
     passed to a NavMenu instance upon its construction."""
+
+    # does the parent think this one is active
+    active = False
+
     def __init__(self, title, dest, sr_path = True, 
                  nocname=False, opt = '', aliases = [],
                  target = "", style = "plain", **kw):
@@ -322,6 +358,17 @@ class NavButton(Styled):
         """returns the title of the button when selected (for cases
         when it is different from self.title)"""
         return self.title
+
+
+class IconButton(NavButton):
+    """
+    Bootstrap button
+    """
+    def __init__(self, title, dest, icon_class, sr_path = True, 
+                 nocname=False, opt = '', aliases = [],
+                 target = "", style = "plain", **kw):
+        self.icon_class = icon_class
+        NavButton.__init__(self, title, dest, sr_path, nocname, opt, aliases, target, style, **kw)
 
 class ModeratorMailButton(NavButton):
     def is_selected(self):
@@ -472,14 +519,14 @@ class SortMenu(SimplePostMenu):
 class ProfileSortMenu(SortMenu):
     default   = 'new'
     options   = ('hot', 'new', 'top', 'controversial')
+    type = 'bootstrap_drop_down_button'
 
 class CommentSortMenu(SortMenu):
     """Sort menu for comments pages"""
-    default   = 'confidence'
-    options   = ('confidence', 'top', 'new', 'hot', 'controversial', 'old',
-                 'random')
-    hidden_options = ('random',)
+    default   = 'new'
+    options   = ('confidence', 'new', 'old')
     use_post  = True
+    type = 'bootstrap_drop_down_button'
 
 class SearchSortMenu(SortMenu):
     """Sort menu for search pages."""
@@ -515,6 +562,7 @@ class TimeMenu(SimplePostMenu):
     name      = 't'
     default   = 'all'
     options   = ('hour', 'day', 'week', 'month', 'year', 'all')
+    type = 'bootstrap_drop_down_button'
 
     def __init__(self, **kw):
         kw['title'] = _("links from")
