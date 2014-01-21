@@ -12,8 +12,8 @@ r2/data/
 
 # build outputs
 *.so
-build/
-dist/
+r2/build/
+r2/dist/
 r2/r2.egg-info/
 r2/r2/lib/generated_strings.py
 
