@@ -58,23 +58,18 @@ Reddit.modhash = "${c.modhash}";
           <%
            if c.user.notification_count > 0:
              mail_img_class = 'havemail'
-             mail_img_title = "new mail!"
-             mail_path = "/message/unread/"
+             mail_img_title = "new notifications!"
+             mail_path = "/message/notifications/"
            else:
              mail_img_class = 'nohavemail'
-             mail_img_title = "no new mail"
-             mail_path = "/message/inbox/"
+             mail_img_title = "no new notifications"
+             mail_path = "/message/notifications/"
           %>
           <a href="${mail_path}" class="ping ${mail_img_class}" title="${mail_img_title}">
-            <!-- <i class="fa fa-envelope-o fa-emx"></i> --><span>Notifcations</span>
+            <!-- <i class="fa fa-envelope-o fa-emx"></i> --><span>Notifications</span>
             %if c.user.notification_count > 0:
               <span class="badge label-danger">${c.user.notification_count}</span>
             %endif
-          </a>
-        </li>
-        <li>
-          <a href="#" class="ping" title="Notifications">
-            <!-- <i class="fa fa-exclamation-circle fa-emx"></i> --><span>Notifications</span>
           </a>
         </li>
         <li>
