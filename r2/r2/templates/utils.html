@@ -21,7 +21,7 @@
 ###############################################################################
 
 <%!
-   import json
+   import json, operator, pycountry
    from r2.models import FakeSubreddit
    from r2.lib.filters import spaceCompress, unsafe, safemarkdown
    from r2.lib.template_helpers import add_sr, js_config, static, html_datetime
@@ -618,4 +618,15 @@ ${unsafe(txt)}
 
 <%def name="_md(text, wrap=False)">
   ${md(_(text), wrap=wrap)}
+</%def>
+
+<%def name="country_select(country_code='')">
+<%
+countries = {x.alpha2: x.name for x in pycountry.countries}
+%>
+<select id="country_code" name="country_code" style="width:492px;height:21px;padding:3px;font-size:18px;display:block;">
+%for code,name in sorted(countries.iteritems(), key=operator.itemgetter(1)):
+<option ${code == country_code  and "selected='selected'" or ""} value="${code}">${name}</option>
+%endfor
+</select>
 </%def>

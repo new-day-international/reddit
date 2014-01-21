@@ -48,6 +48,7 @@ from curses.ascii import isprint
 import re, inspect
 from itertools import chain
 from functools import wraps
+import pycountry
 
 def visible_promo(article):
     is_promo = getattr(article, "promoted", None) is not None
@@ -2248,3 +2249,14 @@ class VHouse(Validator):
         return {
             self.param: 'a valid house',
         }
+
+class VCountry(Validator):
+    """Validate country code and look up country name"""
+    def run(self, country_code):
+        countries = {x.alpha2: x.name for x in pycountry.countries}
+        if country_code in countries.keys():
+            country_name = countries[country_code]
+            return (country_code, country_name)
+        else:    
+            return ('??', '???')
+    

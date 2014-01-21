@@ -95,6 +95,7 @@ menu =   MenuHandler(hot          = _('hot'),
                      rules        = _('rules'),
 
                      #preferences
+                     profedit     = _('profile'),
                      options      = _('options'),
                      apps         = _("apps"),
                      feeds        = _("RSS feeds"),
@@ -153,6 +154,8 @@ menu =   MenuHandler(hot          = _('hot'),
                      info         = _("info"),
                      share        = _("share"),
 
+                     profile      = _('profile'),
+                     reputation   = _('reputation'),
                      overview     = _("overview"),
                      submitted    = _("submitted"),
                      liked        = _("liked"),

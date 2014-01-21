@@ -115,10 +115,18 @@ def make_map():
 
     mc('/admin/errors', controller='errorlog')
 
+    mc('/user/:username', controller='user', action='profile',
+       where='profile')   
     mc('/user/:username/about', controller='user', action='about',
        where='overview')
+    mc('/user/:username/profile', controller='user', action='profile',
+       where='profile')   
+    mc('/user/:username/reputation', controller='user', action='reputation',
+      where='reputation')   
     mc('/user/:username/:where', controller='user', action='listing',
        where='overview')
+    #mc('/user/:username/:where', controller='user', action='profile',
+    #   where='profile')
     mc('/u/:username', controller='redirect', action='user_redirect')
 
     # preserve timereddit URLs from 4/1/2012

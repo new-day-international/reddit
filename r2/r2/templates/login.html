@@ -85,9 +85,14 @@
     <div>
       <ul>
         <li class="name-entry">
+          %if false:
           <label for="user_reg">${_('your full name (how you normally write it)')}:</label>
-          <input value="${user}" name="user" id="user_reg"
-                 type="text" maxlength="40" tabindex="3" autofocus />
+          <input value="${user}" name="user" id="user_reg" type="text" maxlength="40" tabindex="3" autofocus />
+          %endif
+          <label for="first_name">${_('your first and last name')}:</label>
+          <input value="" name="first_name" id="first_name_reg" type="text" maxlength="40" tabindex="3" autofocus />&nbsp;
+          <input value="" name="last_name" id="last_name_reg" type="text" maxlength="40" tabindex="3" />
+          
             <div class="realname_area">
               <label for="realnameID">${_('your real name ID')}:</label>
               <span id="realnameID" class="realname">&nbsp;</span>

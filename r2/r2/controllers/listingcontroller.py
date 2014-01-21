@@ -585,7 +585,7 @@ class UserController(ListingController):
     @property
     def menus(self):
         res = []
-        if (self.where in ('overview', 'submitted', 'comments')):
+        if (self.where in ('profile','overview', 'submitted', 'comments')):
             res.append(ProfileSortMenu(default = self.sort))
             if self.sort not in ("hot", "new"):
                 res.append(TimeMenu(default = self.time))
@@ -606,7 +606,8 @@ class UserController(ListingController):
         return res
 
     def title(self):
-        titles = {'overview': _("overview for %(user)s"),
+        titles = {'profile': _("public profile for %(user)s"),
+                  'overview': _("overview for %(user)s"),
                   'comments': _("comments by %(user)s"),
                   'submitted': _("submitted by %(user)s"),
                   'liked': _("liked by %(user)s"),
@@ -743,6 +744,32 @@ class UserController(ListingController):
         if not is_api() or not vuser:
             return self.abort404()
         return Reddit(content = Wrapped(vuser)).render()
+        
+    @validate(vuser = VExistingUname('username'),
+        sort = VMenu('sort', ProfileSortMenu, remember = False))
+    def GET_profile(self, where, vuser, sort):
+        """Show the profile. ProfShow() is in pages.py"""
+        #self.where = where
+        #self.sort = sort
+        self.vuser = vuser
+        #self.render_params = {'user' : vuser}
+        #c.profilepage = True
+        if c.user_is_loggedin and c.user.profile_photo_uploaded:
+            vuser.image_source = "http://%s/u/%s/profile_photo.jpg" % (g.s3_user_files_host, c.user.name,)
+        else:
+            vuser.image_source = "http://%s/u/default_user/profile_photo.jpg" % (g.s3_user_files_host,)
+
+        content = ProfShow(user=vuser)
+
+        return ProfilePage( vuser, content = content, title = self.title() ).render()    
+
+    @validate(vuser = VExistingUname('username'),
+        sort = VMenu('sort', ProfileSortMenu, remember = False))
+    def GET_reputation(self, where, vuser, sort):
+        """Show the reputation/karma, in relation to a person's profile. Reputation() in pages.py"""
+        self.vuser = vuser
+        content = Reputation(user=vuser)
+        return ProfilePage( vuser, content = content, title = self.title() ).render()    
 
     def GET_saved_redirect(self):
         if not c.user_is_loggedin:

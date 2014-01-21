@@ -528,11 +528,12 @@ class ApiController(RedditController, OAuth2ResourceController):
 
     @validatedForm(VCaptcha(),
                    VRatelimit(rate_ip = True, prefix = "rate_register_"),
-                   name = VFullname(['user']),
+                   first_name = VFullname(['first_name']),
+                   last_name = VFullname(['last_name']),
                    email=VEmail('email'),
                    password = VPassword(['passwd', 'passwd2']),
                    rem = VBoolean('rem'))
-    def _handle_register(self, form, responder, name, email,
+    def _handle_register(self, form, responder, first_name, last_name, email,
                       password, rem):
         bad_captcha = responder.has_errors('captcha', errors.BAD_CAPTCHA)
         if not (responder.has_errors("user", errors.BAD_USERNAME,
@@ -545,8 +546,13 @@ class ApiController(RedditController, OAuth2ResourceController):
                 responder.has_errors('ratelimit', errors.RATELIMIT) or
                 (not g.disable_captcha and bad_captcha)):
             
+            name = first_name + ' ' + last_name
+            
             user = register(name, password, request.ip)
             VRatelimit.ratelimit(rate_ip = True, prefix = "rate_register_")
+
+            user.first_name = first_name
+            user.last_name = last_name
 
             #anything else we know (email, languages)?
             if email:
@@ -933,6 +939,31 @@ class ApiController(RedditController, OAuth2ResourceController):
         # the password salt has changed, so the user's cookie has been
         # invalidated.  drop a new cookie.
         self.login(c.user)
+
+
+    @validatedForm(VUser(),
+                   VModhash(),
+                   first_name = nop("first_name"),
+                   last_name = VLength("last_name", max_length = 100),
+                   country = VCountry("country_code"),
+                   city = VLength("city", max_length = 100),
+                   me_short = VMarkdown("me_short", max_length = 240),
+                   me_long = VMarkdown("me_long"),
+                   me_links = VMarkdown("me_links")
+                   )
+    @api_doc(api_section.account)
+    def POST_profupdate(self, form, jquery, first_name, last_name, country, city, me_short, me_long, me_links):
+        """Update profile info. Called by /profs/profedit"""
+        country_code,country_name = country
+        c.user.first_name = first_name
+        c.user.last_name = last_name
+        c.user.country_code = country_code
+        c.user.country_name = country_name
+        c.user.city = city
+        c.user.me_short = me_short
+        c.user.me_long = me_long
+        c.user.me_links = me_links
+        c.user._commit()
 
     @validatedForm(VUser('curpass', default = ''),
                    VModhash(),

@@ -1,0 +1,41 @@
+<%! 
+   from r2.lib.filters import unsafe, safemarkdown
+   from r2.lib.template_helpers import static, format_number
+%>
+
+<style>
+.profinfo {
+  font-size: 13px;
+  clear: both;
+  padding: 5px 0 15px 0;
+}
+.profinfo label {
+  color: #bbb;
+  float: left;
+  width: 80px;
+}
+.profinfo div.md {
+  float: left;
+  margin: -12px 0 -12px 0;
+  padding: 12px 0 0 0;
+}
+.profinfo div.md p {
+  margin: 0 0 5px 0;
+}
+</style>
+
+<div><img src="${thing.user.image_source}" style="float: left;padding:0 10px 10px 0">
+  <h1>${thing.user.first_name if hasattr(thing.user,'first_name') else ''} ${thing.user.last_name if hasattr(thing.user,'last_name') else ''}</h1><br clear="left">
+</div>  
+
+<div>
+
+<div class="profinfo"><label>City</label> ${thing.user.city if hasattr(thing.user,'city') else ''}</div>
+<div class="profinfo"><label>Country</label> ${thing.user.country_name if hasattr(thing.user,'country_name') else ''}</div>
+<div class="profinfo"><label>About me:</label> ${unsafe(safemarkdown(thing.user.me_short)) if hasattr(thing.user,'me_short') else ''}</div>
+<div class="profinfo"><label>Bio:</label> ${unsafe(safemarkdown(thing.user.me_long)) if hasattr(thing.user,'me_long') else ''}</div>
+<div class="profinfo"><label>Links:</label> ${unsafe(safemarkdown(thing.user.me_links)) if hasattr(thing.user,'me_links') else ''}</div>
+  
+% if c.user_is_loggedin and c.user == thing.user: 
+<div class="profinfo"><br><br><a href="/prefs/profedit/">Edit</a></div>  
+%endif
