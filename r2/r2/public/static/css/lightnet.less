@@ -845,19 +845,7 @@ h4.collapsable:not(.collapsed) .glyphicon-collapse-down {
   }
 }
 
-#sr-form .well {
-  min-width: 500px;
-}
 
-#description {
-  textarea {
-    height: 200px;
-  }
-
-  .cancel {
-    display: none !important;
-  }
-}
 
 .main-list .bootstrap_drop_down_button form,
 .commentarea .bootstrap_drop_down_button form {
@@ -914,6 +902,24 @@ h4.collapsable:not(.collapsed) .glyphicon-collapse-down {
     padding-left: 20px;
   }
 }
+#sr-form {
+  .well {
+    min-width: 500px;
+  }
+  textarea {
+    max-width: none !important;
+    width: 100% !important;
+  }
+  .house-lightnet-rules {
+    display: none;
+  }
+  
+  .cancel {
+    display: none !important;
+  }
+
+}
+
 
 .sr-interest-bar {
   margin-bottom: 20px;
@@ -921,4 +927,16 @@ h4.collapsable:not(.collapsed) .glyphicon-collapse-down {
 
 .form-control {
   margin: 6px 0;
+}
+
+.img-preview {
+  float: left;
+  max-width: 100px;
+  margin: 15px 15px 0 0;
+}
+
+.gray {
+  font-size: 12px;
+  font-style: italic;
+  color: #777;
 }

@@ -326,10 +326,21 @@ ${unsafe(txt)}
           %endif
           <br/>
           %if ask_type:
-            <label for="img_type">${_("Type: ")}</label>
-            <label><input type="radio" name="img_type" value="jpg" />JPEG</label>
-            &nbsp;&nbsp;
-            <label><input type="radio" name="img_type" checked value="png" />PNG</label>
+            <div class="radio">
+              <label for="img_type">
+                ${_("Type: ")}
+              </label>
+            </div>
+            <div class="radio">
+              <label>
+                <input type="radio" name="img_type" value="jpg" />JPEG
+              </label>
+            </div>
+            <div class="radio">
+              <label>
+                <input type="radio" name="img_type" checked value="png" />PNG
+              </label>
+            </div>
             <br/>
           %endif
           <input type="file" name="file" id="file" 

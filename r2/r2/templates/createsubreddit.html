@@ -434,27 +434,26 @@
 %if thing.site:
   <input type="hidden" name="sr" value="${thing.site._fullname}"/> 
     <%utils:line_field title="${_('look and feel')}">
-      <ul class="upload">
-        <li style="display: none">
+      <div class="upload">
+        <span style="display: none">
         ${plain_link(_("edit the stylesheet"),
                       "/about/stylesheet",
                       _sr_path = True)}
         &#32;
         <span class="gray">(${_("leaves this page")})</span>
-        </li>
-        <li style="display: none">
+        </span>
+        <span style="display: none">
           <label for="header-title">header mouseover text:</label>
           <input type="text" name="header-title" id="header-title"
                  value="${thing.site.header_title}"
                  />
-        </li>
-        <li>
+        </span>
           <%utils:image_upload post_target="/api/upload_sr_img"
                                current_image="${thing.site.header}"
                                label="${_('upload header image')}"
                                ask_type="${True}">
             <br/>
-            <button id="delete-img" class="delete-img"
+            <button id="delete-img" class="delete-img btn btn-xs btn-danger"
                     %if not thing.site.header:
                        style="display: none;"
                     %endif
@@ -472,8 +471,7 @@
               }
             </script>
           </%utils:image_upload>
-        </li>
-      </ul>
+      </div>
     </%utils:line_field>
 %endif
 
