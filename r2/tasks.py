@@ -4,6 +4,10 @@ from invoke.collection import Collection
 test = Collection()
 
 @task
+def server():
+    run("paster serve run.ini --reload", echo=True)
+    
+@task
 def clean_memcached():
     run("echo 'flush_all' | nc localhost 11212", echo=True)
 
