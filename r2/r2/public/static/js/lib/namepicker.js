@@ -4622,12 +4622,29 @@ function namepicker_init() {
         );
       }); 
 
-  $('.atnamepicker, .atnamepicker textarea').atwho('run').atwho({
-        at: "@",
-        tpl: '<li data-value="@$'+'{name}"><img src="http://'+Namepicker.s3_user_files_host+'/u/$'+'{pic}/profile_photo.jpg"> <div>$'+'{full}</div></li>',
-        data: Namepicker.userdata
-    });
+//  $('textarea.atnamepicker, input.atnamepicker, .atnamepicker textarea').atwho('run').atwho({
+//        at: "@",
+//        tpl: '<li data-value="@$'+'{name}"><img src="http://'+Namepicker.s3_user_files_host+'/u/$'+'{pic}/profile_photo.jpg"> <div>$'+'{full}</div></li>',
+//        data: Namepicker.userdata
+//    });
+    addatnamepickers();
   
+}
+
+function addatnamepicker(elem) {
+    console.log('addatnamepicker '+$(elem).attr('id'));    
+    $(elem).atwho({
+            at: "@",
+            tpl: '<li data-value="@$'+'{name}"><img src="http://'+Namepicker.s3_user_files_host+'/u/$'+'{pic}/profile_photo.jpg"> <div>$'+'{full}</div></li>',
+            data: Namepicker.userdata
+        });
+}
+function addatnamepickers() {
+    $('textarea.atnamepicker, input.atnamepicker, .atnamepicker textarea').atwho({
+            at: "@",
+            tpl: '<li data-value="@$'+'{name}"><img src="http://'+Namepicker.s3_user_files_host+'/u/$'+'{pic}/profile_photo.jpg"> <div>$'+'{full}</div></li>',
+            data: Namepicker.userdata
+        });
 }
 
 $.getScript("/api/namepicker", function(data, textStatus, jqxhr) {

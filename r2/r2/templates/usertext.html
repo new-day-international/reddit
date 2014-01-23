@@ -37,10 +37,11 @@
 </%def>
 
 %if thing.have_form:
+  <% formid = "form-" + thing.fullname + randstr(3) %>
   <form action="#" class="${thing.css_class}"
         onsubmit="return post_form(this, '${thing.post_form}')"
         ${"style='display:none'" if not thing.display else ""}
-        id="form-${thing.fullname + randstr(3)}">
+        id="${formid}">
 %else:
   <div  class="${thing.css_class}"
         id="${thing.name}"
@@ -67,7 +68,7 @@
         ##this div prevents IE7 from adding extra margin to the textarea.
         <div>
           <textarea rows="1" cols="1"
-                    name="${thing.name}">${keep_space(thing.text)}</textarea>
+                    name="${thing.name}" id="${formid}_textarea">${keep_space(thing.text)}</textarea>
         </div>
 
         <div class="bottom-area">
