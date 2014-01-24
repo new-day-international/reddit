@@ -68,10 +68,14 @@
 
 %if thing.kind == 'link':
   <%utils:round_field title="${_('URL')}"" id="url-field">
-    <input class="form-control" id="url" name="url" type="url" value="${thing.url}" required>
+    <div class="input-group">
+      <input class="form-control" id="url" name="url" type="url" value="${thing.url}" required>
+      <span class="input-group-btn">
+      <button class="btn btn-default" type="button" tabindex="100" onclick="fetch_title()">${_("Suggest Title")}</button>
+      </span>
+    </div>
 
     <div id="suggest-title">
-      <button class="btn btn-xs btn-info" type="button" tabindex="100" onclick="fetch_title()">${_("Suggest Title")}</button>
       <span class="title-status"></span>
       ${error_field("NO_URL", "url", "span")}
       ${error_field("BAD_URL", "url", "span")}
