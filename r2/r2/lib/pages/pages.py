@@ -369,12 +369,12 @@ class Reddit(Templated):
                 fake_sub = isinstance(c.site, FakeSubreddit)
 
                 # Add a button for managing subscriptions
-                if fake_sub and c.site.name.strip() == g.default_sr:
-                    ps.append(SideBox(title=strings.manage_subscriptions_label,
-                                      css_class="submit manage-subscriptions",
-                                      link="/spaces",
-                                      sr_path=None,
-                                      show_cover=True))
+                # if fake_sub and c.site.name.strip() == g.default_sr:
+                #     ps.append(SideBox(title=strings.manage_subscriptions_label,
+                #                       css_class="submit manage-subscriptions",
+                #                       link="/spaces",
+                #                       sr_path=None,
+                #                       show_cover=True))
         no_ads_yet = True
         show_adbox = (c.user.pref_show_adbox or not c.user.gold) and not g.disable_ads
         if isinstance(c.site, (MultiReddit, ModSR)) and c.user_is_loggedin:
