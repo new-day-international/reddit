@@ -3623,7 +3623,7 @@ class ApiController(RedditController, OAuth2ResourceController):
 
     def GET_namepicker(self,**keywords):
         # Return a json array of usernames for a name picker
-        c.allow_loggedin_cache = True
+        #c.allow_loggedin_cache = True
         timehour = int(int(time.time())/3600)
         new_etag = hashlib.md5(str(timehour)).hexdigest()
         had_etag = request.headers.get("If-None-Match")
@@ -3652,7 +3652,7 @@ class ApiController(RedditController, OAuth2ResourceController):
                 spacenames.append(row.name)
             
         response.headers['cache-control'] = 'max-age: 3600'
-        expire_time = datetime.fromtimestamp(int(time.time())+60, g.tz)
+        expire_time = datetime.fromtimestamp(int(time.time())+3600, g.tz)
         response.headers['expires'] = http_date_str(expire_time)
         response.headers['content-type'] = 'application/javascript'
         output =  "var Namepicker = {"
