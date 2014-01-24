@@ -231,10 +231,11 @@
           %>
           <li ${classes(*li_classes)}>
             %if thing.use_post:
-               ${post_link(option.title, option.base_path, option.path,
+              ${post_link(option.title, option.base_path, option.path,
                            option.action_params, _sr_path=option.sr_path, _class=_class)}
             %else:
-               ${plain_link(option.title, option.path, _sr_path = option.sr_path, _class=_class)}
+              ${option}
+              ## ${plain_link(option.title, option.path, _sr_path = option.sr_path, _class=_class)}
             %endif
           </li>
         %endfor
