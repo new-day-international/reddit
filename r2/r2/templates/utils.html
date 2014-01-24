@@ -490,21 +490,26 @@ ${unsafe(txt)}
 </%def>
 
 <%def name="block_field(kind, title, description = '', css_class= '', **kw)">
-
-  <h3 class="title">${title}</h3>
-  &#32;
-  <div class="well col-md-6 col-md-6-offset ${kind} ${css_class}"
-    %for k, v in kw.iteritems():
-      ${k}="${v}"
-    %endfor
-    >
-    %if description:
-      <span class="gray">${description}</span>
-    %endif
-    <div class="${kind}-content form-group">
-      ${caller.body()}
+  <div class="form-group">
+    <label for="" class="col-sm-2 control-label">${title}
+      %if description:
+        <span class="gray">${description}</span>
+      %endif
+    </label>
+    <div class="col-sm-10 ${kind} ${css_class}"
+      %for k, v in kw.iteritems():
+        ${k}="${v}"
+      %endfor
+      >
+      <div class="${kind}-content form-group">
+        ${caller.body()}
+      </div>
     </div>
   </div>
+
+    
+    
+    
 </%def>
 
 <%def name="round_field(title, description = '', css_class= '', **kw)">

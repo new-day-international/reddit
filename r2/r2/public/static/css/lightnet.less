@@ -558,7 +558,12 @@ h4.collapsable:not(.collapsed) .glyphicon-collapse-down {
 
 .infobar {
   clear: both;
-  margin: 50px 0 20px;
+  /*margin: 50px 0 20px;*/
+  padding-left: 0px;
+
+    h2 {
+      margin:0;
+    }
 }
 
 .btn-action {
@@ -905,13 +910,15 @@ h4.collapsable:not(.collapsed) .glyphicon-collapse-down {
     padding-left: 20px;
   }
 }
-#sr-form {
+#sr-form, #newlink {
   .well {
     min-width: 500px;
   }
-  textarea {
-    max-width: none !important;
-    width: 100% !important;
+  textarea,
+  input[type=text], input[type=url],
+  .bottom-area {
+    max-width: 400px !important;
+    width: 400px !important;
   }
   .house-lightnet-rules {
     display: none;
@@ -928,10 +935,6 @@ h4.collapsable:not(.collapsed) .glyphicon-collapse-down {
   margin-bottom: 20px;
 }
 
-.form-control {
-  margin: 6px 0;
-}
-
 .img-preview {
   float: left;
   max-width: 100px;
@@ -946,4 +949,21 @@ h4.collapsable:not(.collapsed) .glyphicon-collapse-down {
 
 #left-sidebar h4 {
   font-size: floor(@font-size-base * 1.20);
+}
+
+#suggest-title {
+  margin-top: 5px;
+}
+
+.footer-parent {
+  padding-top: 40px;
+  background: #fff;
+}
+
+.help-toggle {
+  margin-left: 10px;
+  a {
+    color: black;
+    text-decoration: none;
+  }
 }

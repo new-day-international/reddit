@@ -10,7 +10,7 @@ textext.core.css contents:
 }
 .text-core .text-wrap textarea,
 .text-core .text-wrap input {
-  -webkit-box-sizing: border-box;
+ /* -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   -webkit-border-radius: 0px;
@@ -28,7 +28,7 @@ textext.core.css contents:
   white-space: nowrap;
   font: 11px "lucida grande", tahoma, verdana, arial, sans-serif;
   line-height: 13px;
-  height: auto;
+  height: auto;*/
 }
 
 /*
@@ -155,7 +155,7 @@ custom, for textext, changed by us
 }
 
 .roundfield .roundfield-content {
-    margin-top: 5px;
+    /*margin-top: 5px;*/
     border: none;
     vertical-align: top;
 }
@@ -165,7 +165,7 @@ custom, for textext, changed by us
 .roundfield .text-wrap {
     width: 500px !important;
 }
-.roundfield .text-core input[type=text] {
+/*.roundfield .text-core input[type=text] {
     font-size: 100%;
     width: 500px !important;
     padding: 3px;
@@ -173,7 +173,7 @@ custom, for textext, changed by us
     border: 1px solid #c8c8c8;
     border-radius: 2px;
     box-shadow: 0 1px 4px 1px #d1d5c6;
-}
+}*/
 .roundfield .text-core input[type=text]:focus {
     /* border-color: #5f99cf;
 	outline: none;

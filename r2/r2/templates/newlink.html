@@ -29,96 +29,93 @@
 <%namespace file="utils.html" import="error_field, submit_form, _a_buffered, reddit_selector, text_with_links"/>
 <%namespace name="utils" file="utils.html"/>
 
-<%
-  if thing.default_sr:
-    sr = "&#32;" + _a_buffered(thing.default_sr.name, href=thing.default_sr.path)
-  else:
-    sr = _("lightnet")
-%>
-<h1>${unsafe(_("submit to %(sr)s") % dict(sr=sr))}</h1>
+
 
 <%utils:submit_form onsubmit="return post_form(this, 'submit', linkstatus, null, true)" 
                     action=${add_sr("/submit")},
-                    _class="submit content",
+                    _class="submit content form-horizontal",
                     _id="newlink">
 
 <div class="formtabs-content">
 
-<div class="spacer">
 <%
   if thing.kind == 'link':
-    textarea_title = _('excerpt or summary')
+    textarea_title = _('Excerpt or Summary')
     infobar_text = strings.submit_link
   else:
     textarea_title = _('text')
     infobar_text = strings.submit_text
 %>
-  <div class="infobar">${infobar_text}</div>
 
+<div class="form-group">
+  <%
+    if thing.default_sr:
+      sr = "&#32;" + _a_buffered(thing.default_sr.name, href=thing.default_sr.path)
+    else:
+      sr = _("Lightnet")
+  %>
+  <div class="infobar col-sm-10 col-sm-offset-2">
+    <h2>${unsafe(_("Submit to %(sr)s") % dict(sr=sr))}</h2>
+    ${infobar_text}
+  </div>
 </div>
 
-<div class="spacer">
-  <%utils:round_field title="${_('title')}" id="title-field">
-    <textarea name="title" rows="2" required>${thing.title}</textarea>
-    ${error_field("NO_TEXT", "title", "div")}
-    ${error_field("TOO_LONG", "title", "div")}
-  </%utils:round_field>
-</div>
+<%utils:round_field title="${_('Title')}" id="title-field">
+  <input class="form-control" name="title" type="text" required>${thing.title}</input>
+  ${error_field("NO_TEXT", "title", "div")}
+  ${error_field("TOO_LONG", "title", "div")}
+</%utils:round_field>
 
 %if thing.kind == 'link':
-<div class="spacer">
-  <%utils:round_field title="${_('url')}"" id="url-field">
-    <input id="url" name="url" type="url" value="${thing.url}" required>
-    ${error_field("NO_URL", "url", "div")}
-    ${error_field("BAD_URL", "url", "div")}
-    ${error_field("DOMAIN_BANNED", "url", "div")}
-    ${error_field("ALREADY_SUB", "url", "div")}
-    ${error_field("NO_LINKS", "sr")}
-    ${error_field("NO_SELFS", "sr")}
+  <%utils:round_field title="${_('URL')}"" id="url-field">
+    <input class="form-control" id="url" name="url" type="url" value="${thing.url}" required>
 
     <div id="suggest-title">
+      <button class="btn btn-xs btn-info" type="button" tabindex="100" onclick="fetch_title()">${_("Suggest Title")}</button>
       <span class="title-status"></span>
-      <button type="button" tabindex="100" onclick="fetch_title()">${_("suggest title")}</button>
+      ${error_field("NO_URL", "url", "span")}
+      ${error_field("BAD_URL", "url", "span")}
+      ${error_field("DOMAIN_BANNED", "url", "span")}
+      ${error_field("ALREADY_SUB", "url", "span")}
+      ${error_field("NO_LINKS", "sr")}
+      ${error_field("NO_SELFS", "sr")}
     </div>
   </%utils:round_field>
-</div>
 %endif
 
-<div class="spacer">
-  <input name="kind" value="${thing.kind}" type="hidden"/>
-  <%utils:round_field title="${textarea_title}" description="${_('(optional)')}">
-    ${UserText(None, text = thing.text, have_form = False, creating = True, extra_css = 'atnamepicker')}
-    ${error_field("NO_SELFS", "sr")}
-  </%utils:round_field>
-</div>
+<input name="kind" value="${thing.kind}" type="hidden"/>
+<%utils:round_field title="${textarea_title}" description="${_('(optional)')}">
+  ${UserText(None, text = thing.text, have_form = False, creating = True, extra_css = 'atnamepicker')}
+  ${error_field("NO_SELFS", "sr")}
+</%utils:round_field>
 
-<div class="spacer">
-  <%utils:round_field title="${_('choose a space')}" id="reddit-field">
-    %if False:
-    ${reddit_selector(thing.default_sr.name if thing.default_sr else None, thing.sr_searches, thing.spaces, required=True)}
-    %else:
-    <input type="text" name="sr" class="spacenamepicker" />
-    %endif
-  </%utils:round_field>
-</div>
+<%utils:round_field title="${_('Choose a Space')}" id="reddit-field">
+  %if False:
+  ${reddit_selector(thing.default_sr.name if thing.default_sr else None, thing.sr_searches, thing.spaces, required=True)}
+  %else:
+  <input type="text" name="sr" class="spacenamepicker form-control" />
+  %endif
+</%utils:round_field>
 
 %if c.user.gold:
-  <div class="spacer">
-    <%utils:round_field title="${_('options')}" css_class="gold-accent">
-      <input class="nomargin" type="checkbox" checked="checked" name="sendreplies" id="sendreplies" data-send-checked="true"/>
+  <%utils:round_field title="${_('options')}" css_class="gold-accent">
+    <div class="checkbox">
       <label for="sendreplies">
-        ${_("send replies to my inbox")}
+        <input class="nomargin" type="checkbox" checked="checked" name="sendreplies" id="sendreplies" data-send-checked="true"/>
+          ${_("Send replies to my inbox")}
       </label>
-    </%utils:round_field>
-  </div>
+    </div>
+  </%utils:round_field>
 %endif
 
 ${thing.captcha}
     
 </div>
 
-<div class="roundfield info-notice" title="${_('why a brick? read to the bottom of the rules page to find out!')}">
-  ${text_with_links(_("please be mindful of lightnet's %(few_rules)s and practice %(good_reddiquette)s."),
+<input name="resubmit" value="${thing.resubmit}" type="hidden"/>
+<div class="roundfield info-notice col-sm-10 col-sm-offset-2" title="${_('why a brick? read to the bottom of the rules page to find out!')}">
+
+  ${text_with_links(_("Please be mindful of lightnet's %(few_rules)s and practice %(good_reddiquette)s."),
       few_rules=dict(
         link_text=_("few rules"),
         path="/rules",
@@ -130,12 +127,12 @@ ${thing.captcha}
   )}
 </div>
 
-<input name="resubmit" value="${thing.resubmit}" type="hidden"/>
-<div class="spacer">
-  <button class="btn" name="submit" value="form" type="submit">${_("submit")}</button>
+<div class="col-sm-10 col-sm-offset-2">
+  <button class="btn btn-primary" name="submit" value="form" type="submit">${_("Submit")}</button>
   <span class="status"></span>
   ${error_field("RATELIMIT", "ratelimit")}
   ${error_field("INVALID_OPTION", "sr")}
 </div>
+
 </%utils:submit_form>
 
