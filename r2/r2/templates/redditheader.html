@@ -40,7 +40,6 @@ Reddit.modhash = "${c.modhash}";
         <a href="/" id="header-img" class="default-header navbar-brand" title="lightnet">lightnet</a>
       </li>
       <li class="${'active' if request.path.startswith("/spaces") else ''}" ><a href="/spaces/">Spaces</a></li>
-      <li class="${'class="active"' if request.path.startswith("/people") else ''}" ><a href="/people/">People</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
       %if not c.user_is_loggedin:
