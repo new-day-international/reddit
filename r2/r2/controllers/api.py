@@ -964,6 +964,17 @@ class ApiController(RedditController, OAuth2ResourceController):
         c.user.me_long = me_long
         c.user.me_links = me_links
         c.user._commit()
+        
+    @validatedForm(VUser(),
+                VModhash(),
+                fld = nop("fld"),
+                value = nop("value"),
+                )
+    @api_doc(api_section.account)
+    def POST_prof_fld_update(self, form, jquery, fld, value):
+        """Update a single field in a user's profile. Called from in-place editing on /pref/profshow"""
+        setattr(c.user, fld, value)
+        c.user._commit()
 
     @validatedForm(VUser('curpass', default = ''),
                    VModhash(),

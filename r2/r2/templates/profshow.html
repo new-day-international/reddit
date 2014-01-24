@@ -3,6 +3,21 @@
    from r2.lib.template_helpers import static, format_number
 %>
 
+<script src="/static/js/lib/jquery.jeditable.js"></script>
+<script>
+function post_it(value) {
+  var fld = this.id;
+  $.request('prof_fld_update', {fld: fld, value: value}, alert('callback'), null, "json", false, alert('error handler'));
+  return(value);
+}
+$(document).ready(function() {
+     $('.edit').editable(post_it, {
+       event : 'activate',
+       submit : 'save' 
+      });
+});
+
+</script>
 <style>
 .profinfo {
   font-size: 13px;
@@ -13,6 +28,9 @@
   color: #bbb;
   float: left;
   width: 80px;
+}
+.profinfo div.fld {
+  display: inline;
 }
 .profinfo div.md {
   float: left;
@@ -30,12 +48,14 @@
 
 <div>
 
-<div class="profinfo"><label>City</label> ${thing.user.city if hasattr(thing.user,'city') else ''}</div>
-<div class="profinfo"><label>Country</label> ${thing.user.country_name if hasattr(thing.user,'country_name') else ''}</div>
-<div class="profinfo"><label>About me:</label> ${unsafe(safemarkdown(thing.user.me_short)) if hasattr(thing.user,'me_short') else ''}</div>
-<div class="profinfo"><label>Bio:</label> ${unsafe(safemarkdown(thing.user.me_long)) if hasattr(thing.user,'me_long') else ''}</div>
-<div class="profinfo"><label>Links:</label> ${unsafe(safemarkdown(thing.user.me_links)) if hasattr(thing.user,'me_links') else ''}</div>
+<div class="profinfo"><label>City</label> <div class="fld edit" id="city">${thing.user.city if hasattr(thing.user,'city') else ''}</div> <button onclick="$('#city').trigger('activate');">Edit</button></div>
+<div class="profinfo"><label>Country</label> <div class="fld editselect">${thing.user.country_name if hasattr(thing.user,'country_name') else ''}</div></div>
+<div class="profinfo"><label>About me:</label> <div class="fld editarea">${unsafe(safemarkdown(thing.user.me_short)) if hasattr(thing.user,'me_short') else ''}</div></div>
+<div class="profinfo"><label>Bio:</label> <div class="fld editarea">${unsafe(safemarkdown(thing.user.me_long)) if hasattr(thing.user,'me_long') else ''}</div></div>
+<div class="profinfo"><label>Links:</label> <div class="fld editarea">${unsafe(safemarkdown(thing.user.me_links)) if hasattr(thing.user,'me_links') else ''}</div></div>
   
 % if c.user_is_loggedin and c.user == thing.user: 
 <div class="profinfo"><br><br><a href="/prefs/profedit/">Edit</a></div>  
 %endif
+
+
