@@ -16,19 +16,6 @@ function close_menus(event) {
 
     // Clear any flairselectors that may have been opened.
     $(".flairselector").empty();
-
-    /* hide the search expando if the user clicks elsewhere on the page */ 
-    if ($(event.target).closest("#search").length == 0) {
-        $("#moresearchinfo").slideUp();
-
-        if ($("#searchexpando").length == 1) {
-            $("#searchexpando").slideUp(function() {
-                $("#search_showmore").parent().show();
-            });
-        } else {
-            $("#search_showmore").parent().show();
-        }
-    }
 };
 
 function hover_open_menu(menu) { };
@@ -1183,12 +1170,6 @@ $(function() {
         $(window).on('pageshow', function() {
             last_click()
         })
-
-        /* search form help expando */
-        /* TODO: use focusin and focusout in jQuery 1.4 */
-        $('#search input[name="q"]').focus(function () {
-            $("#searchexpando").slideDown();
-        });
 
         $("#search_showmore").click(function(event) {
             $("#search_showmore").parent().hide();

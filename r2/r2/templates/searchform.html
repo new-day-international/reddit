@@ -25,8 +25,7 @@
    from r2.lib.template_helpers import add_sr, static
 %>
 
-<%def name="search_faq()">
-  <div id="moresearchinfo">
+<%def name="search_faq_contents()">
   <p>use the following search parameters to narrow your results:</p>
 
   <dl>
@@ -48,6 +47,10 @@
 
   <p>e.g.&#32;<code>space:lightnet site:pinterest.com trees</code></p>
   <p><a href="/wiki/search">${_('see the search faq for details.')}</a></p>
+</%def>
+<%def name="search_faq()">
+  <div id="moresearchinfo">
+    ${search_faq_contents()}
   </div>
 
   <p><a href="/wiki/search" id="search_showmore">${_('advanced search: by author, space...')}</a></p>
@@ -61,6 +64,31 @@
         value="${thing.prev_search}" style="color:black"
       %endif
       name="q" placeholder="${_('search lightnet')}" />
+      <script>
+        var search_box_hide_timeout = null;
+        $('#search').focusin(function() {
+          if (search_box_hide_timeout) {
+            clearTimeout(search_box_hide_timeout);
+            search_box_hide_timeout = null;
+          } else {
+            $(this).find('input[name=q]').lightnet_popover({
+              'content': '${search_faq_contents()|h}', 
+              'html': true, 
+              'container': 'body',
+              'placement': 'right',
+              'title': 'advanced search help'
+            });
+            $(this).find('#searchexpando').slideDown();
+          }
+        });
+        $('#search').focusout(function() {
+          var form = $(this);
+          search_box_hide_timeout = setTimeout(function() {
+            form.find('input[name=q]').lightnet_popover('hide');
+            form.find('#searchexpando').slideUp();
+          }, 25);
+        });
+      </script>
   </div>
 
   %if thing.subreddit_search:
@@ -70,8 +98,6 @@
       % if not isinstance(c.site, DefaultSR):
       <label><input type="checkbox" name="restrict_sr" />${_('limit my search to %(path)s') % dict(path=c.site.path.rstrip('/'))}</label>
       % endif
-
-      ${search_faq()}
   </div>
   %else:
     %if not thing.site or isinstance(thing.site, DefaultSR):

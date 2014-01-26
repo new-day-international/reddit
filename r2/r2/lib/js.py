@@ -363,6 +363,7 @@ module["reddit-init"] = Module("reddit-init.js",
     "spotlight.js",
     "scripts.js",
     "../bower_components/bootstrap/dist/js/bootstrap.js",
+    "lightnet.popover.js",
 )
 
 module["reddit"] = LocalizedModule("reddit.js",
