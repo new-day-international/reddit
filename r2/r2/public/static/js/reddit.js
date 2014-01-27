@@ -903,6 +903,10 @@ function comment_reply_for_elem(elem) {
     if (!form.length || form.parent().thing_id() != thing.thing_id()) {
         console.log("cloning " + $(".usertext.cloneable:first").attr('id'));
         form = $(".usertext.cloneable:first").clone(true);
+
+        // clear the 'atwho' data attribute so that a new instance of at.js is created for this form
+        $(form).find('textarea').data('atwho', null);
+        
         elem.new_thing_child(form);
         form.prop("thing_id").value = thing_id;
         form.attr("id", "commentreply_" + thing_id);
