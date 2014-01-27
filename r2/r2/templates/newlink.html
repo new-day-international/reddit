@@ -29,8 +29,6 @@
 <%namespace file="utils.html" import="error_field, submit_form, _a_buffered, reddit_selector, text_with_links"/>
 <%namespace name="utils" file="utils.html"/>
 
-
-
 <%utils:submit_form onsubmit="return post_form(this, 'submit', linkstatus, null, true)" 
                     action=${add_sr("/submit")},
                     _class="submit content form-horizontal",
@@ -102,7 +100,7 @@
 </%utils:round_field>
 
 %if c.user.gold:
-  <%utils:round_field title="${_('options')}" css_class="gold-accent">
+  <%utils:round_field title="${_('Options')}" css_class="gold-accent">
     <div class="checkbox">
       <label for="sendreplies">
         <input class="nomargin" type="checkbox" checked="checked" name="sendreplies" id="sendreplies" data-send-checked="true"/>
