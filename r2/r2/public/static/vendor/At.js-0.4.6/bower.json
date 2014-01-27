@@ -1,0 +1,15 @@
+{
+  "name": "At.js",
+  "version": "0.4.6",
+  "main": "dist/js/jquery.atwho.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components",
+    "libs",
+    "spec"
+  ],
+  "dependencies": {
+    "Caret.js": "ichord/Caret.js#0.0.5"
+  }
+}

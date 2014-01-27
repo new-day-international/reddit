@@ -1,0 +1,19 @@
+{
+  "name": "jquery.atwho",
+  "version": "0.4.6",
+  "engines": {
+    "node": ">= 0.6.0"
+  },
+  "scripts": {
+    "test": "grunt test --verbose"
+  },
+  "dependencies": {
+    "jQuery": "~1.7.0"
+  },
+  "devDependencies": {
+    "grunt": "~0.3.17",
+    "grunt-coffee": "0.0.6",
+    "grunt-jasmine-runner": "~0.6.0",
+    "grunt-contrib-mincss": "~0.3.2"
+  }
+}
