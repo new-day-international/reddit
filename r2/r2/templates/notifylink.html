@@ -25,47 +25,52 @@
 
 <form onsubmit="return post_form(this, 'notify')" method="post"
       id="notifylink_${thing.link_name}"
-      class="pretty-form notifylink" action="/post/notify"
+      class="pretty-form notifylink form-horizontal" action="/post/notify"
      ${"" if thing.link_name else "style='display:none'"}>
-  <div class="clearleft"><!--IEsux--></div>
+  
+
+  <div class="form-group">
+    <h3 class="col-sm-6 col-sm-offset-4">${_("Notify people of this post")}</h3>
+  </div>
+
     ${error_field("RATELIMIT", "ratelimit")}
-    <input type="hidden" name="parent" value="${thing.link_name}"/>
-    <table class="sharetable preftable">
-      <tr class="">
-        <th>
-          <label for="notify_to_${thing.link_name}">
-            ${_("notify people of this post")}
+  
+  <input type="hidden" name="parent" value="${thing.link_name}"/>
+
+  <div class="form-group">
+    <label for="notify_to_${thing.link_name}" class="col-sm-4 control-label">
+            ${_("list of people")}
           </label>
-        </th>
-        <td>
-          <textarea id="notify_to_${thing.link_name}" 
-                    name="notify_to" rows="1" cols="80" style="width:500px">
-          </textarea>
-        </td>
-        <td class="notify-to-errors">
-          ${error_field("BAD_EMAILS", "notify_to")}
-          ${error_field("TOO_MANY_EMAILS", "notify_to")}
-          ${error_field("NO_EMAILS", "notify_to")}
-        </td>
-      </tr>
+        
+    <div class="col-sm-6">
+      <textarea id="notify_to_${thing.link_name}" 
+                  name="notify_to" rows="4" cols="40" class="form-control"></textarea>
+
+      ${error_field("BAD_EMAILS", "notify_to")}
+      ${error_field("TOO_MANY_EMAILS", "notify_to")}
+      ${error_field("NO_EMAILS", "notify_to")}
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="col-sm-6 col-sm-offset-4">
       %if thing.captcha:
         ${captchagen('', tabulate = False, size = 30)}
       %endif
-      <tr>
-        <td>
-        </td>
-        <td>
-          <button type="submit" class="btn">
-            ${_("notify")}
-          </button>
-          <button class="btn" 
-                  onclick="return cancelNotify(this);">
-            ${_("cancel")}
-          </button>
-          <span class="status error"></span>
-        </td>
-        <td>
-        </td>
-      </tr>
-    </table>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="col-sm-6 col-sm-offset-4">
+      <button type="submit" class="btn btn-sm btn-primary">
+        ${_("notify")}
+      </button>
+      <button class="btn btn-sm btn-danger" 
+              onclick="return cancelNotify(this);">
+        ${_("cancel")}
+      </button>
+      <span class="status error"></span>
+    </div>
+  </div>
+
 </form>
