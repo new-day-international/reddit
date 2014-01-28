@@ -643,7 +643,7 @@ ${unsafe(txt)}
 <%
 countries = {x.alpha2: x.name for x in pycountry.countries}
 %>
-<select id="country_code" name="country_code" style="width:492px;height:21px;padding:3px;font-size:18px;display:block;">
+<select id="country_code" name="country_code" class="form-control">
 %for code,name in sorted(countries.iteritems(), key=operator.itemgetter(1)):
 <option ${code == country_code  and "selected='selected'" or ""} value="${code}">${name}</option>
 %endfor

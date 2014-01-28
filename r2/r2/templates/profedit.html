@@ -26,65 +26,96 @@
 <%namespace file="utils.html" import="error_field"/>
 <%namespace name="utils" file="utils.html"/>
 
-<h1>${_("Update your profile")}</h1>
 
-<form action="/post/profupdate" method="post" onsubmit="return post_this(this)" id="prof-update">
 
-<div class="spacer">
-  <%utils:round_field title="${_('picture')}" css_class="credentials">
-    <p>${_('Please select a recent photo which clearly shows your face.')}</p>
-    <div class="bootstrap">
-    <input id="profile_picture" type="hidden" name="test[image]">
-    <br/>
+<form action="/post/profupdate" method="post" onsubmit="return post_this(this)" id="prof-update" class="form-horizontal">
+
+  <div class="form-group">
+    <h1 class="col-sm-10 col-sm-offset-2">${_("Profile")}</h1>
+  </div>
+
+  <div class="form-group">
+    <label for="test[image]" class="col-sm-2 control-label">
+      Photo
+    </label>
+    <div class="bootstrap col-sm-10">
+      <span class="little gray">
+        ${_('Please select a recent photo which clearly shows your face.')}
+      </span>
+      <input id="profile_picture" type="hidden" name="test[image]">
     </div>
-  </%utils:round_field>
-</div>
+  </div>
 
-<div class="spacer">
-  <%utils:round_field title="${_('name')}" css_class="credentials">
-    <label for="first_name">${_("first name")}</label>
-    <input name="first_name" id="first_name" type="text" value="${c.user.first_name if hasattr(c.user,'first_name') else ''}" />
-    <label for="last_name">${_("last name")}</label>
-    <input name="last_name" id="last_name" type="text" value="${c.user.last_name if hasattr(c.user,'last_name') else ''}" />
-  </%utils:round_field>
-</div>
+  <div class="form-group">
+    <label for="first_name" class="col-sm-2 control-label">${_("First Name")}</label>
+    <div class="col-sm-10">
+      <input name="first_name" class="form-control" id="first_name" type="text" value="${c.user.first_name if hasattr(c.user,'first_name') else ''}" />
+    </div>
+  </div>
 
-<div class="spacer">
-  <%utils:round_field title="${_('location')}" css_class="credentials">
-    <label for="country_code">${_("country")}</label>
-    <%utils:country_select country_code="${c.user.country_code if hasattr(c.user,'country_code') else ''}" />
-    <label for="city">${_("city")}</label>
-    <input name="city" id="city" type="text" value="${c.user.city if hasattr(c.user,'city') else ''}" />
-  </%utils:round_field>
-</div>
-  
-<div class="spacer">
-  <%utils:round_field title="${_('Me in 240 characters')}" description="(${_('optional')})">
-    <textarea name="me_short" id="me_short">${c.user.me_short if hasattr(c.user,'me_short') else ''}</textarea>
-    ${error_field("TOO_LONG", "me_short")}
-  </%utils:round_field>
-</div>
+  <div class="form-group">
+    <label for="last_name" class="col-sm-2 control-label">${_("Last Name")}</label>
+    <div class="col-sm-10">
+      <input name="last_name" class="form-control" id="last_name" type="text" value="${c.user.last_name if hasattr(c.user,'last_name') else ''}" />
+    </div>
+  </div>
 
-<div class="spacer">
-  <%utils:round_field title="${_('Longer Bio')}" description="(${_('optional')})">
-    <textarea name="me_long" id="me_long" rows="5">${c.user.me_long if hasattr(c.user,'me_long') else ''}</textarea>
-  </%utils:round_field>
-</div>
+  <div class="form-group">
+    <label for="country_code" class="col-sm-2 control-label">${_("Country")}</label>
+    <div class="col-sm-10">
+      <%utils:country_select country_code="${c.user.country_code if hasattr(c.user,'country_code') else ''}" />
+    </div>
+  </div>
 
-<div class="spacer">
-  <%utils:round_field title="${_('Links to other resources')}" description="(${_('optional')})">
-    <textarea name="me_links" id="me_links" rows="5">${c.user.me_links if hasattr(c.user,'me_links') else ''}</textarea>
-  </%utils:round_field>
-</div>
+  <div class="form-group">    
+    <label for="city" class="col-sm-2 control-label">${_("City")}</label>
+    <div class="col-sm-10">
+      <input name="city" class="form-control" id="city" type="text" value="${c.user.city if hasattr(c.user,'city') else ''}" />
+    </div>
+  </div>
 
-<div class="spacer">
-  <button type="submit" class="btn">${_("save")}</button>
-  <span class="status"></span>
-  ${error_field("RATELIMIT", "vdelay")}
-</div>
+  <div class="form-group">    
+    <label for="city" class="col-sm-2 control-label">${_("240 char bio")}</label>
+    <div class="col-sm-10">
+      <textarea name="me_short" class="form-control" id="me_short">${c.user.me_short if hasattr(c.user,'me_short') else ''}</textarea>
+      ${error_field("TOO_LONG", "me_short")}
+    </div>
+  </div>
+
+  <div class="form-group">    
+    <label for="city" class="col-sm-2 control-label">
+      ${_("Bio")}
+      <span class="little gray">
+        ${_('(Optional)')}
+      </span>
+    </label>
+    <div class="col-sm-10">
+      <textarea name="me_long" id="me_long" class="form-control" rows="5">${c.user.me_long if hasattr(c.user,'me_long') else ''}</textarea>
+    </div>
+  </div>
+
+  <div class="form-group">    
+    <label for="city" class="col-sm-2 control-label">
+      ${_("Links to other resources")}
+      <span class="little gray">
+        ${_('(Optional)')}
+      </span>
+    </label>
+    <div class="col-sm-10">
+      <textarea name="me_links" id="me_links" class="form-control" rows="5">${c.user.me_links if hasattr(c.user,'me_links') else ''}</textarea>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="col-sm-10 col-sm-offset-2 bottom-area">
+      <button type="submit" class="btn btn-large btn-primary">${_("Save Profile")}</button>
+      <span class="status"></span>
+      ${error_field("RATELIMIT", "vdelay")}
+      <a class="btn btn-link pull-right" href="/user/${c.user.name}/">View your profile</a>
+    </div>
+  </div>
+
 </form>
-
-<p><a href="/user/${c.user.name}/">View your profile</a></p>  
 
 <script src="/static/bootstrap/js/bootstrap.js"></script>
 <script src="/static/imgareaselect/scripts/jquery.imgareaselect.js"></script>

@@ -911,16 +911,29 @@ h4.collapsable:not(.collapsed) .glyphicon-collapse-down {
     color: #777;
   }
 }
-#sr-form, #newlink {
+#sr-form, #newlink, #prof-update {
   .well {
     min-width: 500px;
   }
-  textarea,
+  textarea, select,
   input[type=text], input[type=url],
-  .bottom-area {
+  .bottom-area, .awesome-cropper {
     max-width: 400px !important;
     width: 400px !important;
   }
+
+  .file-to-crop {
+    float: left;
+    margin-top: 10px;
+  }
+  .cropped-image {
+    float: right;
+    margin-top: 10px;
+  }
+
+  #me_short,
+  #me_links { height: 150px; }
+  #me_long  { height: 300px; }
 
   .input-group {
     max-width: 400px !important;
