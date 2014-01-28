@@ -209,7 +209,7 @@ def comment_label(num_comments=None):
     else:
         # generates "XX comments" as a noun
         com_label = ungettext("comment", "comments", num_comments)
-        com_label = strings.number_label % dict(num=num_comments,
+        com_label = "read " + strings.number_label % dict(num=num_comments,
                                                 thing=com_label)
         com_cls = 'comments'
     return com_label, com_cls

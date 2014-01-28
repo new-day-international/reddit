@@ -43,9 +43,9 @@ domain = get_domain(subreddit=False)
   comment_count = sum(1 for c in comments if not c._deleted)
 
   if comment_count == 1:
-    comment_label = "1 comment"
+    comment_label = "read 1 comment"
   else:
-    comment_label = "%s comments" % (comment_count,)
+    comment_label = "read %s comments" % (comment_count,)
 
   if num % 2 == 0:
     bg_color = "#FFFFFF"
