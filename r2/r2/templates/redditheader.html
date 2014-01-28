@@ -118,14 +118,15 @@ Reddit.modhash = "${c.modhash}";
             <img class="cropped-image-medium link_photo media-object pull-left img-rounded" src="${photo_url}" height="40" width="40" />${c.user.registration_fullname} <b class="caret"></b>
           </a>
           <ul class="dropdown-menu">
-            <li><a href="/account-activity/">recent activity</a></li>
-            <li><a href="/prefs">options</a></li>
-            <li><a href="#">password/email</a></li>
-            <li><a href="#">two-factor authentication</a></li>
+            <li><a href="/user/${c.user.name}/">Profile</a></li>
+            <li><a href="/account-activity/">Recent Activity</a></li>
+            <li><a href="/prefs">Options</a></li>
+            <li><a href="#">Password/Email</a></li>
+            <li><a href="#">Two-Factor Authentication</a></li>
             <li class="divider"></li>
             <li>
               %if c.user_is_loggedin and authentication.user_can_log_out():
-                <a href="/logout" class="postlink" data-action="/logout">${_("logout")}</a>
+                <a href="/logout" class="postlink" data-action="/logout">${_("Logout")}</a>
               %endif
             </li>
           </ul>
