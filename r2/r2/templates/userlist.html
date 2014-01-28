@@ -27,7 +27,7 @@
   <% from r2.models import ModeratorPermissionSet %>
   <% from r2.lib.pages import ModeratorPermissions %>
   <form action="/post/${dest}"
-        method="post" class="pretty-form medium-text form-inline"
+        method="post" class="pretty-form medium-text"
         onsubmit="return post_form(this, '${dest}')"
         id="${add_type}" role="form">
 
@@ -35,7 +35,7 @@
     <input type="hidden" name="container" value="${container_name}">
     <input type="hidden" name="type" value="${add_type}">
     <div class="form-group">
-      <input type="text" name="name" id="name" class="namepicker" placeholder="follow someone new">
+      <input type="text" name="name" id="name" class="namepicker form-control pull-left" placeholder="follow someone new">
       %if add_type == "moderator_invite":
         ${ModeratorPermissions(None, 'moderator',
                                ModeratorPermissionSet(all=True),
@@ -45,13 +45,13 @@
           (<a href="javascript:void(0)">${_('change')}</a>)
         </span>
       %endif
+      <button class="btn btn-primary pull-left" type="submit" style="margin-top: 20px;">${verb or _("Add")}</button>
+      <span class="status"></span>
+      ${error_field("USER_DOESNT_EXIST", "name")}
+      %if caller:
+        ${caller.body()}
+      %endif
     </div>
-    <button class="btn" type="submit">${verb or _("add")}</button>
-    <span class="status"></span>
-    ${error_field("USER_DOESNT_EXIST", "name")}
-    %if caller:
-      ${caller.body()}
-    %endif
   </form>
 </%def>
 
