@@ -833,6 +833,7 @@ function unexpando_child(elem) {
 
 /******* editting comments *********/
 function show_edit_usertext(form) {
+    console.log("show_edit_usertext "+$(form).attr('id'));
     var edit = form.find(".usertext-edit");
     var body = form.find(".usertext-body");
     var textarea = edit.find('div > textarea');
@@ -861,12 +862,21 @@ function show_edit_usertext(form) {
         textarea.height(new_height);
     }
     
-    // Add an @namepicker to the field
-    textarea.atwho('run').atwho({
-            at: "@",
-            tpl: '<li data-value="@$'+'{name}"><img src="http://'+Namepicker.s3_user_files_host+'/u/$'+'{pic}/profile_photo.jpg"> <div>$'+'{full}</div></li>',
-            data: Namepicker.userdata
-        });
+    // Add an @namepicker to the field(s)
+    //$(textarea).atwho('run').atwho({
+    //alert('here: '+textarea.constructor.toString());    
+    //alert($(form).attr('id'));
+    //textarea.atwho({
+    //        at: "@",
+    //        tpl: '<li data-value="@$'+'{name}"><img src="http://'+Namepicker.s3_user_files_host+'/u/$'+'{pic}/profile_photo.jpg"> <div>$'+'{full}</div></li>',
+    //        data: Namepicker.userdata
+    //    });
+    //$('.atnamepicker, .atnamepicker textarea').atwho('run').atwho({
+    //        at: "@",
+    //        tpl: '<li data-value="@$'+'{name}"><img src="http://'+Namepicker.s3_user_files_host+'/u/$'+'{pic}/profile_photo.jpg"> <div>$'+'{full}</div></li>',
+    //        data: Namepicker.userdata
+    //    }); 
+    addatnamepicker(textarea);   
 
     form
         .find(".cancel, .save").show().end()
@@ -891,10 +901,16 @@ function comment_reply_for_elem(elem) {
     //try to find a previous form
     var form = thing.find(".child .usertext:first");
     if (!form.length || form.parent().thing_id() != thing.thing_id()) {
+        console.log("cloning " + $(".usertext.cloneable:first").attr('id'));
         form = $(".usertext.cloneable:first").clone(true);
+
+        // clear the 'atwho' data attribute so that a new instance of at.js is created for this form
+        $(form).find('textarea').data('atwho', null);
+        
         elem.new_thing_child(form);
         form.prop("thing_id").value = thing_id;
         form.attr("id", "commentreply_" + thing_id);
+        form.find("textarea").attr("id","commentreply_textarea_" + thing_id);
         form.find(".error").hide();
     }
     return form;
