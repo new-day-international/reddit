@@ -749,13 +749,9 @@ class UserController(ListingController):
         sort = VMenu('sort', ProfileSortMenu, remember = False))
     def GET_profile(self, where, vuser, sort):
         """Show the profile. ProfShow() is in pages.py"""
-        #self.where = where
-        #self.sort = sort
         self.vuser = vuser
-        #self.render_params = {'user' : vuser}
-        #c.profilepage = True
-        if c.user_is_loggedin and c.user.profile_photo_uploaded:
-            vuser.image_source = "http://%s/u/%s/profile_photo.jpg" % (g.s3_user_files_host, c.user.name,)
+        if vuser.profile_photo_uploaded:
+            vuser.image_source = "http://%s/u/%s/profile_photo.jpg" % (g.s3_user_files_host, vuser.name,)
         else:
             vuser.image_source = "http://%s/u/default_user/profile_photo.jpg" % (g.s3_user_files_host,)
 

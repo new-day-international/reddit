@@ -7,14 +7,42 @@
 <script>
 function post_it(value) {
   var fld = this.id;
-  $.request('prof_fld_update', {fld: fld, value: value}, alert('callback'), null, "json", false, alert('error handler'));
+  $.request('prof_fld_update', 
+    {fld: fld, value: value}, 
+    function(res){
+      $('#'+fld).html(res);
+      $('#edit_'+fld).show()
+    }, 
+    null, 
+    "html", 
+    false, 
+    null
+  );
   return(value);
 }
 $(document).ready(function() {
-     $('.edit').editable(post_it, {
-       event : 'activate',
-       submit : 'save' 
-      });
+  $('.edit').editable(post_it, {
+    loadurl : '/api/prof_fld_get', 
+    event : 'activate',
+    placeholder : '',
+    submit : 'save' 
+  });
+  $('.editarea').editable(post_it, {
+    loadurl : '/api/prof_fld_get', 
+    type : 'textarea',
+    rows : 5,
+    cols : 100,
+    event : 'activate',
+    placeholder : '',
+    submit : 'save' 
+  });
+  $('.editselect').editable(post_it, {
+    loadurl : '/api/prof_fld_get', 
+    type : 'select',
+    event : 'activate',
+    placeholder : '',
+    submit : 'save' 
+  });  
 });
 
 </script>
@@ -40,6 +68,12 @@ $(document).ready(function() {
 .profinfo div.md p {
   margin: 0 0 5px 0;
 }
+.profinfo a {
+  margin-left: 15px;
+}
+.profinfo button {
+  margin-left: 10px;
+}
 </style>
 
 <div><img src="${thing.user.image_source}" style="float: left;padding:0 10px 10px 0">
@@ -48,14 +82,39 @@ $(document).ready(function() {
 
 <div>
 
-<div class="profinfo"><label>City</label> <div class="fld edit" id="city">${thing.user.city if hasattr(thing.user,'city') else ''}</div> <button onclick="$('#city').trigger('activate');">Edit</button></div>
-<div class="profinfo"><label>Country</label> <div class="fld editselect">${thing.user.country_name if hasattr(thing.user,'country_name') else ''}</div></div>
-<div class="profinfo"><label>About me:</label> <div class="fld editarea">${unsafe(safemarkdown(thing.user.me_short)) if hasattr(thing.user,'me_short') else ''}</div></div>
-<div class="profinfo"><label>Bio:</label> <div class="fld editarea">${unsafe(safemarkdown(thing.user.me_long)) if hasattr(thing.user,'me_long') else ''}</div></div>
-<div class="profinfo"><label>Links:</label> <div class="fld editarea">${unsafe(safemarkdown(thing.user.me_links)) if hasattr(thing.user,'me_links') else ''}</div></div>
+<div class="profinfo"><label>City</label> <div class="fld edit" id="city">${thing.user.city if hasattr(thing.user,'city') else ''}</div> 
+% if c.user_is_loggedin and c.user == thing.user:
+<a href="#" onclick="$('#city').trigger('activate');$(this).hide();return false;" id="edit_city">Edit</a>
+%endif
+</div>
+
+<div class="profinfo"><label>Country</label> <div class="fld editselect" id="country_code">${thing.user.country_name if hasattr(thing.user,'country_name') else ''}</div> 
+% if c.user_is_loggedin and c.user == thing.user:
+<a href="#" onclick="$('#country_code').trigger('activate');$(this).hide();return false;" id="edit_country_code">Edit</a>
+%endif
+</div>
+
+<div class="profinfo"><label>About me:</label> <div class="fld editarea" id="me_short">${unsafe(safemarkdown(thing.user.me_short)) if hasattr(thing.user,'me_short') else ''}</div> 
+% if c.user_is_loggedin and c.user == thing.user:
+<a href="#" onclick="$('#me_short').trigger('activate');$(this).hide();return false;" id="edit_me_short">Edit</a>
+%endif
+</div>
+
+<div class="profinfo"><label>Bio:</label> <div class="fld editarea" id="me_long">${unsafe(safemarkdown(thing.user.me_long)) if hasattr(thing.user,'me_long') else ''}</div> 
+% if c.user_is_loggedin and c.user == thing.user:
+<a href="#" onclick="$('#me_long').trigger('activate');$(this).hide();return false;" id="edit_me_long">Edit</a>
+%endif
+</div>
+
+<div class="profinfo"><label>Links:</label> <div class="fld editarea" id="me_links">${unsafe(safemarkdown(thing.user.me_links)) if hasattr(thing.user,'me_links') else ''}</div> 
+% if c.user_is_loggedin and c.user == thing.user:
+<a href="#" onclick="$('#me_links').trigger('activate');$(this).hide();return false;" id="edit_me_links">Edit</a>
+%endif
+</div>
   
 % if c.user_is_loggedin and c.user == thing.user: 
-<div class="profinfo"><br><br><a href="/prefs/profedit/">Edit</a></div>  
+<div class="profinfo"><br><br><a href="/prefs/profedit/">Edit All</a></div>  
 %endif
+
 
 

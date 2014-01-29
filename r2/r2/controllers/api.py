@@ -60,7 +60,7 @@ from r2.lib.comment_tree import delete_comment
 from r2.lib import tracking, cssfilter, emailer, s3_helpers
 from r2.lib.subreddit_search import search_reddits
 from r2.lib.log import log_text
-from r2.lib.filters import safemarkdown
+from r2.lib.filters import unsafe, safemarkdown
 from r2.lib.scraper import str_to_image
 from r2.controllers.api_docs import api_doc, api_section
 from r2.lib.search import SearchQuery
@@ -86,7 +86,8 @@ import hashlib
 import re
 import urllib
 import urllib2
-
+import pycountry
+import operator
 from r2.lib.memoize import memoize
 
 def reject_vote(thing):
@@ -975,6 +976,41 @@ class ApiController(RedditController, OAuth2ResourceController):
         """Update a single field in a user's profile. Called from in-place editing on /pref/profshow"""
         setattr(c.user, fld, value)
         c.user._commit()
+        if fld[0:3] == 'me_':
+            return unsafe(safemarkdown(getattr(c.user,fld)))
+        elif fld == 'country_code':
+            countries = {x.alpha2: x.name for x in pycountry.countries}
+            if value in countries.keys():
+                country_name = countries[value]
+                c.country_name = country_name
+                c.user._commit()
+                return country_name
+            else:    
+                return '???'
+        else:
+            return value
+        
+
+    @require_oauth2_scope("read")
+    @validate(VUser(),
+              fld = nop("id")
+              )
+    @api_doc(api_section.account, extensions=["json"])
+    def GET_prof_fld_get(self, fld):
+        """Get a single field of a user's profile. Called from in-place editing on /pref/profshow"""
+        if c.user_is_loggedin and hasattr(c.user,fld):
+            if fld == 'country_code':
+                out = "{"
+                countries = {x.alpha2: x.name for x in pycountry.countries}
+                for code,name in sorted(countries.iteritems(), key=operator.itemgetter(1)):
+                    out += "'%s': \"%s\"," % (code,name)
+                out += "selected: '%s'" % c.user.country_code    
+                out += "}"
+                return out
+            else:    
+                return getattr(c.user,fld)
+        else:
+            return ''
 
     @validatedForm(VUser('curpass', default = ''),
                    VModhash(),
