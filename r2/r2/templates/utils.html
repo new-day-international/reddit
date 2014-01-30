@@ -60,7 +60,7 @@ id="${arg}_${thing and thing._fullname or ''}"
 </%def>
 
 <%def name="submit_form(onsubmit='', action='', _class='', method='post', _id='', **params)">
-<form class="${_class or ''}" onsubmit="${onsubmit or ''}" 
+<form class="${_class or ''} form-horizontal" onsubmit="${onsubmit or ''}" 
       action="${action or ''}" ${_id and "id='" + _id + "'" or ""} method="${method}"
       %if c.cname:
         target="_top"

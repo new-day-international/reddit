@@ -29,7 +29,7 @@
    from r2.lib.template_helpers import static
 %>
 
-<h1>${_("send a message")}</h1>
+  
 
 <%utils:submit_form onsubmit="return post_form(this, 'compose', null, null, true)",
                     method="post", _id = "compose-message",
@@ -50,29 +50,27 @@ function admincheck(elem) {
 }
 </script>
 
-<div class="spacer">
-  <%utils:round_field title="${_('to')}", description="${_('(username, or /space/name for that space\'s mods)')}">
-    <input class="form-control namepicker" type="text" name="to" value="${thing.to or ''}" onchange="admincheck(this)" />
-    ${error_field("NO_USER", "to")}
-    ${error_field("USER_DOESNT_EXIST", "to")}
-    ${error_field("SUBREDDIT_NOEXIST", "to")}
-    ${error_field("USER_BLOCKED", "to")}
-  </%utils:round_field>
+<div class="form-group">
+  <h1 class="col-sm-10 col-sm-offset-2">${_("Send a Message")}</h1>
 </div>
 
-<div class="spacer">
-  <%utils:round_field title="${_('subject')}">
-    <input type="text" name="subject" class="form-control" value="${thing.subject or ''}"/>
-    ${error_field("NO_SUBJECT", "subject", "span")}
-    ${error_field("TOO_LONG", "subject", "span")}
-  </%utils:round_field>
-</div>
+<%utils:round_field title="${_('To')}", description="${_('(username, or /space/name for that space\'s mods)')}">
+  <input class="form-control namepicker" type="text" name="to" value="${thing.to or ''}" onchange="admincheck(this)" />
+  ${error_field("NO_USER", "to")}
+  ${error_field("USER_DOESNT_EXIST", "to")}
+  ${error_field("SUBREDDIT_NOEXIST", "to")}
+  ${error_field("USER_BLOCKED", "to")}
+</%utils:round_field>
 
-<div class="spacer">
-  <%utils:round_field title="${_('message')}">
-    ${UserText(None, text=thing.message, have_form = False, creating = True, extra_css = 'atnamepicker')}
-  </%utils:round_field>
-</div>
+<%utils:round_field title="${_('Subject')}">
+  <input type="text" name="subject" class="form-control" value="${thing.subject or ''}"/>
+  ${error_field("NO_SUBJECT", "subject", "span")}
+  ${error_field("TOO_LONG", "subject", "span")}
+</%utils:round_field>
+
+<%utils:round_field title="${_('Message')}">
+  ${UserText(None, text=thing.message, have_form = False, creating = True, extra_css = 'atnamepicker')}
+</%utils:round_field>
 
 <div class="clippy"
 %if thing.to not in thing.admins:
@@ -136,12 +134,12 @@ function admincheck(elem) {
 
  </div>
 
-
-<div class="spacer">
-  ${thing.captcha}
+<div class="form-group">
+  <div class="col-sm-10 col-sm-offset-2">
+    ${thing.captcha}
+    <button id="send" name="send" type="submit" class="btn btn-primary">${_("Send")}</button>
+    <span class="status"></span>
+  </div>
 </div>
-
-<button id="send" name="send" type="submit" class="btn btn-primary">${_("send")}</button>
-<span class="status"></span>
 
 </%utils:submit_form>
