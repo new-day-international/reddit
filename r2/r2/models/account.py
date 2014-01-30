@@ -725,6 +725,17 @@ class Account(Thing):
         '''
         return setattr(self, 'received_trophy_%s' % uid, trophy_id)
 
+    @property
+    def firstlast_name(self):
+        '''combine the first and last names'''
+        firstlast = ''
+        if hasattr(self,'first_name'):
+            firstlast += "%s " % self.first_name 
+        if hasattr(self,'last_name'):
+            firstlast += "%s" % self.last_name    
+        return firstlast.strip()
+
+
 class FakeAccount(Account):
     _nodb = True
     pref_no_profanity = True
