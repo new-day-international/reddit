@@ -2259,4 +2259,11 @@ class VCountry(Validator):
             return (country_code, country_name)
         else:    
             return ('??', '???')
-    
+
+class VAccountFields(Validator):
+    """Validate a field name for a user, only accepting those they're allowed to edit"""
+    def run(self, fld):
+        if fld in ['city','country_code','me_short','me_long','me_links']:
+            return fld
+        else:
+            return None

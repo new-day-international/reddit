@@ -968,37 +968,40 @@ class ApiController(RedditController, OAuth2ResourceController):
         
     @validatedForm(VUser(),
                 VModhash(),
-                fld = nop("fld"),
+                fld = VAccountFields("fld"),
                 value = nop("value"),
                 )
     @api_doc(api_section.account)
     def POST_prof_fld_update(self, form, jquery, fld, value):
         """Update a single field in a user's profile. Called from in-place editing on /pref/profshow"""
-        setattr(c.user, fld, value)
-        c.user._commit()
-        if fld[0:3] == 'me_':
-            return unsafe(safemarkdown(getattr(c.user,fld)))
-        elif fld == 'country_code':
-            countries = {x.alpha2: x.name for x in pycountry.countries}
-            if value in countries.keys():
-                country_name = countries[value]
-                c.country_name = country_name
-                c.user._commit()
-                return country_name
-            else:    
-                return '???'
+        if fld != None:
+            setattr(c.user, fld, value)
+            c.user._commit()
+            if fld[0:3] == 'me_':
+                return unsafe(safemarkdown(getattr(c.user,fld)))
+            elif fld == 'country_code':
+                countries = {x.alpha2: x.name for x in pycountry.countries}
+                if value in countries.keys():
+                    country_name = countries[value]
+                    c.country_name = country_name
+                    c.user._commit()
+                    return country_name
+                else:    
+                    return '???'
+            else:
+                return value
         else:
-            return value
+            return '???'        
         
 
     @require_oauth2_scope("read")
     @validate(VUser(),
-              fld = nop("id")
+              fld = VAccountFields("id")
               )
     @api_doc(api_section.account, extensions=["json"])
     def GET_prof_fld_get(self, fld):
         """Get a single field of a user's profile. Called from in-place editing on /pref/profshow"""
-        if c.user_is_loggedin and hasattr(c.user,fld):
+        if fld != None and c.user_is_loggedin and hasattr(c.user,fld):
             if fld == 'country_code':
                 out = "{"
                 countries = {x.alpha2: x.name for x in pycountry.countries}
