@@ -122,6 +122,8 @@ class Account(Thing):
                      message_count=0,
                      moderator_message_count=0,
                      notification_count=0,
+                     country_code='US',
+                     country_name='United States'
                      )
 
     def __eq__(self, other):

@@ -35,6 +35,12 @@ for a in result:
         a.first_name = first_name
     if not hasattr(a,'last_name'):
         a.last_name = last_name
+        
+    if not hasattr(a,'country_code'):
+        a.country_code = 'US'    
+        a.country_name = 'United States'
+        print "id:%s country set to US" % a.name
+        
     a._commit()
 
     
