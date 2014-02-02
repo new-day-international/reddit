@@ -256,6 +256,9 @@ class DataThing(object):
             begin()
 
             to_set = self._dirties.copy()
+            for k, (old_val, new_val) in to_set.iteritems():
+                g.log.info("DataThing._commit() to_set - k: %r, old_val: %r, new_val: %r", k, old_val, new_val)
+
             if keys:
                 keys = tup(keys)
                 for key in to_set.keys():
@@ -278,6 +281,9 @@ class DataThing(object):
 
             if thing_props:
                 self._set_props(self._type_id, self._id, **thing_props)
+
+            for k, (old_val, new_val) in self._dirties.iteritems():
+                g.log.info("DataThing._commit() _dirties - k: %r, old_val: %r, new_val: %r", k, old_val, new_val)
 
             if keys:
                 for k in keys:
@@ -560,7 +566,7 @@ class ThingMeta(type):
 
 class Thing(DataThing):
     __metaclass__ = ThingMeta
-    _base_props = ('_ups', '_downs', '_date', '_deleted', '_spam','_active')
+    _base_props = ('_ups', '_downs', '_date', '_deleted', '_spam', '_active')
     _int_props = ('_ups', '_downs')
     _make_fn = staticmethod(tdb.make_thing)
     _set_props = staticmethod(tdb.set_thing_props)
@@ -592,8 +598,12 @@ class Thing(DataThing):
 
         #new way
         for k, v in attrs.iteritems():
+            g.log.info("Thing.__init__() attrs.iteritems - k: %r, new_val: %r", k, v)
+
+        for k, v in attrs.iteritems():
             self.__setattr__(k, v, not self._created)
-        
+
+
     def __repr__(self):
         return '<%s %s>' % (self.__class__.__name__,
                             self._id if self._created else '[unsaved]')

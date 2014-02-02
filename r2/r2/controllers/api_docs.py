@@ -51,6 +51,9 @@ section_info = {
     'messages': {
         'title': _('private messages'),
     },
+    'notifications': {
+        'title': _('notifications'),
+    },
     'moderation': {
         'title': _('moderation'),
     },

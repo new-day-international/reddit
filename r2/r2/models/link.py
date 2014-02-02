@@ -1228,16 +1228,17 @@ class Message(Thing, Printable):
                      sr_id=None,
                      to_collapse=None,
                      author_collapse=None,
-                     from_sr=False)
+                     from_sr=False,
+                     in_box='inbox')
     _data_int_props = Thing._data_int_props + ('reported',)
-    _essentials = ('author_id',)
+    _essentials = ('author_id', 'in_box')
     cache_ignore = set(["to", "subreddit"]).union(Printable.cache_ignore)
 
     @classmethod
     def _new(cls, author, to, subject, body, ip, parent=None, sr=None,
              from_sr=False, in_box='inbox'):
         m = Message(subject=subject, body=body, author_id=author._id, new=True,
-                    ip=ip, from_sr=from_sr)
+                    ip=ip, from_sr=from_sr, in_box=in_box)
         m._spam = author._spam
 
         if author._spam:
@@ -1272,6 +1273,11 @@ class Message(Thing, Printable):
         m.to_id = to._id if to else None
         if sr_id is not None:
             m.sr_id = sr_id
+
+        g.log.info("Message._new() - author: %i", m.author_id )
+        g.log.info("                 to: %i", m.to_id )
+        g.log.info("                 in_box: %s", m.in_box )
+        g.log.info("                 body: %s", m.body )
 
         m._commit()
 

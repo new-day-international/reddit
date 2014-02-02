@@ -107,7 +107,9 @@ menu =   MenuHandler(hot          = _('hot'),
                      compose      = _("compose"),
                      inbox        = _("inbox"),
                      sent         = _("sent"),
-                     notifications= _("notifications"),
+
+                     # notifications
+                     notifications= _("all notifications"),
 
                      # comments
                      comments     = _("comments {toolbar}"),

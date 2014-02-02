@@ -842,7 +842,6 @@ class MessagePage(Reddit):
             self.replybox = UserText(item = None, creating = True,
                                      post_form = 'comment', display = False,
                                      cloneable = True)
-            
 
     def content(self):
         return self.content_stack((self.replybox,
@@ -861,7 +860,6 @@ class MessagePage(Reddit):
         if c.show_mod_mail:
             buttons.append(ModeratorMailButton(menu.modmail, "moderator",
                                                sr_path = False))
-        buttons.append(NamedButton('notifications', sr_path = False))
         if not c.default_sr:
             buttons.append(ModeratorMailButton(
                 _("%(site)s mail") % {'site': c.site.name}, "moderator",
@@ -869,6 +867,27 @@ class MessagePage(Reddit):
                            "/about/message/unread"]))
         return [PageNameNav('nomenu', title = _("message")), 
                 NavMenu(buttons, base_path = "/message", type="tabmenu")]
+
+
+class NotificationPage(Reddit):
+    """Defines the content for /notification/*"""
+    def __init__(self, *a, **kw):
+        if not kw.has_key('show_sidebar'):
+            kw['show_sidebar'] = False
+        Reddit.__init__(self, *a, **kw)
+
+    def content(self):
+        return self.content_stack((self.infobar,
+                                   self.nav_menu,
+                                   self._content))
+
+    def build_toolbars(self):
+        buttons =  [NamedButton('inbox', aliases = ["/notification/unread",], sr_path = False),
+                    NamedButton('sent', sr_path = False),
+                    NamedButton('notifications', sr_path = False),]
+        return [PageNameNav('nomenu', title = _("notification")),
+                NavMenu(buttons, base_path = "/notification", type="tabmenu")]
+
 
 class MessageCompose(Templated):
     """Compose message form."""

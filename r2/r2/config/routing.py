@@ -195,11 +195,11 @@ def make_map():
        requirements=dict(sort='top|controversial'))
 
     mc('/message/compose', controller='message', action='compose')
-    mc('/message/messages/:mid', controller='message', action='listing',
-       where="messages")
+    mc('/message/messages/:mid', controller='message', action='listing', where="messages")
     mc('/message/:where', controller='message', action='listing')
-    mc('/message/moderator/:subwhere', controller='message', action='listing',
-       where='moderator')
+    mc('/message/moderator/:subwhere', controller='message', action='listing', where='moderator')
+
+    mc('/notification/:where', controller='notification', action='listing')
 
     mc('/thanks', controller='forms', action="claim", secret='')
     mc('/thanks/:secret', controller='forms', action="claim")

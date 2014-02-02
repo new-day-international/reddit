@@ -1549,7 +1549,7 @@ class ApiController(RedditController, OAuth2ResourceController):
 
         for target in users:
             # here we do something for each user
-            send_notification_message(c.user,target, subject, message, ip)
+            send_notification_message(c.user, target, subject, message, ip)
 
 
     @require_oauth2_scope("vote")
@@ -3590,7 +3590,15 @@ class ApiController(RedditController, OAuth2ResourceController):
         ret['policy'], ret['signature'] = s3_helpers.encode_and_sign_upload_policy(policy, s3_helpers.get_aws_secret_access_key())
         return ret
 
+    global cached_names
+    cached_names = None
+
     def GET_namepicker(self,**keywords):
+
+        global cached_names
+        if cached_names:
+            return cached_names
+
         # Return a json array of usernames for a name picker
         c.allow_loggedin_cache = True
         timehour = int(int(time.time())/3600)
@@ -3631,6 +3639,9 @@ class ApiController(RedditController, OAuth2ResourceController):
         output += "  userhash: " + json.dumps(hnames) + ","
         output += "  spacenames: " + json.dumps(sorted(spacenames)) + ","
         output += "};"
+
+        cached_names = output
+
         return output
 
     @json_validate(VUser())

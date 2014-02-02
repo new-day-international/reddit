@@ -91,6 +91,7 @@ def filter_identity(x):
 def filter_thing2(x):
     """A filter to apply to the results of a relationship query returns
     the object of the relationship."""
+    g.log.info("filter_thing2 %r", x)
     return x._thing2
 
 class CachedResults(object):
@@ -571,57 +572,73 @@ def get_unread_subreddit_messages_multi(srs):
 
 inbox_message_rel = Inbox.rel(Account, Message)
 @cached_userrel_query
-def get_inbox_messages(user):
-    return rel_query(inbox_message_rel, user, 'inbox')
+def get_inbox_messages(user_id):
+    return rel_query(inbox_message_rel, user_id, 'inbox')
 
 @cached_userrel_query
-def get_unread_messages(user):
-    return rel_query(inbox_message_rel, user, 'inbox',
-                          filters = [inbox_message_rel.c.new == True])
+def get_unread_messages(user_id):
+    return rel_query(inbox_message_rel, user_id, 'inbox',
+                          filters = [inbox_message_rel.c.name == 'inbox',
+                                     inbox_message_rel.c.new == True])
 
 inbox_comment_rel = Inbox.rel(Account, Comment)
 @cached_userrel_query
-def get_inbox_comments(user):
-    return rel_query(inbox_comment_rel, user, 'inbox')
+def get_inbox_comments(user_id):
+    return rel_query(inbox_comment_rel, user_id, 'inbox')
 
 @cached_userrel_query
-def get_unread_comments(user):
-    return rel_query(inbox_comment_rel, user, 'inbox',
+def get_unread_comments(user_id):
+    return rel_query(inbox_comment_rel, user_id, 'inbox',
                           filters = [inbox_comment_rel.c.new == True])
 
 @cached_userrel_query
-def get_inbox_selfreply(user):
-    return rel_query(inbox_comment_rel, user, 'selfreply')
+def get_inbox_selfreply(user_id):
+    return rel_query(inbox_comment_rel, user_id, 'selfreply')
 
 @cached_userrel_query
-def get_unread_selfreply(user):
-    return rel_query(inbox_comment_rel, user, 'selfreply',
+def get_unread_selfreply(user_id):
+    return rel_query(inbox_comment_rel, user_id, 'selfreply',
                           filters = [inbox_comment_rel.c.new == True])
 
-@cached_userrel_query
-def get_notifications(user):
-    return rel_query(inbox_message_rel, user, 'notifications')
-
-@cached_userrel_query
-def get_unread_notifications(user):
-    return rel_query(inbox_message_rel, user, 'notifications',
-                          filters = [inbox_comment_rel.c.new == True])
-
-def get_inbox(user):
-    return merge_results(get_inbox_comments(user),
-                         get_inbox_messages(user),
-                         get_inbox_selfreply(user))
+def get_inbox(user_id):
+    return merge_results(get_inbox_comments(user_id),
+                         get_inbox_messages(user_id),
+                         get_inbox_selfreply(user_id))
 
 @cached_query(UserQueryCache)
-def get_sent(user_id):
+def get_sent_messages(user_id):
     return Message._query(Message.c.author_id == user_id,
-                          Message.c._spam == (True, False),
-                          sort = desc('_date'))
+                           Message.c.in_box == 'inbox',
+                           Message.c._spam == (True, False),
+                           sort = desc('_date'))
 
-def get_unread_inbox(user):
-    return merge_results(get_unread_comments(user),
-                         get_unread_messages(user),
-                         get_unread_selfreply(user))
+def get_unread_inbox(user_id):
+    return merge_results(get_unread_comments(user_id),
+                         get_unread_messages(user_id),
+                         get_unread_selfreply(user_id))
+
+#
+# Notifications
+#
+@cached_userrel_query
+def get_notifications(user_id):
+    g.log.info("get_notifications for user %r", user_id)
+    return rel_query(inbox_message_rel, user_id, 'notifications')
+
+@cached_userrel_query
+def get_sent_notifications(user_id):
+    g.log.info("get_sent_notifications for user %r", user_id)
+    return Message._query(Message.c.author_id == user_id,
+                           Message.c.in_box == 'notifications',
+                           Message.c._spam == (True, False),
+                           sort = desc('_date'))
+
+@cached_userrel_query
+def get_unread_notifications(user_id):
+    g.log.info("get_unread_notifications for user %r", user_id)
+    return rel_query(inbox_message_rel, user_id, 'notifications',
+                          filters = [inbox_comment_rel.c.new == True])
+
 
 def _user_reported_query(user_id, thing_cls):
     rel_cls = Report.rel(Account, thing_cls)
@@ -978,7 +995,7 @@ def new_message(message, inbox_rels):
         to = inbox_rel._thing1
 
         with CachedQueryMutator() as m:
-            m.insert(get_sent(from_user), [message])
+            m.insert(get_sent_messages(from_user), [message])
 
             # moderator message
             if isinstance(inbox_rel, ModeratorInbox):
@@ -1344,7 +1361,7 @@ def update_user(user):
     results = [get_inbox_messages(user),
                get_inbox_comments(user),
                get_inbox_selfreply(user),
-               get_sent(user),
+               get_sent_messages(user),
                get_liked(user),
                get_disliked(user),
                get_submitted(user, 'new', 'all'),

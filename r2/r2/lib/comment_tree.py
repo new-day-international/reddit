@@ -335,7 +335,7 @@ def user_messages_nocache(user):
     """
     from r2.lib.db import queries
     inbox = _process_message_query(queries.get_inbox_messages(user))
-    sent = _process_message_query(queries.get_sent(user))
+    sent = _process_message_query(queries.get_sent_messages(user))
     messages = _load_messages(list(chain(inbox, sent)))
     return compute_message_trees(messages)
 

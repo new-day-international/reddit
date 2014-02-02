@@ -46,7 +46,6 @@ def load_controllers():
     from listingcontroller import FilesController
     from listingcontroller import RisingController
     from listingcontroller import BrowseController
-    from listingcontroller import MessageController
     from listingcontroller import RedditsController
     from listingcontroller import ByIDController
     from listingcontroller import RandomrisingController
@@ -55,6 +54,9 @@ def load_controllers():
     from listingcontroller import GildedController
 
     from listingcontroller import MyredditsController
+
+    from messagecontroller import MessageController
+    from notificationcontroller import NotificationController
 
     from feedback import FeedbackController
     from front import FormsController
